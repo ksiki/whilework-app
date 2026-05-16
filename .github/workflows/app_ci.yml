@@ -22,6 +22,7 @@ jobs:
         run: |
           docker compose up -d --build
           docker compose exec -T app pytest
+          docker compose down -v
       
       - name: Cleanup
         if: always()
