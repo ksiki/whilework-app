@@ -20,7 +20,7 @@ jobs:
 
       - name: Build and Run Tests in Docker
         run: |
-          docker compose up -d --build
+          docker compose up -d --build app
           docker compose exec -T app pytest
           docker compose down -v
       
