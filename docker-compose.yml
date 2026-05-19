@@ -5,7 +5,6 @@ x-airflow-common: &airflow-common
   env_file: .env
   environment:
     - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-    - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
     - AIRFLOW__CORE__LOAD_EXAMPLES=False
   depends_on:
     db:
@@ -107,12 +106,9 @@ services:
   airflow-init:
     <<: *airflow-common
     container_name: airflow_init
-    command: version
-    environment:
-      - _AIRFLOW_DB_MIGRATE=true
-      - _AIRFLOW_WWW_USER_CREATE=true
-      - _AIRFLOW_WWW_USER_USERNAME=admin
-      - _AIRFLOW_WWW_USER_PASSWORD=admin
+    command: >
+      bash -c "airflow db migrate && 
+      airflow users create --username admin --password admin --firstname Airflow --lastname Admin --role Admin --email admin@example.com"
 
   nginx:
     image: nginx:stable-alpine
