@@ -40,7 +40,7 @@ def sample_messages_data() -> list[dict[str, Any]]:
 
 
 @pytest.fixture
-def setup_sources(db):
+def setup_sources(db) -> None:
     Source.objects.create(
         id=SOURCE_1_ID,
         name="Telegram Python Jobs",
@@ -57,7 +57,7 @@ def setup_sources(db):
     )
 
 
-def test_create_object_list_and_search_last_ids(sample_messages_data):
+def test_create_object_list_and_search_last_ids(sample_messages_data) -> None:
     result = _create_object_list_and_search_last_ids(sample_messages_data)
 
     assert len(result.instances) == 3
@@ -74,10 +74,10 @@ def test_create_object_list_and_search_last_ids(sample_messages_data):
 
 
 @pytest.mark.django_db
-@patch("apps.inbox.services.sources_services.update_last_message_ids")
+@patch("apps.inbox.services.sources_services.update_last_parsed_message_ids")
 def test_atomic_saved_messages_and_update_sources(
     mock_update_sources, sample_messages_data, setup_sources
-):
+) -> None:
     atomic_saved_messages_and_update_sources(sample_messages_data)
 
     assert ParserRawMessage.objects.count() == 3

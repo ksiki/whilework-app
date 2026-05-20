@@ -126,3 +126,8 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "static"
+
+
+# Source app config
+
+SOURCE_MAX_ERRORS = 5

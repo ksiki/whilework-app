@@ -53,6 +53,6 @@ def atomic_saved_messages_and_update_sources(messages_data: list) -> None:
         ParserRawMessage.objects.bulk_create(
             parse_result.instances, batch_size=100, ignore_conflicts=True
         )
-        sources_services.update_last_message_ids(
+        sources_services.update_last_parsed_message_ids(
             new_last_ids=parse_result.latest_parsed_ids
         )
