@@ -1,0 +1,2 @@
+class PlatformNotExistError(ValueError):
+    pass
