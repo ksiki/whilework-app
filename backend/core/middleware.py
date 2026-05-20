@@ -16,7 +16,7 @@ class InternalSystemAuthMiddleware:
         self.get_response = get_response
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
-        if request.path.startwith("/api/internal/"):
+        if request.path.startswith("/api/internal/"):
             provided_secret = request.headers.get("X-Internal-Secret")
             expected_secret = getattr(settings, "INTERNAL_API_SECRET", None)
 
