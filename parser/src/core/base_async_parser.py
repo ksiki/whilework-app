@@ -11,9 +11,6 @@ import httpx
 
 from .schemas import RawMessageBatch, RawMessageCreate
 
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
 logger = logging.getLogger(__name__)
 
 BASE_DIR: Final[Path] = Path(__file__).resolve().parent.parent
@@ -45,6 +42,9 @@ class BaseAsyncParser(ABC):
                 all_phrases.extend(phrases)
 
         self.stop_markers = re.compile(r"(?i)\b(" + r"|".join(all_phrases) + r")\b")
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}({self.color!r}, {self.mileage!r})"
 
     @abstractmethod
     @asynccontextmanager
