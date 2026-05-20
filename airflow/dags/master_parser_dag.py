@@ -4,9 +4,9 @@ from datetime import datetime, timedelta
 from typing import Any
 
 from airflow.decorators import dag, task
+from airflow.models import Variable
 from airflow.providers.docker.operators.docker import DockerOperator
 from airflow.providers.http.hooks.http import HttpHook
-from docker.types import Mount
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -39,26 +39,40 @@ def master_parser_dag() -> None:
         endpoint = "/api/internal/v1"
 
         response = http_hook.run(endpoint=f"{endpoint}/sources/", headers=headers)
-
         records = response.json()
+
         if not records:
             logger.warning("Sources list is empty")
             return []
 
+        tg_session = Variable.get("TG_MAIN_SESSION")
+        tg_api_id = Variable.get("TG_API_ID")
+        tg_api_hash = Variable.get("TG_API_HASH")
+        discord_token = Variable.get("DISCORD_BOT_TOKEN")
+
         env_list = []
         for row in records:
-            source_id = str(row.get("id"))
-            platform = str(row.get("platform"))
-            identifier = str(row.get("identifier"))
+            platform = str(row.get("platform")).lower()
             last_parsed_id = row.get("last_parsed_id")
-            last_parsed_id = str(last_parsed_id) if last_parsed_id is not None else None
+
+            if platform == "telegram":
+                auth_creds = tg_session
+            elif platform == "discord":
+                auth_creds = discord_token
+            else:
+                auth_creds = ""
 
             env_list.append(
                 {
-                    "SOURCE_ID": source_id,
+                    "SOURCE_ID": str(row.get("id")),
                     "PLATFORM": platform,
-                    "IDENTIFIER": identifier,
-                    "LAST_PARSED_ID": last_parsed_id,
+                    "IDENTIFIER": str(row.get("identifier")),
+                    "LAST_PARSED_ID": str(last_parsed_id)
+                    if last_parsed_id is not None
+                    else "",
+                    "AUTH_CREDENTIALS": auth_creds,
+                    "TG_API_ID": tg_api_id,
+                    "TG_API_HASH": tg_api_hash,
                     "INTERNAL_API_TOKEN": internal_token,
                     "INTERNAL_BACKEND_URL": f"{http_hook.host}{endpoint}",
                 }
@@ -76,9 +90,6 @@ def master_parser_dag() -> None:
         network_mode="backend_network",
         docker_url="unix://var/run/docker.sock",
         pool="docker_parsers_pool",
-        mounts=[
-            Mount(source="/opt/whilework/sessions", target="/app/sessions", type="bind")
-        ],
     ).expand(environment=active_sources_envs)
 
     active_sources_envs >> run_parsers
