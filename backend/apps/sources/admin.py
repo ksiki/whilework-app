@@ -14,6 +14,7 @@ class SourceAdmin(admin.ModelAdmin):
         "is_active",
         "error_status_badge",
         "last_parsed_id_short",
+        "created_at",
     )
 
     list_editable = ("is_active",)
@@ -40,7 +41,7 @@ class SourceAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (
-            "Common Info",
+            "Main Info",
             {
                 "fields": (
                     "is_active",
@@ -58,14 +59,14 @@ class SourceAdmin(admin.ModelAdmin):
             },
         ),
         (
-            "Error Monitor",
+            "Errors Monitor",
             {
                 "fields": ("error_count_display", "last_error_message"),
                 "classes": ("collapse",),
             },
         ),
         (
-            "System Info",
+            "System Data",
             {
                 "fields": ("id", "created_at", "updated_at"),
                 "classes": ("collapse",),
