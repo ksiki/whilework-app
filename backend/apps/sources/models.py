@@ -5,11 +5,17 @@ from django.db import models
 
 
 class Source(TimeStampedMixin):
+    class PlatformChoices(models.TextChoices):
+        DISCORD = "DIS", "Discord"
+        TELEGRAM = "TLG", "Telegram"
+
     id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False, verbose_name="Source ID"
     )
 
-    platform = models.CharField(max_length=50, verbose_name="Platform name")
+    platform = models.CharField(
+        max_length=3, choices=PlatformChoices.choices, verbose_name="Platform name"
+    )
     name = models.CharField(max_length=255, verbose_name="Source name")
     identifier = models.CharField(
         max_length=255,
