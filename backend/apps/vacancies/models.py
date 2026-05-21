@@ -129,7 +129,7 @@ class Contact(TimeStampedMixin):
         ordering = ["created_at"]
 
     def __str__(self):
-        return f"iser id: {self.user_id}, created at: {self.created_at}, is read: {self.is_read}"
+        return f"{self.get_platform_display()}: {self.details}"
 
 
 class Vacancy(TimeStampedMixin):
