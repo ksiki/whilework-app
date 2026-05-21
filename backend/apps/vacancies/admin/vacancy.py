@@ -17,11 +17,11 @@ class VacancyAdmin(ShortIdAdminMixin, admin.ModelAdmin):
         "salary_display",
         "grade",
         "status_badge",
+        "status",
         "published_at",
     )
 
     list_display_links = ("short_id", "title")
-
     list_editable = ("status",)
 
     list_filter = (
