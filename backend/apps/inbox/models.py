@@ -18,7 +18,7 @@ class ParserRawMessage(TimeStampedMixin):
         primary_key=True,
         default=uuid.uuid4,
         editable=False,
-        verbose_name="Raw Vacancy ID",
+        verbose_name="Raw Message ID",
     )
     source = models.ForeignKey(
         "sources.Source",
@@ -40,7 +40,7 @@ class ParserRawMessage(TimeStampedMixin):
     )
 
     class Meta:
-        db_table = "vacancies_parsed_raw_message"
+        db_table = "inbox_parsed_raw_message"
         verbose_name = "Parsed Raw Message"
         verbose_name_plural = "Parsed Raw Messages"
         ordering = ["created_at"]
