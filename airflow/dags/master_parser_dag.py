@@ -32,7 +32,7 @@ DEFAULT_ARGS = {
 def master_parser_dag() -> None:
     @task(multiple_outputs=False)
     def fetch_active_sources() -> list[dict[str, Any]]:
-        internal_token = os.getenv("INTERNAL_API_TOKEN")
+        internal_token = os.getenv("INTERNAL_API_SECRET")
         headers = {"X-Internal-Secret": internal_token}
 
         http_hook = HttpHook(http_conn_id="internal_api", method="GET")
