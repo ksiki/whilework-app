@@ -5,7 +5,7 @@ from django.db import models
 
 
 class Source(TimeStampedMixin):
-    class PlatformChoices(models.TextChoices):
+    class Platform(models.TextChoices):
         DISCORD = "DIS", "Discord"
         TELEGRAM = "TLG", "Telegram"
 
@@ -14,7 +14,7 @@ class Source(TimeStampedMixin):
     )
 
     platform = models.CharField(
-        max_length=3, choices=PlatformChoices.choices, verbose_name="Platform name"
+        max_length=3, choices=Platform.choices, verbose_name="Platform name"
     )
     name = models.CharField(max_length=255, verbose_name="Source name")
     identifier = models.CharField(
