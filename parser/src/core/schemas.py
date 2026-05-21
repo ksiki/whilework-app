@@ -18,6 +18,7 @@ class RawMessageCreate(BaseModel):
         description="The original text of the message remains unchanged",
     )
     metadata: Dict[str, Any] = Field(
+        ...,
         default_factory=dict,
         description="For example: date, author",
     )
