@@ -131,3 +131,6 @@ STATIC_ROOT = BASE_DIR / "static"
 # Source app config
 
 SOURCE_MAX_ERRORS = 5
+
+# Env variables
+INTERNAL_API_SECRET = os.getenv("INTERNAL_API_SECRET")
