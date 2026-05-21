@@ -1,19 +1,15 @@
 import json
 import logging
-import os
 import re
 from abc import ABC, abstractmethod
-from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import AsyncGenerator, Final
 
 import httpx
 
+from .config import config
 from .schemas import RawMessageBatch, RawMessageCreate
 
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
 logger = logging.getLogger(__name__)
 
 BASE_DIR: Final[Path] = Path(__file__).resolve().parent.parent
@@ -21,18 +17,14 @@ ASSETS: Final[Path] = BASE_DIR / "assets"
 
 
 class BaseAsyncParser(ABC):
-    def __init__(
-        self, source_id: int, target_url: str, last_parsed_id: str | None
-    ) -> None:
-        self.source_id = source_id
-        self.target_url = target_url
-        self.last_parsed_id = last_parsed_id
+    def __init__(self) -> None:
+        self.source_id = config.source_id
+        self.identifier = config.identifier
+        self.last_parsed_id = config.last_parsed_id
+        self.backend_url = config.internal_backend_url
 
-        self.internal_secret = os.getenv("INTERNAL_SECRET_TOKEN")
-        self.backend_url = os.getenv("BACKEND_INTERNAL_API_URL")
-        self.backend_url = f"{self.backend_url}/{self.source_id}"
         self.headers = {
-            "X-Internal-Secret": self.internal_secret,
+            "X-Internal-Secret": config.internal_api_token,
             "Content-Type": "application/json",
         }
 
@@ -46,8 +38,10 @@ class BaseAsyncParser(ABC):
 
         self.stop_markers = re.compile(r"(?i)\b(" + r"|".join(all_phrases) + r")\b")
 
+    def __repr__(self):
+        return f"{self.__class__.__name__}({self.source_id!r}, {self.platform!r}, {self.identifier!r})"
+
     @abstractmethod
-    @asynccontextmanager
     async def fetch_messages(self) -> AsyncGenerator[RawMessageCreate, None]:
         """
         The method must "yield" RawMessageCreate objects starting with self.last_parsed_id
@@ -66,73 +60,61 @@ class BaseAsyncParser(ABC):
 
         return True
 
-    async def send_to_backend(self, batch: RawMessageBatch) -> None:
-        async with httpx.AsyncClient() as client:
-            api_url = f"{self.backend_url}/load-vacancies/"
-            try:
-                response = await client.post(
-                    api_url,
-                    content=batch.model_dump_json(),
-                    headers=self.headers,
-                    timeout=10.0,
-                )
-                response.raise_for_status()
-                logger.info(
-                    f"Successfully sent batch of {len(batch.messages)} messages for source {self.source_id}"
-                )
-            except httpx.HTTPStatusError as e:
-                logger.error(
-                    f"HTTP error sending to backend: {e.response.status_code} - {e.response.text}"
-                )
-                raise
-            except httpx.RequestError as e:
-                logger.error(f"Network error sending to backend: {str(e)}")
-                raise
+    async def send_to_backend(
+        self, client: httpx.AsyncClient, batch: RawMessageBatch
+    ) -> None:
+        api_url = f"{self.backend_url}/inbox/batch/"
+        response = await client.post(
+            api_url,
+            content=batch.model_dump_json(),
+            headers=self.headers,
+            timeout=10.0,
+        )
+        response.raise_for_status()
+        logger.info(
+            f"Successfully sent batch of {len(batch.messages)} messages for source {self.source_id}"
+        )
 
-    async def report_error(self, error_msg: str) -> None:
+    async def report_error(self, client: httpx.AsyncClient, error_msg: str) -> None:
         """
         Sending an error to the backend
         """
-        error_url = f"{self.backend_url}/report-error/"
+        error_url = f"{self.backend_url}/sources/{self.source_id}/report-error/"
         payload = {"error_message": error_msg}
 
-        async with httpx.AsyncClient() as client:
-            try:
-                await client.post(
-                    error_url, json=payload, headers=self.headers, timeout=5.0
-                )
-                logger.info(f"Reported error for source {self.source_id} to backend.")
-            except Exception as e:
-                logger.error(f"Failed to report error to backend: {str(e)}")
-                raise
+        await client.post(error_url, json=payload, headers=self.headers, timeout=5.0)
+        logger.info(f"Reported error for source {self.source_id} to backend.")
 
     async def run(self) -> None:
         logger.info(
-            f"Starting parser for source_id={self.source_id}, target={self.target_url}"
+            f"Starting parser for source_id={self.source_id}, target={self.identifier}"
         )
 
         current_batch = []
         batch_limit = 100
 
-        try:
-            async for raw_message in self.fetch_messages():
-                if not self.apply_screening(raw_message.raw_text):
-                    continue
+        async with httpx.AsyncClient(timeout=10.0, headers=self.headers) as http_client:
+            try:
+                async for raw_message in self.fetch_messages():
+                    if not self.apply_screening(raw_message.raw_text):
+                        continue
 
-                current_batch.append(raw_message)
+                    current_batch.append(raw_message)
 
-                if len(current_batch) >= batch_limit:
+                    if len(current_batch) >= batch_limit:
+                        batch_model = RawMessageBatch(messages=current_batch)
+                        await self.send_to_backend(
+                            client=http_client, batch=batch_model
+                        )
+                        current_batch.clear()
+
+                if current_batch:
                     batch_model = RawMessageBatch(messages=current_batch)
-                    await self.send_to_backend(batch_model)
-                    current_batch = []
+                    await self.send_to_backend(client=http_client, batch=batch_model)
+            except Exception as e:
+                logger.error(f"Fatal error in parser run loop: {str(e)}")
 
-            if current_batch:
-                batch_model = RawMessageBatch(messages=current_batch)
-                await self.send_to_backend(batch_model)
-        except Exception as e:
-            error_text = f"{type(e).__name__}: {str(e)}"
-            logger.error(f"Fatal error in parser run loop: {str(e)}")
+                error_text = f"{type(e).__name__}: {str(e)}"
+                await self.report_error(client=http_client, error_msg=error_text)
 
-            await self.report_error(error_text)
-
-            raise
+                raise
