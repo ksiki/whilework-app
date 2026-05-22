@@ -42,6 +42,8 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: ${RMQ_USER:-guest}
       RABBITMQ_DEFAULT_PASS: ${RMQ_PASSWORD:-guest}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
     networks:
       - backend_network
 
@@ -131,5 +133,6 @@ networks:
 
 volumes:
   postgres_data:
+  rabbitmq_data:
   static:
   media:
