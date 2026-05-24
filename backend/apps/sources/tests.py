@@ -2,6 +2,7 @@ import uuid
 from types import MappingProxyType
 
 import pytest
+from tests.factories import SOURCE_1_ID, SOURCE_3_ID
 
 from .models import Source
 from .services import (
@@ -10,36 +11,7 @@ from .services import (
     update_last_parsed_message_ids,
 )
 
-SOURCE_1_ID = uuid.UUID("11111111-1111-4111-a111-111111111111")
-SOURCE_2_ID = uuid.UUID("22222222-2222-4222-a222-222222222222")
-SOURCE_3_ID = uuid.UUID("33333333-3333-4333-a333-333333333333")
 NOT_EXISTS_ID = uuid.UUID("44444444-4444-4444-a444-444444444444")
-
-
-@pytest.fixture
-def setup_sources(db) -> None:
-    Source.objects.create(
-        id=SOURCE_1_ID,
-        name="Telegram Python Jobs",
-        platform="telegram",
-        identifier="tg_python_jobs",
-        error_count=3,
-        is_active=True,
-    )
-    Source.objects.create(
-        id=SOURCE_2_ID,
-        name="Discord Data Eng",
-        platform="discord",
-        identifier="discord_data_eng",
-        is_active=False,
-    )
-    Source.objects.create(
-        id=SOURCE_3_ID,
-        name="Discord Data Jobs",
-        platform="discord",
-        identifier="discord_data_jobs",
-        is_active=True,
-    )
 
 
 @pytest.mark.django_db
