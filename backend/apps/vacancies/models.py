@@ -238,13 +238,13 @@ class Vacancy(TimeStampedMixin):
 
     @property
     def salary_string(self) -> str | None:
-        int_max = "Integer.MAX_VALUE"
-        int_min = "Integer.MIN_VALUE"
+        max = "infinity"
+        min = "-infinity"
 
         if self.salary_min is None and self.salary_max is None:
             return None
 
-        return f"{self.salary_min or int_min} - {self.salary_max or int_max} {self.currency}"
+        return f"{self.salary_min or min} - {self.salary_max or max} {self.currency}"
 
     @property
     def meta_string(self) -> str | None:
@@ -255,8 +255,8 @@ class Vacancy(TimeStampedMixin):
 
         if self.location_id:
             loc_parts = [
-                self.location.country,
                 self.location.region,
+                self.location.country,
                 self.location.city,
             ]
             parts.extend([p for p in loc_parts if p])
