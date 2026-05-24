@@ -4,25 +4,13 @@ from core.models import SluggedMixin, TimeStampedMixin
 from django.db import models
 
 
-class Company(TimeStampedMixin):
+class Company(SluggedMixin, TimeStampedMixin):
     """
     It is provided separately for the analysis and dedublication of records.
     """
 
     id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False, verbose_name="Company ID"
-    )
-    name = models.CharField(
-        max_length=255,
-        verbose_name="Company name",
-        help_text="Original name, fetched from vacancy",
-    )
-    normalized_name = models.CharField(
-        max_length=255,
-        unique=True,
-        db_index=True,
-        verbose_name="Normalized name",
-        help_text="Lower case without spaces. Using for search duplicates",
     )
 
     class Meta:
@@ -33,12 +21,6 @@ class Company(TimeStampedMixin):
 
     def __str__(self):
         return self.name
-
-    def save(self, *args, **kwargs):
-        if self.name and not self.normalized_name:
-            self.normalized_name = self.name.lower().replace(" ", "")
-
-        super().save(*args, **kwargs)
 
 
 class Location(TimeStampedMixin):
@@ -201,7 +183,8 @@ class Vacancy(TimeStampedMixin):
         null=True,
         blank=True,
         db_index=True,
-        verbose_name="Salary from (Converted in USD)",
+        verbose_name="Salary from (USD)",
+        help_text="Converted in USD for search by salary min",
     )
     salary_max = models.IntegerField(null=True, blank=True, verbose_name="Salary up to")
     currency = models.CharField(max_length=3, null=True, blank=True)
@@ -252,3 +235,30 @@ class Vacancy(TimeStampedMixin):
 
     def __str__(self):
         return f"{self.title} ({self.get_status_display()})"
+
+    @property
+    def salary_string(self) -> str | None:
+        int_max = "Integer.MAX_VALUE"
+        int_min = "Integer.MIN_VALUE"
+
+        if self.salary_min is None and self.salary_max is None:
+            return None
+
+        return f"{self.salary_min or int_min} - {self.salary_max or int_max} {self.currency}"
+
+    @property
+    def meta_string(self) -> str | None:
+        parts = []
+
+        if self.company:
+            parts.append(self.company.name)
+
+        if self.location_id:
+            loc_parts = [
+                self.location.country,
+                self.location.region,
+                self.location.city,
+            ]
+            parts.extend([p for p in loc_parts if p])
+
+        return " | ".join(parts) if parts else None
