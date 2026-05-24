@@ -1,18 +1,14 @@
-import uuid
 from typing import Any
 from unittest.mock import patch
 
 import pytest
+from tests.factories import SOURCE_1_ID, SOURCE_2_ID
 
 from apps.inbox.models import ParserRawMessage
 from apps.inbox.services import (
     _create_object_list_and_search_last_ids,
     atomic_saved_messages_and_update_sources,
 )
-from apps.sources.models import Source
-
-SOURCE_1_ID = uuid.UUID("11111111-1111-4111-a111-111111111111")
-SOURCE_2_ID = uuid.UUID("22222222-2222-4222-a222-222222222222")
 
 
 @pytest.fixture
@@ -37,24 +33,6 @@ def sample_messages_data() -> list[dict[str, Any]]:
             "metadata": {"views": 150},
         },
     ]
-
-
-@pytest.fixture
-def setup_sources(db) -> None:
-    Source.objects.create(
-        id=SOURCE_1_ID,
-        name="Telegram Python Jobs",
-        platform="telegram",
-        identifier="tg_python_jobs",
-        is_active=True,
-    )
-    Source.objects.create(
-        id=SOURCE_2_ID,
-        name="Discord Data Eng",
-        platform="discord",
-        identifier="discord_data_eng",
-        is_active=True,
-    )
 
 
 def test_create_object_list_and_search_last_ids(sample_messages_data) -> None:
