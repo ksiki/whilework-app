@@ -8,7 +8,9 @@ from .models import Vacancy
 logger = logging.getLogger(__name__)
 
 
-def _apply_q_object(queryset: QuerySet, q_obj: Q, mode: str | None) -> QuerySet:
+def _apply_q_object(
+    queryset: QuerySet["Vacancy"], q_obj: Q, mode: str | None
+) -> QuerySet["Vacancy"]:
     if mode == "exclude":
         return queryset.exclude(q_obj)
     return queryset.filter(q_obj)
@@ -60,7 +62,7 @@ def apply_geo_filters(
     if not db_field:
         return queryset
 
-    return _apply_q_object(queryset, Q(**{db_field: items}), mode)
+    return _apply_q_object(queryset=queryset, q_obj=Q(**{db_field: items}), mode=mode)
 
 
 def apply_source_filters(
@@ -79,7 +81,7 @@ def apply_source_filters(
         else:
             q_obj |= Q(sources__platform=item)
 
-    return _apply_q_object(queryset, q_obj, mode)
+    return _apply_q_object(queryset=queryset, q_obj=q_obj, mode=mode)
 
 
 def apply_dynamic_filter(
@@ -94,16 +96,16 @@ def apply_dynamic_filter(
 
     if logic == "or":
         q_obj = Q(**{f"{db_field}__in": items})
-        queryset = _apply_q_object(queryset, q_obj, mode)
+        queryset = _apply_q_object(queryset=queryset, q_obj=q_obj, mode=mode)
     elif logic == "and":
         for item in items:
             q_obj = Q(**{db_field: item})
-            queryset = _apply_q_object(queryset, q_obj, mode)
+            queryset = _apply_q_object(queryset=queryset, q_obj=q_obj, mode=mode)
 
     return queryset
 
 
 def apply_sorting(queryset: QuerySet["Vacancy"], sort_by: str) -> QuerySet["Vacancy"]:
     if sort_by == "salary":
-        return queryset.order_by("-salary_from", "-published_at")
+        return queryset.order_by("-usd_salary_min", "-published_at")
     return queryset.order_by("-published_at")
