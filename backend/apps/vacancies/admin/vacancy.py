@@ -45,7 +45,7 @@ class VacancyAdmin(ShortIdAdminMixin, admin.ModelAdmin):
         "company",
         "location",
         "source",
-        "autor",
+        "author",
         "skills",
         "contact",
     )
@@ -108,7 +108,7 @@ class VacancyAdmin(ShortIdAdminMixin, admin.ModelAdmin):
             {
                 "fields": (
                     "id",
-                    ("source", "autor"),
+                    ("source", "author"),
                     "content_hash",
                     ("published_at", "created_at", "updated_at"),
                 ),
