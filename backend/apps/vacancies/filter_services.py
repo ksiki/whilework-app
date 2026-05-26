@@ -17,7 +17,7 @@ def _apply_q_object(
             return queryset.filter(q_obj).distinct()
         case "exclude":
             return queryset.exclude(q_obj).distinct()
-    raise UnknownModeError(f"Uncnown mode '{mode}'")
+    raise UnknownModeError(f"Unknown mode '{mode}'")
 
 
 def apply_text_search(
@@ -54,7 +54,7 @@ def apply_geo_filters(
         return queryset
 
     category = geo_data.get("category")
-    mode = geo_data.get("mode")
+    mode = geo_data.get("mode", "choose")
 
     geo_field_map = {
         "regions": "location__region__in",
@@ -76,7 +76,7 @@ def apply_source_filters(
     if not items:
         return queryset
 
-    mode = sources_data.get("mode")
+    mode = sources_data.get("mode", "choose")
 
     q_obj = Q()
     for item in items:
@@ -117,4 +117,4 @@ def apply_sorting(
             return queryset.order_by("-published_at", "-usd_salary_min")
         case "salary":
             return queryset.order_by("-usd_salary_min", "-published_at")
-    raise UnknownSortingError(f"Uncnown sorting '{sort_by}'")
+    raise UnknownSortingError(f"Unknown sorting '{sort_by}'")
