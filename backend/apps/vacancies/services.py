@@ -64,4 +64,4 @@ def apply_filters(
     sort_by = params.get("sort", "date")
     queryset = filter_services.apply_sorting(queryset, sort_by)
 
-    return queryset.distinct()
+    return queryset
