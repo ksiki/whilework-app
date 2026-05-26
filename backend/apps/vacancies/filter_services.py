@@ -3,17 +3,21 @@ from typing import Any
 
 from django.db.models import Q, QuerySet
 
+from .exceptions import UnknownModeError, UnknownSortingError
 from .models import Vacancy
 
 logger = logging.getLogger(__name__)
 
 
 def _apply_q_object(
-    queryset: QuerySet["Vacancy"], q_obj: Q, mode: str | None
+    queryset: QuerySet["Vacancy"], q_obj: Q, mode: str = "choose"
 ) -> QuerySet["Vacancy"]:
-    if mode == "exclude":
-        return queryset.exclude(q_obj)
-    return queryset.filter(q_obj)
+    match mode:
+        case "choose":
+            return queryset.filter(q_obj).distinct()
+        case "exclude":
+            return queryset.exclude(q_obj).distinct()
+    raise UnknownModeError(f"Uncnown mode '{mode}'")
 
 
 def apply_text_search(
@@ -34,7 +38,7 @@ def apply_text_search(
         search_filter |= Q(skills__name__icontains=query)
 
     try:
-        return queryset.filter(search_filter)
+        return _apply_q_object(queryset=queryset, q_obj=search_filter)
     except Exception as e:
         logger.error(
             f"Search filtering error. Query: {query}; Fields: {fields}; E: {e}"
@@ -76,10 +80,10 @@ def apply_source_filters(
 
     q_obj = Q()
     for item in items:
-        if item == "whilework":
+        if item.lower() == "whilework":
             q_obj |= Q(author__isnull=False)
         else:
-            q_obj |= Q(sources__platform=item)
+            q_obj |= Q(source__platform=item)
 
     return _apply_q_object(queryset=queryset, q_obj=q_obj, mode=mode)
 
@@ -105,7 +109,12 @@ def apply_dynamic_filter(
     return queryset
 
 
-def apply_sorting(queryset: QuerySet["Vacancy"], sort_by: str) -> QuerySet["Vacancy"]:
-    if sort_by == "salary":
-        return queryset.order_by("-usd_salary_min", "-published_at")
-    return queryset.order_by("-published_at")
+def apply_sorting(
+    queryset: QuerySet["Vacancy"], sort_by: str = "date"
+) -> QuerySet["Vacancy"]:
+    match sort_by:
+        case "date":
+            return queryset.order_by("-published_at", "-usd_salary_min")
+        case "salary":
+            return queryset.order_by("-usd_salary_min", "-published_at")
+    raise UnknownSortingError(f"Uncnown sorting '{sort_by}'")
