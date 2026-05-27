@@ -5,7 +5,7 @@ from typing import Final
 import factory
 from apps.accounts.models import User
 from apps.sources.models import Source
-from apps.vacancies.models import Company, Contact, Location, Skill, Vacancy, WorkFormat
+from apps.vacancies.models import Company, Contact, Location, Skill, Vacancy
 from django.contrib.auth.hashers import make_password
 from factory.django import DjangoModelFactory
 from faker import Faker
@@ -53,14 +53,6 @@ class SkillFactory(DjangoModelFactory):
     slug = factory.Sequence(lambda n: f"skill-{n}")
 
 
-class WorkFormatFactory(DjangoModelFactory):
-    class Meta:
-        model = WorkFormat
-
-    name = factory.Faker("work-format")
-    slug = factory.Sequence(lambda n: f"work-format-{n}")
-
-
 class LocationFactory(DjangoModelFactory):
     class Meta:
         model = Location
@@ -94,13 +86,6 @@ class VacancyFactory(DjangoModelFactory):
             return
         for skill in extracted:
             self.skills.add(skill)
-
-    @factory.post_generation
-    def work_formats(self, create, extracted, **kwargs):
-        if not create or not extracted:
-            return
-        for work_format in extracted:
-            self.work_formats.add(work_format)
 
 
 class UserFactory(DjangoModelFactory):

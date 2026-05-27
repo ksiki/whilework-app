@@ -81,22 +81,6 @@ class Skill(TimeStampedMixin, SluggedMixin):
         return self.name
 
 
-class WorkFormat(TimeStampedMixin, SluggedMixin):
-    """
-    It is provided separately for the filtering vacancies by work format and dedublication of records
-    """
-
-    id = models.AutoField(primary_key=True, editable=False)
-
-    class Meta:
-        db_table = "vacancies_work_format"
-        verbose_name = "Work Format"
-        verbose_name_plural = "Work Formats"
-
-    def __str__(self):
-        return self.name
-
-
 class Contact(TimeStampedMixin):
     """
     It is taken out for convenience. Because a vacancy can have from 1 to 3 contacts
@@ -145,6 +129,11 @@ class Vacancy(TimeStampedMixin):
         FULL_TIME = "FT", "Full day"
         PART_TIME = "PT", "Part-time employment"
         PROJECT = "PRJ", "Project"
+
+    class WorkFormat(models.TextChoices):
+        REMOTE = "RMT", "Remote"
+        OFFICE = "OFF", "Office"
+        HYBRID = "HBR", "Hybrid"
 
     class EnglishLevel(models.TextChoices):
         NOT_REQUIRED = "NS", "Not specified"
@@ -220,8 +209,12 @@ class Vacancy(TimeStampedMixin):
     )
 
     skills = models.ManyToManyField("Skill", related_name="vacancies", blank=True)
-    work_formats = models.ManyToManyField(
-        "WorkFormat", related_name="vacancies", blank=True
+    work_format = models.CharField(
+        max_length=3,
+        choices=WorkFormat.choices,
+        null=True,
+        blank=True,
+        db_index=True,
     )
 
     views_count = models.IntegerField(default=0)
@@ -232,7 +225,7 @@ class Vacancy(TimeStampedMixin):
     content_hash = models.CharField(
         max_length=64, unique=True, verbose_name="Hash of the content"
     )
-    published_at = models.DateField(db_index=True, verbose_name="Published date")
+    published_at = models.DateTimeField(db_index=True, verbose_name="Published date")
 
     class Meta:
         db_table = "vacancies_vacancy"
