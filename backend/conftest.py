@@ -7,7 +7,6 @@ from tests.factories import (
     SourceFactory,
     UserFactory,
     VacancyFactory,
-    WorkFormatFactory,
 )
 
 register(SourceFactory)
@@ -16,5 +15,4 @@ register(LocationFactory)
 register(VacancyFactory)
 register(UserFactory)
 register(ContactFactory)
-register(WorkFormatFactory)
 register(SkillFactory)
