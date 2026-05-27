@@ -28,5 +28,3 @@ RUN chmod +x /app/scripts/entrypoint.sh
 USER django_user
 
 EXPOSE 8000
-
-ENTRYPOINT ["/app/scripts/entrypoint.sh"]
