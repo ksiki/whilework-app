@@ -47,9 +47,9 @@ def setup_vacancies(db, create_environments) -> None:
         usd_salary_min=1700,
         status=Vacancy.Status.ACTIVE,
         grade=Vacancy.Grade.JUNIOR,
-        employment_type="FT",
+        employment_type=Vacancy.EmploymentType.FULL_TIME,
         skills=[INT_1_ID, INT_3_ID, INT_4_ID],
-        work_formats=[INT_1_ID, INT_3_ID],
+        work_format=Vacancy.WorkFormat.REMOTE,
         content_hash="hash_1",
         published_at=date(year=2026, month=5, day=24),
     )
@@ -63,9 +63,9 @@ def setup_vacancies(db, create_environments) -> None:
         usd_salary_min=1500,
         status=Vacancy.Status.ACTIVE,
         grade=Vacancy.Grade.MIDDLE,
-        employment_type="PT",
+        employment_type=Vacancy.EmploymentType.PART_TIME,
         skills=[INT_2_ID, INT_5_ID],
-        work_formats=[INT_3_ID],
+        work_format=Vacancy.WorkFormat.REMOTE,
         content_hash="hash_2",
         published_at=date(year=2026, month=5, day=20),
     )
@@ -79,9 +79,9 @@ def setup_vacancies(db, create_environments) -> None:
         usd_salary_min=2000,
         status=Vacancy.Status.ACTIVE,
         grade=Vacancy.Grade.SENIOR,
-        employment_type="FT",
+        employment_type=Vacancy.EmploymentType.FULL_TIME,
         skills=[INT_2_ID, INT_3_ID, INT_5_ID],
-        work_formats=[INT_2_ID],
+        work_format=Vacancy.WorkFormat.OFFICE,
         content_hash="hash_3",
         published_at=date(year=2026, month=5, day=23),
     )
@@ -95,9 +95,9 @@ def setup_vacancies(db, create_environments) -> None:
         usd_salary_min=2500,
         status=Vacancy.Status.ACTIVE,
         grade=Vacancy.Grade.SENIOR,
-        employment_type="FT",
+        employment_type=Vacancy.EmploymentType.FULL_TIME,
         skills=[INT_1_ID, INT_3_ID, INT_4_ID],
-        work_formats=[INT_1_ID, INT_2_ID, INT_3_ID],
+        work_format=Vacancy.WorkFormat.HYBRID,
         content_hash="hash_4",
         published_at=date(year=2026, month=5, day=23),
     )
@@ -111,9 +111,9 @@ def setup_vacancies(db, create_environments) -> None:
         usd_salary_min=1500,
         status=Vacancy.Status.ACTIVE,
         grade=Vacancy.Grade.MIDDLE,
-        employment_type="FT",
+        employment_type=Vacancy.EmploymentType.FULL_TIME,
         skills=[INT_1_ID, INT_2_ID, INT_3_ID, INT_4_ID],
-        work_formats=[INT_1_ID, INT_2_ID],
+        work_format=Vacancy.WorkFormat.HYBRID,
         content_hash="hash_5",
         published_at=date(year=2026, month=5, day=21),
     )
@@ -165,8 +165,9 @@ def test_apply_sorting(
 ) -> None:
     queryset = filter_services.apply_sorting(queryset=vacancies, sort_by=sort_by)
 
-    for i, expectation_id in enumerate(expectation):
-        assert expectation_id == queryset[i].id
+    assert len(expectation) == len(queryset)
+    for expectation_id, sorting_vacancy in zip(expectation, queryset):
+        assert expectation_id == sorting_vacancy.id
 
 
 @pytest.mark.parametrize(

@@ -13,7 +13,6 @@ from tests.factories import (
     SkillFactory,
     SourceFactory,
     UserFactory,
-    WorkFormatFactory,
 )
 
 
@@ -33,13 +32,6 @@ def setup_skills(db) -> None:
     SkillFactory(id=INT_3_ID, name="SQL", slug="sql")
     SkillFactory(id=INT_4_ID, name="Airflow", slug="airflow")
     SkillFactory(id=INT_5_ID, name="Redis", slug="redis")
-
-
-@pytest.fixture
-def setup_work_formats(db) -> None:
-    WorkFormatFactory(id=INT_1_ID, name="Remote", slug="remote")
-    WorkFormatFactory(id=INT_2_ID, name="Office", slug="office")
-    WorkFormatFactory(id=INT_3_ID, name="Hybrid", slug="hybrid")
 
 
 @pytest.fixture
@@ -67,6 +59,5 @@ def create_environments(
     setup_sources,
     setup_users,
     setup_contacts,
-    setup_work_formats,
 ) -> None:
     pass

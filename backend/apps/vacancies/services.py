@@ -7,8 +7,10 @@ from django.core.paginator import Page, Paginator
 from django.db.models import QuerySet
 from django.utils import timezone
 
+from apps.sources import services as sources_services
+
 from . import filter_services
-from .models import Vacancy
+from .models import Location, Skill, Vacancy
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +37,7 @@ def get_page(
 FILTER_MAPPING: Final[MappingProxyType] = MappingProxyType(
     {
         "grade": "grade",
-        "work_format": "work_formats__slug",
+        "work_format": "work_format",
         "work_type": "employment_type",
         "skills": "skills__slug",
     }
@@ -64,4 +66,33 @@ def apply_filters(
     sort_by = params.get("sort", "date")
     queryset = filter_services.apply_sorting(queryset, sort_by)
 
-    return queryset
+    return queryset.prefetch_related("skills")
+
+
+def make_context_for_vacancies_list() -> dict[str, Any]:
+    skills = list(Skill.objects.values("slug", "name"))
+
+    regions = list(
+        Location.objects.exclude(region="").values_list("region", flat=True).distinct()
+    )
+    countries = list(
+        Location.objects.exclude(country="")
+        .values_list("country", flat=True)
+        .distinct()
+    )
+    cities = list(
+        Location.objects.exclude(city="").values_list("city", flat=True).distinct()
+    )
+
+    return {
+        "sources": sources_services.get_source_types(),
+        "work_formats": Vacancy.WorkFormat.choices,
+        "grades": Vacancy.Grade.choices,
+        "employment_types": Vacancy.EmploymentType.choices,
+        "skills": skills,
+        "geo": {
+            "regions": regions,
+            "countries": countries,
+            "cities": cities,
+        },
+    }

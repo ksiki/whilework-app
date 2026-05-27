@@ -2,14 +2,12 @@ from .company import CompanyAdmin
 from .contact import ContactAdmin
 from .location import LocationAdmin
 from .skill import SkillAdmin
-from .vacancy import Vacancy
-from .work_format import WorkFormatAdmin
+from .vacancy import VacancyAdmin
 
 __all__ = [
     "CompanyAdmin",
     "ContactAdmin",
     "LocationAdmin",
     "SkillAdmin",
-    "WorkFormatAdmin",
-    "Vacancy",
+    "VacancyAdmin",
 ]

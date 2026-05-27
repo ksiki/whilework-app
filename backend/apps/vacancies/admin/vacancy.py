@@ -50,8 +50,6 @@ class VacancyAdmin(ShortIdAdminMixin, admin.ModelAdmin):
         "contact",
     )
 
-    filter_horizontal = ("work_formats",)
-
     readonly_fields = (
         "id",
         "content_hash",
@@ -77,9 +75,8 @@ class VacancyAdmin(ShortIdAdminMixin, admin.ModelAdmin):
             "Requirements and Conditions",
             {
                 "fields": (
-                    ("grade", "employment_type", "english_level"),
+                    ("grade", "work_format", "employment_type", "english_level"),
                     "skills",
-                    "work_formats",
                 )
             },
         ),
