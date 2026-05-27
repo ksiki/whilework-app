@@ -129,11 +129,11 @@ def test_apply_filters_orchestration(mock_filter_services, mocker):
     mock_filter_services["text"].assert_called_once_with(mock_qs, params["search"])
     mock_filter_services["geo"].assert_called_once_with(mock_qs, params["geo"])
     mock_filter_services["source"].assert_called_once_with(mock_qs, params["sources"])
-
     mock_filter_services["dynamic"].assert_called_once_with(
         mock_qs, dynamic_field, params[dynamic_key]
     )
-
     mock_filter_services["sorting"].assert_called_once_with(mock_qs, "salary")
 
-    assert result == mock_qs
+    mock_qs.prefetch_related.assert_called_once_with("skills")
+
+    assert result == mock_qs.prefetch_related.return_value
