@@ -12,6 +12,10 @@ def get_active_sources() -> list[Source]:
     return Source.objects.filter(is_active=True)
 
 
+def get_source_types() -> list[str]:
+    return Source.Platform.choices
+
+
 def update_last_parsed_message_ids(
     new_last_ids: MappingProxyType[uuid.UUID, Any],
 ) -> None:
