@@ -1,7 +1,9 @@
+import json
 import logging
 import os
+from collections import defaultdict
 from datetime import datetime, timedelta
-from typing import Any
+from typing import Any, Final
 
 from airflow.decorators import dag, task
 from airflow.models import Variable
@@ -13,7 +15,23 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-DEFAULT_ARGS = {
+
+def _get_auth_data(platform: str) -> dict[str, Any]:
+    if platform == "telegram":
+        return {
+            "TG_SESSION": Variable.get("TG_MAIN_SESSION", default_var=""),
+            "TG_API_ID": Variable.get("TG_API_ID", default_var=""),
+            "TG_API_HASH": Variable.get("TG_API_HASH", default_var=""),
+        }
+    elif platform == "discord":
+        return {
+            "DISCORD_TOKEN": Variable.get("DISCORD_BOT_TOKEN", default_var=""),
+        }
+
+    return {}
+
+
+DEFAULT_ARGS: Final[dict[str, Any]] = {
     "owner": "whilework",
     "depends_on_past": False,
     "retries": 2,
@@ -45,36 +63,30 @@ def master_parser_dag() -> None:
             logger.warning("Sources list is empty")
             return []
 
-        tg_session = Variable.get("TG_MAIN_SESSION")
-        tg_api_id = Variable.get("TG_API_ID")
-        tg_api_hash = Variable.get("TG_API_HASH")
-        discord_token = Variable.get("DISCORD_BOT_TOKEN")
-
-        env_list = []
+        grouped_sources = defaultdict(list)
         for row in records:
             platform = str(row.get("platform")).lower()
-            last_parsed_id = row.get("last_parsed_id")
 
-            if platform == "telegram":
-                auth_creds = tg_session
-            elif platform == "discord":
-                auth_creds = discord_token
-            else:
-                auth_creds = ""
-
-            env_list.append(
+            grouped_sources[platform].append(
                 {
                     "SOURCE_ID": str(row.get("id")),
-                    "PLATFORM": platform,
                     "IDENTIFIER": str(row.get("identifier")),
-                    "LAST_PARSED_ID": str(last_parsed_id)
-                    if last_parsed_id is not None
-                    else "",
-                    "AUTH_CREDENTIALS": auth_creds,
-                    "TG_API_ID": tg_api_id,
-                    "TG_API_HASH": tg_api_hash,
+                    "TOPIC_ID": str(row.get("topic_id")),
+                    "LAST_PARSED_ID": str(row.get("last_parsed_id") or ""),
+                }
+            )
+
+        env_list = []
+        for platform, sources in grouped_sources.items():
+            if not sources:
+                continue
+            env_list.append(
+                {
+                    "PLATFORM": platform,
+                    "SOURCES_BATCH": json.dumps(sources),
+                    "AUTH_DATA": json.dumps(_get_auth_data(platform=platform)),
                     "INTERNAL_API_TOKEN": internal_token,
-                    "INTERNAL_BACKEND_URL": f"{http_hook.host}{endpoint}",
+                    "INTERNAL_BACKEND_URL": f"{http_hook.base_url}{endpoint}",
                 }
             )
 
@@ -87,12 +99,11 @@ def master_parser_dag() -> None:
         image="whilework-app-parser:latest",
         api_version="auto",
         auto_remove="success",
-        network_mode="backend_network",
+        network_mode="whilework-app_backend_network",
         docker_url="unix://var/run/docker.sock",
         pool="docker_parsers_pool",
+        mount_tmp_dir=False,
     ).expand(environment=active_sources_envs)
-
-    active_sources_envs >> run_parsers
 
 
 dag_instance = master_parser_dag()
