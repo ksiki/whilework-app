@@ -31,6 +31,9 @@ def mock_filter_services(mocker):
         "source": mocker.patch(
             f"{base_path}.apply_source_filters", side_effect=lambda qs, *args: qs
         ),
+        "experience": mocker.patch(
+            f"{base_path}.apply_experience_filters", side_effect=lambda qs, *args: qs
+        ),
         "dynamic": mocker.patch(
             f"{base_path}.apply_dynamic_filter", side_effect=lambda qs, *args: qs
         ),
@@ -118,6 +121,7 @@ def test_apply_filters_orchestration(mock_filter_services, mocker):
         "search": {"query": "python"},
         "geo": {"city": "Prague"},
         "sources": {"platform": "TG"},
+        "experience_from": "3",
         "sort": "salary",
         list(services.FILTER_MAPPING.keys())[0]: {"some": "data"},
     }
@@ -129,6 +133,9 @@ def test_apply_filters_orchestration(mock_filter_services, mocker):
     mock_filter_services["text"].assert_called_once_with(mock_qs, params["search"])
     mock_filter_services["geo"].assert_called_once_with(mock_qs, params["geo"])
     mock_filter_services["source"].assert_called_once_with(mock_qs, params["sources"])
+
+    mock_filter_services["experience"].assert_called_once_with(mock_qs, 3)
+
     mock_filter_services["dynamic"].assert_called_once_with(
         mock_qs, dynamic_field, params[dynamic_key]
     )
@@ -137,3 +144,15 @@ def test_apply_filters_orchestration(mock_filter_services, mocker):
     mock_qs.prefetch_related.assert_called_once_with("skills")
 
     assert result == mock_qs.prefetch_related.return_value
+
+
+@pytest.mark.django_db
+def test_apply_filters_empty_experience(mock_filter_services):
+    mock_qs = MagicMock()
+    params = {
+        "experience_from": "",
+    }
+
+    services.apply_filters(queryset=mock_qs, params=params)
+
+    mock_filter_services["experience"].assert_called_once_with(mock_qs, 0)
