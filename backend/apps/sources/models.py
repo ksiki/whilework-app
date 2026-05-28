@@ -22,6 +22,12 @@ class Source(TimeStampedMixin):
         unique=True,
         help_text="Channel ID, link, or snowflake in Discord (which is what the parser is looking for)",
     )
+    topic_id = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text="Auxiliary id for parsing, for example, branch id in TG groups",
+    )
 
     is_active = models.BooleanField(default=True)
 

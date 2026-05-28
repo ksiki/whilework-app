@@ -10,11 +10,15 @@ from rest_framework.response import Response
 from apps.sources import services
 from apps.sources.models import Source
 
+from .serializers import SourceSerializer
+
 
 class SourceAPIViewSet(viewsets.ReadOnlyModelViewSet):
     """
     POST /api/internal/v1/sources/<uuid:source_id>/report-error/
     """
+
+    serializer_class = SourceSerializer
 
     def get_queryset(self) -> list[Source]:
         return services.get_active_sources()

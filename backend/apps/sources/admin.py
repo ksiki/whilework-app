@@ -11,6 +11,7 @@ class SourceAdmin(admin.ModelAdmin):
         "name",
         "platform",
         "identifier",
+        "topic_id",
         "is_active",
         "error_status_badge",
         "last_parsed_id_short",
@@ -48,6 +49,7 @@ class SourceAdmin(admin.ModelAdmin):
                     "platform",
                     "name",
                     "identifier",
+                    "topic_id",
                 )
             },
         ),
