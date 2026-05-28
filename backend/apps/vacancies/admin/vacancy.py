@@ -16,6 +16,7 @@ class VacancyAdmin(ShortIdAdminMixin, admin.ModelAdmin):
         "company_link",
         "salary_display",
         "grade",
+        "experience_from",
         "status_badge",
         "status",
         "published_at",
@@ -27,6 +28,7 @@ class VacancyAdmin(ShortIdAdminMixin, admin.ModelAdmin):
     list_filter = (
         "status",
         "grade",
+        "experience_from",
         "employment_type",
         "english_level",
         "published_at",
@@ -75,7 +77,13 @@ class VacancyAdmin(ShortIdAdminMixin, admin.ModelAdmin):
             "Requirements and Conditions",
             {
                 "fields": (
-                    ("grade", "work_format", "employment_type", "english_level"),
+                    (
+                        "grade",
+                        "experience_from",
+                        "work_format",
+                        "employment_type",
+                        "english_level",
+                    ),
                     "skills",
                 )
             },

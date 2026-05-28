@@ -197,6 +197,9 @@ class Vacancy(TimeStampedMixin):
     grade = models.CharField(
         max_length=3, choices=Grade.choices, null=True, blank=True, db_index=True
     )
+    experience_from = models.IntegerField(
+        null=True, blank=True, db_index=True, verbose_name="Experience from"
+    )
     employment_type = models.CharField(
         max_length=3,
         choices=EmploymentType.choices,

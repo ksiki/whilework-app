@@ -47,6 +47,7 @@ def setup_vacancies(db, create_environments) -> None:
         usd_salary_min=1700,
         status=Vacancy.Status.ACTIVE,
         grade=Vacancy.Grade.JUNIOR,
+        experience_from=None,
         employment_type=Vacancy.EmploymentType.FULL_TIME,
         skills=[INT_1_ID, INT_3_ID, INT_4_ID],
         work_format=Vacancy.WorkFormat.REMOTE,
@@ -63,6 +64,7 @@ def setup_vacancies(db, create_environments) -> None:
         usd_salary_min=1500,
         status=Vacancy.Status.ACTIVE,
         grade=Vacancy.Grade.MIDDLE,
+        experience_from=1,
         employment_type=Vacancy.EmploymentType.PART_TIME,
         skills=[INT_2_ID, INT_5_ID],
         work_format=Vacancy.WorkFormat.REMOTE,
@@ -79,6 +81,7 @@ def setup_vacancies(db, create_environments) -> None:
         usd_salary_min=2000,
         status=Vacancy.Status.ACTIVE,
         grade=Vacancy.Grade.SENIOR,
+        experience_from=3,
         employment_type=Vacancy.EmploymentType.FULL_TIME,
         skills=[INT_2_ID, INT_3_ID, INT_5_ID],
         work_format=Vacancy.WorkFormat.OFFICE,
@@ -95,6 +98,7 @@ def setup_vacancies(db, create_environments) -> None:
         usd_salary_min=2500,
         status=Vacancy.Status.ACTIVE,
         grade=Vacancy.Grade.SENIOR,
+        experience_from=4,
         employment_type=Vacancy.EmploymentType.FULL_TIME,
         skills=[INT_1_ID, INT_3_ID, INT_4_ID],
         work_format=Vacancy.WorkFormat.HYBRID,
@@ -111,6 +115,7 @@ def setup_vacancies(db, create_environments) -> None:
         usd_salary_min=1500,
         status=Vacancy.Status.ACTIVE,
         grade=Vacancy.Grade.MIDDLE,
+        experience_from=0,
         employment_type=Vacancy.EmploymentType.FULL_TIME,
         skills=[INT_1_ID, INT_2_ID, INT_3_ID, INT_4_ID],
         work_format=Vacancy.WorkFormat.HYBRID,
@@ -330,6 +335,36 @@ def test_apply_source_filters(
 ) -> None:
     queryset = filter_services.apply_source_filters(
         queryset=vacancies, sources_data=sources_data
+    )
+
+    assert_queryset_match_expectation(queryset=queryset, expectation=expectation)
+
+
+@pytest.mark.parametrize(
+    "experience, expectation",
+    [
+        (
+            0,
+            (UUID_1_ID, UUID_2_ID, UUID_3_ID, UUID_4_ID, UUID_5_ID),
+        ),
+        (
+            3,
+            (UUID_3_ID, UUID_4_ID),
+        ),
+        (
+            None,
+            (UUID_1_ID, UUID_2_ID, UUID_3_ID, UUID_4_ID, UUID_5_ID),
+        ),
+    ],
+)
+@pytest.mark.django_db
+def test_apply_experience_filters(
+    experience: int,
+    expectation: tuple[uuid.UUID],
+    vacancies: QuerySet["Vacancy"],
+) -> None:
+    queryset = filter_services.apply_experience_filters(
+        queryset=vacancies, experience_from=experience
     )
 
     assert_queryset_match_expectation(queryset=queryset, expectation=expectation)

@@ -56,6 +56,10 @@ def apply_filters(
     sources_data = params.get("sources", {})
     queryset = filter_services.apply_source_filters(queryset, sources_data)
 
+    raw_experience = params.get("experience_from")
+    experience_from = int(raw_experience) if raw_experience else 0
+    queryset = filter_services.apply_experience_filters(queryset, experience_from)
+
     for filter_key, db_field in FILTER_MAPPING.items():
         filter_data = params.get(filter_key, {})
         if filter_data:
