@@ -71,8 +71,8 @@ def master_parser_dag() -> None:
                 {
                     "SOURCE_ID": str(row.get("id")),
                     "IDENTIFIER": str(row.get("identifier")),
-                    "TOPIC_ID": str(row.get("topic_id")),
                     "LAST_PARSED_ID": str(row.get("last_parsed_id") or ""),
+                    "TOPICS": row.get("topics", []),
                 }
             )
 
@@ -80,6 +80,7 @@ def master_parser_dag() -> None:
         for platform, sources in grouped_sources.items():
             if not sources:
                 continue
+
             env_list.append(
                 {
                     "PLATFORM": platform,
@@ -104,6 +105,8 @@ def master_parser_dag() -> None:
         pool="docker_parsers_pool",
         mount_tmp_dir=False,
     ).expand(environment=active_sources_envs)
+
+    active_sources_envs >> run_parsers
 
 
 dag_instance = master_parser_dag()
