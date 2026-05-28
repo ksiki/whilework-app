@@ -88,6 +88,16 @@ def apply_source_filters(
     return _apply_q_object(queryset=queryset, q_obj=q_obj, mode=mode)
 
 
+def apply_experience_filters(
+    queryset: QuerySet["Vacancy"], experience_from: int
+) -> QuerySet["Vacancy"]:
+    if not experience_from:
+        return queryset
+
+    q_obj = Q(experience_from__gte=experience_from)
+    return _apply_q_object(queryset=queryset, q_obj=q_obj)
+
+
 def apply_dynamic_filter(
     queryset: QuerySet["Vacancy"], db_field: str, filter_data: dict[str, Any]
 ) -> QuerySet["Vacancy"]:
