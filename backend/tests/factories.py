@@ -4,7 +4,7 @@ from typing import Final
 
 import factory
 from apps.accounts.models import User
-from apps.sources.models import Source
+from apps.sources.models import Source, SourceTopic
 from apps.vacancies.models import Company, Contact, Location, Skill, Vacancy
 from django.contrib.auth.hashers import make_password
 from factory.django import DjangoModelFactory
@@ -33,6 +33,17 @@ class SourceFactory(DjangoModelFactory):
     name = factory.Faker("company")
     platform = "TLG"
     identifier = factory.Sequence(lambda n: f"tg_source_{n}")
+    is_active = True
+    error_count = 0
+
+
+class SourceTopicFactory(DjangoModelFactory):
+    class Meta:
+        model = SourceTopic
+
+    source = factory.SubFactory(SourceFactory)
+    topic_id = factory.Sequence(lambda n: str(10000 + n))
+
     is_active = True
     error_count = 0
 
