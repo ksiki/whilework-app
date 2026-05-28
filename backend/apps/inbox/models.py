@@ -26,6 +26,13 @@ class ParserRawMessage(TimeStampedMixin):
         related_name="parsed_raw_messages",
         verbose_name="Source ID",
     )
+    topic = models.ForeignKey(
+        "sources.SourceTopic",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="raw_messages",
+    )
 
     external_msg_id = models.CharField(
         max_length=255,

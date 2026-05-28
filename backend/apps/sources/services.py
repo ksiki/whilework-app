@@ -4,12 +4,21 @@ from typing import Any
 
 from core.settings import SOURCE_MAX_ERRORS
 from django.db import transaction
+from django.db.models import Prefetch
 
-from .models import Source
+from .models import Source, SourceTopic
 
 
 def get_active_sources() -> list[Source]:
-    return Source.objects.filter(is_active=True)
+    active_topics_prefetch = Prefetch(
+        "topics",
+        queryset=SourceTopic.objects.filter(is_active=True),
+        to_attr="active_topics",
+    )
+
+    return list(
+        Source.objects.filter(is_active=True).prefetch_related(active_topics_prefetch)
+    )
 
 
 def get_source_types() -> list[str]:
@@ -17,25 +26,38 @@ def get_source_types() -> list[str]:
 
 
 def update_last_parsed_message_ids(
-    new_last_ids: MappingProxyType[uuid.UUID, Any],
+    source_updates: MappingProxyType[uuid.UUID, Any]
+    | dict[uuid.UUID, Any]
+    | None = None,
+    topic_updates: MappingProxyType[uuid.UUID, Any]
+    | dict[uuid.UUID, Any]
+    | None = None,
 ) -> None:
-    for src_id, last_id in new_last_ids.items():
-        Source.objects.filter(id=src_id).update(last_parsed_id=last_id)
+    if source_updates:
+        for src_id, last_id in source_updates.items():
+            Source.objects.filter(id=src_id).update(last_parsed_id=last_id)
+
+    if topic_updates:
+        for topic_id, last_id in topic_updates.items():
+            SourceTopic.objects.filter(id=topic_id).update(last_parsed_id=last_id)
 
 
-def register_source_error(source_id: uuid.UUID, error_message: str) -> None:
+def register_parsing_error(
+    target_id: uuid.UUID, error_message: str, is_topic: bool = False
+) -> None:
     """
     Logs a parsing error for the source.
     If the number of errors exceeds the limit, the source is deactivated.
     """
+    model = SourceTopic if is_topic else Source
 
     with transaction.atomic():
-        source = Source.objects.select_for_update().get(id=source_id)
+        target = model.objects.select_for_update().get(id=target_id)
 
-        source.error_count += 1
-        source.last_error_message = error_message
+        target.error_count += 1
+        target.last_error_message = error_message
 
-        if source.error_count >= SOURCE_MAX_ERRORS:
-            source.is_active = False
+        if target.error_count >= SOURCE_MAX_ERRORS:
+            target.is_active = False
 
-        source.save(update_fields=["error_count", "last_error_message", "is_active"])
+        target.save(update_fields=["error_count", "last_error_message", "is_active"])

@@ -1,5 +1,6 @@
 import json
 
+from core.admin_mixins import ShortIdAdminMixin
 from django.contrib import admin
 from django.db.models import QuerySet
 from django.template.defaultfilters import truncatechars
@@ -10,12 +11,13 @@ from .models import ParserRawMessage
 
 
 @admin.register(ParserRawMessage)
-class ParserRawMessageAdmin(admin.ModelAdmin):
-    list_select_related = ("source",)
+class ParserRawMessageAdmin(ShortIdAdminMixin, admin.ModelAdmin):
+    list_select_related = ("source", "topic")
 
     list_display = (
         "short_id",
         "source_link",
+        "topic_link",
         "external_msg_id",
         "status_badge",
         "short_raw_text",
@@ -30,7 +32,7 @@ class ParserRawMessageAdmin(admin.ModelAdmin):
     list_per_page = 50
     show_full_result_count = False
 
-    autocomplete_fields = ("source",)
+    autocomplete_fields = ("source", "topic")
 
     readonly_fields = (
         "id",
@@ -42,7 +44,7 @@ class ParserRawMessageAdmin(admin.ModelAdmin):
     fieldsets = (
         (
             "Status",
-            {"fields": ("status", "id", "source", "external_msg_id")},
+            {"fields": ("status", "id", "source", "topic", "external_msg_id")},
         ),
         (
             "Raw Data",
@@ -63,22 +65,28 @@ class ParserRawMessageAdmin(admin.ModelAdmin):
 
     actions = ["mark_as_pending"]
 
-    @admin.display(description="Источник", ordering="source__name")
+    @admin.display(description="Source", ordering="source__name")
     def source_link(self, obj: ParserRawMessage):
-        """
-        Converts a ForeignKey into a clickable link to the source card
-        """
         if not obj.source_id:
             return "—"
         url = reverse("admin:sources_source_change", args=[obj.source_id])
         return format_html('<a href="{}">{}</a>', url, obj.source.name)
 
-    @admin.display(description="Метаданные (JSON)")
+    @admin.display(description="Topic", ordering="topic__name")
+    def topic_link(self, obj: ParserRawMessage):
+        if not obj.topic_id:
+            return "— (Main Feed)"
+        url = reverse("admin:sources_sourcetopic_change", args=[obj.topic_id])
+        display_name = (
+            obj.topic.name if obj.topic.name else f"Topic {obj.topic.topic_id}"
+        )
+        return format_html('<a href="{}">{}</a>', url, display_name)
+
+    @admin.display(description="Metadata")
     def pretty_metadata(self, obj: ParserRawMessage):
         """
         Format metadata
         """
-
         if not obj.metadata:
             return "Empty"
 
@@ -95,10 +103,6 @@ class ParserRawMessageAdmin(admin.ModelAdmin):
     @admin.display(description="Message Text")
     def short_raw_text(self, obj: ParserRawMessage):
         return truncatechars(obj.raw_text, 60)
-
-    @admin.display(description="ID")
-    def short_id(self, obj: ParserRawMessage):
-        return str(obj.id)[:8]
 
     @admin.display(description="Status", ordering="status")
     def status_badge(self, obj: ParserRawMessage):
