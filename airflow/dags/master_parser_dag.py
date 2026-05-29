@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from typing import Any, Final
 
 from airflow.decorators import dag, task
+from airflow.hooks.base import BaseHook
 from airflow.models import Variable
 from airflow.providers.docker.operators.docker import DockerOperator
 from airflow.providers.http.hooks.http import HttpHook
@@ -17,15 +18,19 @@ logger = logging.getLogger(__name__)
 
 
 def _get_auth_data(platform: str) -> dict[str, Any]:
+    conn = BaseHook.get_connection("proxy")
+    proxy = f"{conn.scheme}://{conn.login}:{conn.password}@{conn.host}:{conn.port}"
+
     if platform == "telegram":
         return {
-            "TG_SESSION": Variable.get("TG_MAIN_SESSION", default_var=""),
-            "TG_API_ID": Variable.get("TG_API_ID", default_var=""),
-            "TG_API_HASH": Variable.get("TG_API_HASH", default_var=""),
+            "TG_SESSION": Variable.get("TG_MAIN_SESSION"),
+            "TG_API_ID": Variable.get("TG_API_ID"),
+            "TG_API_HASH": Variable.get("TG_API_HASH"),
+            "PROXY": proxy,
         }
     elif platform == "discord":
         return {
-            "DISCORD_TOKEN": Variable.get("DISCORD_BOT_TOKEN", default_var=""),
+            "DISCORD_TOKEN": Variable.get("DISCORD_BOT_TOKEN"),
         }
 
     return {}
