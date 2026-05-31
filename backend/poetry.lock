@@ -337,19 +337,25 @@ argon2 = ["argon2-cffi (>=23.1.0)"]
 bcrypt = ["bcrypt (>=4.1.1)"]
 
 [[package]]
-name = "djangorestframework"
-version = "3.17.1"
-description = "Web APIs for Django, made easy."
+name = "django-ninja"
+version = "1.6.2"
+description = "Django Ninja - Fast Django REST framework"
 optional = false
-python-versions = ">=3.10"
+python-versions = ">=3.7"
 groups = ["main"]
 files = [
-    {file = "djangorestframework-3.17.1-py3-none-any.whl", hash = "sha256:c3c74dd3e83a5a3efc37b3c18d92bd6f86a6791c7b7d4dff62bb068500e76457"},
-    {file = "djangorestframework-3.17.1.tar.gz", hash = "sha256:a6def5f447fe78ff853bff1d47a3c59bf38f5434b031780b351b0c73a62db1a5"},
+    {file = "django_ninja-1.6.2-py3-none-any.whl", hash = "sha256:20095f5900bada22ea00cf1a58af50bdb285b2354c61a9d9b47d0dc89ac462d6"},
+    {file = "django_ninja-1.6.2.tar.gz", hash = "sha256:d56ae5aa4791068ef4ac9a66cfdf2fc11f507413ded35abb79c51d0d52ad6412"},
 ]
 
 [package.dependencies]
-django = ">=4.2"
+Django = ">=3.1,<6.1"
+pydantic = ">=2.0,<3.0.0"
+
+[package.extras]
+dev = ["pre-commit"]
+doc = ["markdown-include", "mkdocs", "mkdocs-material", "mkdocstrings"]
+test = ["django-stubs", "mypy (==1.7.1)", "psycopg2-binary", "pytest", "pytest-asyncio", "pytest-cov", "pytest-django", "ruff (==0.5.7)"]
 
 [[package]]
 name = "factory-boy"
@@ -1799,4 +1805,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.13"
-content-hash = "7b3aefa876e12a94dedf5280f0ff4fb9466fe8dcc219b7606e67b4c5f36691da"
+content-hash = "31fc046b7a6b683ab335a78858b18cd35e876ec8755eaff2edcee4f71200243c"
