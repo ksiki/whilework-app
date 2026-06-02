@@ -1,5 +1,4 @@
-import uuid
-
+import uuid6
 from core.models import TimeStampedMixin
 from django.db import models
 
@@ -16,7 +15,7 @@ class ParserRawMessage(TimeStampedMixin):
 
     id = models.UUIDField(
         primary_key=True,
-        default=uuid.uuid4,
+        default=uuid6.uuid7,
         editable=False,
         verbose_name="Raw Message ID",
     )
