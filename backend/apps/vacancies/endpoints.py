@@ -1,29 +1,27 @@
-import json
-
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
+from ninja import Query, Router
 
 from . import services
 from .exceptions import UnknownModeError, UnknownSortingError
+from .schemas import VacancyQuerySchema
+
+router = Router(tags=["Web Vacancies"])
 
 
-def vacancies_list(request: HttpRequest) -> HttpResponse:
+@router.get("/", include_in_schema=False)
+def vacancies_list(request: HttpRequest, query: VacancyQuerySchema = Query(...)):
     vacancies = services.get_active_vacancies()
 
-    filters_json = request.GET.get("filters")
-    if filters_json:
+    if query.filters:
         try:
-            filters = json.loads(filters_json)
-            vacancies = services.apply_filters(queryset=vacancies, params=filters)
-        except json.JSONDecodeError:
-            pass
+            vacancies = services.apply_filters(queryset=vacancies, params=query.filters)
         except (UnknownSortingError, UnknownModeError) as e:
             return HttpResponse(
-                {"error": "Unknown sorting or mode", "e": f"{e}"},
+                f"Bad Request: filtering params error e:{e}", status=400
             )
 
-    page_number = request.GET.get("page", 1)
-    page = services.get_page(queryset=vacancies, page_number=page_number)
+    page = services.get_page(queryset=vacancies, page_number=query.page)
 
     context = services.make_context_for_vacancies_list()
     context["vacancies"] = page.object_list
@@ -32,8 +30,5 @@ def vacancies_list(request: HttpRequest) -> HttpResponse:
     template = "vacancies/list.html"
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
         template = "vacancies/includes/_job_card.html"
-    return render(
-        request=request,
-        template_name=template,
-        context=context,
-    )
+
+    return render(request, template, context)

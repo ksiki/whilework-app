@@ -1,5 +1,4 @@
-import uuid
-
+import uuid6
 from core.models import SluggedMixin, TimeStampedMixin
 from django.contrib.postgres.indexes import GinIndex
 from django.db import models
@@ -11,7 +10,7 @@ class Company(SluggedMixin, TimeStampedMixin):
     """
 
     id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False, verbose_name="Company ID"
+        primary_key=True, default=uuid6.uuid7, editable=False, verbose_name="Company ID"
     )
 
     class Meta:
@@ -92,7 +91,7 @@ class Contact(TimeStampedMixin):
         EMAIL = "EM", "Email"
 
     id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False, verbose_name="Contact ID"
+        primary_key=True, default=uuid6.uuid7, editable=False, verbose_name="Contact ID"
     )
     platform = models.CharField(max_length=2, choices=Platform.choices)
     details = models.CharField(
@@ -145,7 +144,7 @@ class Vacancy(TimeStampedMixin):
         C2 = "C2", "C2 (Proficient)"
 
     id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False, verbose_name="Vacancy ID"
+        primary_key=True, default=uuid6.uuid7, editable=False, verbose_name="Vacancy ID"
     )
     source = models.ForeignKey(
         "sources.Source",
