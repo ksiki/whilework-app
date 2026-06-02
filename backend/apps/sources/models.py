@@ -1,5 +1,4 @@
-import uuid
-
+import uuid6
 from core.models import TimeStampedMixin
 from django.db import models
 
@@ -10,7 +9,7 @@ class Source(TimeStampedMixin):
         TELEGRAM = "TLG", "Telegram"
 
     id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False, verbose_name="Source ID"
+        primary_key=True, default=uuid6.uuid7, editable=False, verbose_name="Source ID"
     )
 
     platform = models.CharField(
@@ -50,7 +49,7 @@ class Source(TimeStampedMixin):
 
 
 class SourceTopic(TimeStampedMixin):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid6.uuid7, editable=False)
     source = models.ForeignKey(
         "Source",
         on_delete=models.CASCADE,
