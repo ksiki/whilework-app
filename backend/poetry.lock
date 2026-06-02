@@ -1645,6 +1645,18 @@ files = [
 markers = {main = "sys_platform == \"win32\"", dev = "platform_system == \"Windows\""}
 
 [[package]]
+name = "uuid6"
+version = "2025.0.1"
+description = "New time-based UUID formats which are suited for use as a database key"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "uuid6-2025.0.1-py3-none-any.whl", hash = "sha256:80530ce4d02a93cdf82e7122ca0da3ebbbc269790ec1cb902481fa3e9cc9ff99"},
+    {file = "uuid6-2025.0.1.tar.gz", hash = "sha256:cd0af94fa428675a44e32c5319ec5a3485225ba2179eefcf4c3f205ae30a81bd"},
+]
+
+[[package]]
 name = "whitenoise"
 version = "6.12.0"
 description = "Radically simplified static file serving for WSGI applications"
@@ -1805,4 +1817,4 @@ propcache = ">=0.2.1"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.13"
-content-hash = "31fc046b7a6b683ab335a78858b18cd35e876ec8755eaff2edcee4f71200243c"
+content-hash = "1bbeb3379c115eab6ac9fcb262ead26d0216c9a49b9a1313465bb303e705da4d"
