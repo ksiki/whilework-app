@@ -1,8 +1,9 @@
-from datetime import date
+from datetime import timedelta
 from unittest.mock import MagicMock
 
 import pytest
 from django.db.models import QuerySet
+from django.utils import timezone
 from tests.factories import (
     UUID_1_ID,
     UUID_2_ID,
@@ -45,45 +46,47 @@ def mock_filter_services(mocker):
 
 @pytest.fixture
 def setup_vacancies(db, create_environments) -> None:
+    now = timezone.now()
+
     VacancyFactory(
         id=UUID_1_ID,
         location=None,
-        published_at=date(year=2026, month=5, day=25),
+        published_at=now,
         content_hash="1",
         status=Vacancy.Status.ACTIVE,
     )
     VacancyFactory(
         id=UUID_2_ID,
         location=None,
-        published_at=date(year=2026, month=5, day=25),
+        published_at=now,
         content_hash="2",
         status=Vacancy.Status.ARCHIVED,
     )
     VacancyFactory(
         id=UUID_3_ID,
         location=None,
-        published_at=date(year=2026, month=5, day=20),
+        published_at=now - timedelta(days=5),
         content_hash="3",
         status=Vacancy.Status.CLOSED,
     )
     VacancyFactory(
         id=UUID_4_ID,
         location=None,
-        published_at=date(year=2026, month=3, day=15),
+        published_at=now - timedelta(days=70),
         content_hash="4",
         status=Vacancy.Status.ACTIVE,
     )
     VacancyFactory(
         id=UUID_5_ID,
         location=None,
-        published_at=date(year=2026, month=5, day=5),
+        published_at=now - timedelta(days=20),
         content_hash="5",
         status=Vacancy.Status.ACTIVE,
     )
     VacancyFactory(
         id=UUID_6_ID,
         location=None,
-        published_at=date(year=2026, month=5, day=5),
+        published_at=now - timedelta(days=20),
         content_hash="6",
         status=Vacancy.Status.ACTIVE,
     )
