@@ -25,6 +25,8 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG")
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_FROM_EMAIL = "noreply@while.work"
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "app"]
 
@@ -43,6 +45,7 @@ INSTALLED_APPS = [
     "apps.vacancies",
     "apps.sources",
     "apps.accounts",
+    "apps.navbar",
 ]
 
 MIDDLEWARE = [
@@ -93,6 +96,8 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
+
+AUTH_USER_MODEL = "accounts.User"
 
 AUTH_PASSWORD_VALIDATORS = [
     {
