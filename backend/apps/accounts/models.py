@@ -1,24 +1,59 @@
-import uuid
-
+import uuid6
 from core.models import TimeStampedMixin
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin,
+)
 from django.db import models
 
 
-class User(TimeStampedMixin):
-    id = models.UUIDField(
-        primary_key=True, default=uuid.uuid4, editable=False, verbose_name="User ID"
-    )
+class UserManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError("Email address is required")
 
-    email = models.EmailField()
-    password = models.CharField(max_length=128)
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("is_active", True)
+
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("The superuser must have is_staff=True.")
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("The superuser must have is_superuser=True.")
+
+        return self.create_user(email, password, **extra_fields)
+
+
+class User(AbstractBaseUser, PermissionsMixin, TimeStampedMixin):
+    id = models.UUIDField(
+        primary_key=True, default=uuid6.uuid7, editable=False, verbose_name="User ID"
+    )
+    email = models.EmailField(unique=True, db_index=True)
+
+    is_active = models.BooleanField(
+        default=False, help_text="Has the user confirmed his email"
+    )
+    is_staff = models.BooleanField(default=False)
 
     available_slots = models.IntegerField(
         default=0, help_text="The number of available slots for job placement"
     )
-
     company_blacklist = models.ManyToManyField(
         "vacancies.Company", related_name="users", blank=True
     )
+
+    objects = UserManager()
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
 
     class Meta:
         db_table = "accounts_user"
@@ -27,13 +62,13 @@ class User(TimeStampedMixin):
         ordering = ["created_at"]
 
     def __str__(self):
-        return f"{self.email}, register: {self.created_at}, available slots: {self.available_slots}"
+        return f"{self.email}, register: {self.created_at.strftime('%Y-%m-%d')}, active: {self.is_active}"
 
 
 class Notification(TimeStampedMixin):
     id = models.UUIDField(
         primary_key=True,
-        default=uuid.uuid4,
+        default=uuid6.uuid7,
         editable=False,
         verbose_name="Notification ID",
     )
@@ -63,7 +98,7 @@ class UserNotification(models.Model):
 
     id = models.UUIDField(
         primary_key=True,
-        default=uuid.uuid4,
+        default=uuid6.uuid7,
         editable=False,
         verbose_name="User Notification ID",
     )
@@ -100,7 +135,7 @@ class SlotTransaction(TimeStampedMixin):
 
     id = models.UUIDField(
         primary_key=True,
-        default=uuid.uuid4,
+        default=uuid6.uuid7,
         editable=False,
         verbose_name="Transaction ID",
     )
