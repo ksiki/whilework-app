@@ -2,6 +2,8 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from ninja import Query, Router
 
+from apps.sources import services as sources_services
+
 from . import services
 from .exceptions import UnknownModeError, UnknownSortingError
 from .schemas import VacancyQuerySchema
@@ -10,7 +12,9 @@ router = Router(tags=["Web Vacancies"])
 
 
 @router.get("/", include_in_schema=False)
-def vacancies_list(request: HttpRequest, query: VacancyQuerySchema = Query(...)):
+def vacancies_list(
+    request: HttpRequest, query: VacancyQuerySchema = Query(...)
+) -> HttpResponse:
     vacancies = services.get_active_vacancies()
 
     if query.filters:
@@ -24,6 +28,7 @@ def vacancies_list(request: HttpRequest, query: VacancyQuerySchema = Query(...))
     page = services.get_page(queryset=vacancies, page_number=query.page)
 
     context = services.make_context_for_vacancies_list()
+    context["sources"] = sources_services.get_source_types()
     context["vacancies"] = page.object_list
     context["has_next"] = page.has_next()
 

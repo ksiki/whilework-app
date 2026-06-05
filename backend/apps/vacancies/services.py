@@ -1,4 +1,5 @@
 import logging
+import uuid
 from datetime import timedelta
 from types import MappingProxyType
 from typing import Any, Final
@@ -6,8 +7,6 @@ from typing import Any, Final
 from django.core.paginator import Page, Paginator
 from django.db.models import QuerySet
 from django.utils import timezone
-
-from apps.sources import services as sources_services
 
 from . import filter_services
 from .models import Location, Skill, Vacancy
@@ -25,6 +24,10 @@ def get_active_vacancies() -> QuerySet["Vacancy"]:
         published_at__gt=period,
         status=Vacancy.Status.ACTIVE,
     )
+
+
+def vacancies_by_owner(owner_id: uuid.UUID) -> QuerySet["Vacancy"]:
+    return Vacancy.objects.filter(author=owner_id)
 
 
 def get_page(
@@ -89,7 +92,6 @@ def make_context_for_vacancies_list() -> dict[str, Any]:
     )
 
     return {
-        "sources": sources_services.get_source_types(),
         "work_formats": Vacancy.WorkFormat.choices,
         "grades": Vacancy.Grade.choices,
         "employment_types": Vacancy.EmploymentType.choices,
