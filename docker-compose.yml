@@ -53,6 +53,11 @@ services:
     restart: always
     networks:
       - backend_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   app:
     build:
@@ -67,7 +72,10 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_started
+      redis:
+        condition: service_healthy
     volumes:
+      - ./backend:/app
       - static:/app/static
       - media:/app/media
     networks:
