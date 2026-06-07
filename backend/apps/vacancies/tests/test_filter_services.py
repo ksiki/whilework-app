@@ -371,6 +371,32 @@ def test_apply_experience_filters(
 
 
 @pytest.mark.parametrize(
+    "salary, expectation",
+    [
+        (
+            2000,
+            (UUID_3_ID, UUID_4_ID),
+        ),
+        (
+            None,
+            (UUID_1_ID, UUID_2_ID, UUID_3_ID, UUID_4_ID, UUID_5_ID),
+        ),
+    ],
+)
+@pytest.mark.django_db
+def test_apply_salary_filters(
+    salary: int,
+    expectation: tuple[uuid.UUID],
+    vacancies: QuerySet["Vacancy"],
+) -> None:
+    queryset = filter_services.apply_salary_filters(
+        queryset=vacancies, salary_from=salary
+    )
+
+    assert_queryset_match_expectation(queryset=queryset, expectation=expectation)
+
+
+@pytest.mark.parametrize(
     "db_field, filter_data, expectation",
     [
         (
