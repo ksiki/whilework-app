@@ -4,6 +4,7 @@ from datetime import timedelta
 from types import MappingProxyType
 from typing import Any, Final
 
+from django.core.cache import cache
 from django.core.paginator import Page, Paginator
 from django.db.models import QuerySet
 from django.utils import timezone
@@ -15,15 +16,20 @@ logger = logging.getLogger(__name__)
 
 
 def get_active_vacancies() -> QuerySet["Vacancy"]:
-    """
-    Returns the list of active vacancies for the last 30 days
-    """
+    cache_key = "active_vacancy_ids"
+    vacancy_ids = cache.get(cache_key)
 
-    period = timezone.now() - timedelta(days=30)
-    return Vacancy.objects.filter(
-        published_at__gt=period,
-        status=Vacancy.Status.ACTIVE,
-    )
+    if vacancy_ids is None:
+        period = timezone.now() - timedelta(days=30)
+        vacancy_ids = list(
+            Vacancy.objects.filter(
+                published_at__gt=period,
+                status=Vacancy.Status.ACTIVE,
+            ).values_list("id", flat=True)
+        )
+
+        cache.set(cache_key, vacancy_ids, timeout=1800)
+    return Vacancy.objects.filter(id__in=vacancy_ids)
 
 
 def vacancies_by_owner(owner_id: uuid.UUID) -> QuerySet["Vacancy"]:
@@ -62,6 +68,10 @@ def apply_filters(
     raw_experience = params.get("experience_from")
     experience_from = int(raw_experience) if raw_experience else 0
     queryset = filter_services.apply_experience_filters(queryset, experience_from)
+
+    raw_salary_min = params.get("salary_min")
+    raw_salary_min = int(raw_salary_min) if raw_salary_min else 0
+    queryset = filter_services.apply_salary_filters(queryset, raw_salary_min)
 
     for filter_key, db_field in FILTER_MAPPING.items():
         filter_data = params.get(filter_key, {})

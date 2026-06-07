@@ -2,6 +2,7 @@ from datetime import timedelta
 from unittest.mock import MagicMock
 
 import pytest
+from django.core.cache import cache
 from django.db.models import QuerySet
 from django.utils import timezone
 from tests.factories import (
@@ -16,6 +17,11 @@ from tests.factories import (
 
 from apps.vacancies import services
 from apps.vacancies.models import Vacancy
+
+
+@pytest.fixture(autouse=True)
+def clear_cache():
+    cache.clear()
 
 
 @pytest.fixture
@@ -34,6 +40,9 @@ def mock_filter_services(mocker):
         ),
         "experience": mocker.patch(
             f"{base_path}.apply_experience_filters", side_effect=lambda qs, *args: qs
+        ),
+        "salary": mocker.patch(
+            f"{base_path}.apply_salary_filters", side_effect=lambda qs, *args: qs
         ),
         "dynamic": mocker.patch(
             f"{base_path}.apply_dynamic_filter", side_effect=lambda qs, *args: qs
@@ -99,13 +108,21 @@ def vacancies(setup_vacancies) -> QuerySet["Vacancy"]:
 
 
 @pytest.mark.django_db
-def test_get_active_vacancies(setup_vacancies) -> None:
+def test_get_active_vacancies_logic(setup_vacancies):
     queryset = services.get_active_vacancies()
 
     assert len(queryset) == 3
+    expectation = {UUID_1_ID, UUID_5_ID, UUID_6_ID}
+    assert {v.id for v in queryset} == expectation
 
-    expectation = (UUID_1_ID, UUID_5_ID, UUID_6_ID)
-    assert all(vacancy.id in expectation for vacancy in queryset)
+
+@pytest.mark.django_db
+def test_cache_is_populated(setup_vacancies):
+    services.get_active_vacancies()
+
+    cached_ids = cache.get("active_vacancy_ids")
+    assert cached_ids is not None
+    assert len(cached_ids) == 3
 
 
 @pytest.mark.django_db
@@ -125,6 +142,7 @@ def test_apply_filters_orchestration(mock_filter_services, mocker):
         "geo": {"city": "Prague"},
         "sources": {"platform": "TG"},
         "experience_from": "3",
+        "salary_min": "10000",
         "sort": "salary",
         list(services.FILTER_MAPPING.keys())[0]: {"some": "data"},
     }
@@ -136,9 +154,8 @@ def test_apply_filters_orchestration(mock_filter_services, mocker):
     mock_filter_services["text"].assert_called_once_with(mock_qs, params["search"])
     mock_filter_services["geo"].assert_called_once_with(mock_qs, params["geo"])
     mock_filter_services["source"].assert_called_once_with(mock_qs, params["sources"])
-
     mock_filter_services["experience"].assert_called_once_with(mock_qs, 3)
-
+    mock_filter_services["salary"].assert_called_once_with(mock_qs, 10000)
     mock_filter_services["dynamic"].assert_called_once_with(
         mock_qs, dynamic_field, params[dynamic_key]
     )

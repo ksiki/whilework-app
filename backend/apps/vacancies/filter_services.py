@@ -98,6 +98,16 @@ def apply_experience_filters(
     return _apply_q_object(queryset=queryset, q_obj=q_obj)
 
 
+def apply_salary_filters(
+    queryset: QuerySet["Vacancy"], salary_from: int
+) -> QuerySet["Vacancy"]:
+    if not salary_from:
+        return queryset
+
+    q_obj = Q(usd_salary_min__gte=salary_from)
+    return _apply_q_object(queryset=queryset, q_obj=q_obj)
+
+
 def apply_dynamic_filter(
     queryset: QuerySet["Vacancy"], db_field: str, filter_data: dict[str, Any]
 ) -> QuerySet["Vacancy"]:

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "apps.vacancies",
     "apps.sources",
     "apps.accounts",
+    "apps.cooperation",
     "apps.navbar",
 ]
 
@@ -57,6 +58,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "core.middleware.InternalSystemAuthMiddleware",
+    "core.middleware.RateLimitMiddleware",
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -92,6 +94,32 @@ DATABASES = {
         "PORT": os.getenv("DB_PORT", "5432"),
     }
 }
+
+
+# Cashes
+
+REDIS_URL = os.environ.get("REDIS_URL")
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"{REDIS_URL}/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "IGNORE_EXCEPTIONS": True,
+            "CONNECTION_POOL_KWARGS": {
+                "max_connections": 100,
+                "retry_on_timeout": True,
+            },
+        },
+    }
+}
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
+
+CELERY_BROKER_URL = f"{REDIS_URL}/0"
+CELERY_RESULT_BACKEND = f"{REDIS_URL}/0"
 
 
 # Password validation
