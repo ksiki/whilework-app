@@ -1,22 +1,28 @@
 import logging
 
 from django.contrib.auth import authenticate, get_user_model, login
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import IntegrityError
 from django.http import HttpRequest, HttpResponse
 from ninja import Router
 from ninja.security import django_auth
+from ninja.throttling import AnonRateThrottle, AuthRateThrottle
 
+from apps.accounts import services
 from apps.accounts.api.schemas import (
     CompanyBlacklistRequest,
     LoginRequest,
+    ReadNotificationRequest,
     RegisterRequest,
     SuccessResponse,
     VerifyOTPRequest,
 )
-from apps.accounts.services import OTPAuthService
-from apps.vacancies import services as vacancies_services
 
 logger = logging.getLogger(__name__)
-router = Router(tags=["Accounts API"])
+router = Router(
+    tags=["Accounts API"],
+    throttle=[AnonRateThrottle("50/m"), AuthRateThrottle("50/m")],
+)
 User = get_user_model()
 
 
@@ -40,7 +46,7 @@ def register_user(request: HttpRequest, payload: RegisterRequest) -> HttpRespons
             email=email, password=payload.password, is_active=False
         )
 
-    otp_sent = OTPAuthService.generate_and_send_otp(email)
+    otp_sent = services.OTPAuthService.generate_and_send_otp(email)
 
     if not otp_sent:
         logger.error(f"Failed to send OTP to {email}")
@@ -60,7 +66,7 @@ def register_user(request: HttpRequest, payload: RegisterRequest) -> HttpRespons
 def verify_otp(request: HttpRequest, payload: VerifyOTPRequest) -> HttpResponse:
     email = payload.email
 
-    is_valid = OTPAuthService.verify_otp_code(email, payload.code)
+    is_valid = services.OTPAuthService.verify_otp_code(email, payload.code)
 
     if not is_valid:
         return 400, {"error": "Invalid or outdated code.", "i18n": "invalid_code"}
@@ -93,7 +99,7 @@ def login_user(request: HttpRequest, payload: LoginRequest) -> HttpResponse:
         }
 
     if not user.is_active:
-        OTPAuthService.generate_and_send_otp(user.email)
+        services.OTPAuthService.generate_and_send_otp(user.email)
         return 400, {
             "error": "Your account has not been activated. We have sent a new OTP code to your email.",
             "i18n": "account_not_activated",
@@ -117,17 +123,34 @@ def edit_companies_blacklist(
     request: HttpRequest, payload: CompanyBlacklistRequest
 ) -> HttpResponse:
     try:
-        company = vacancies_services.get_company(slug=payload.slug)
-    except Exception:
+        message = services.edit_blacklist(
+            user=request.user, company_id=payload.company_id, delete=payload.delete
+        )
+    except IntegrityError:
         return 400, {"error": "The company was not found"}
 
-    user = request.user
-    if payload.delete:
-        user.company_blacklist.remove(company)
-    else:
-        user.company_blacklist.add(company)
+    return 200, {
+        "success": True,
+        "message": message,
+        "i18n": "",
+    }
+
+
+@router.post(
+    "/notification/read/",
+    auth=django_auth,
+    response={200: SuccessResponse, 404: dict},
+)
+def read_notification(request: HttpRequest, payload: ReadNotificationRequest):
+    try:
+        services.mark_notification_as_read(
+            user_id=request.user.id, notif_id=payload.notification_id
+        )
+    except ObjectDoesNotExist:
+        return 404, {"error": "The notification was not found"}
 
     return 200, {
-        "status": "success",
-        "message": "Company removed from blacklist",
+        "success": True,
+        "message": "The notification has been read",
+        "i18n": "",
     }

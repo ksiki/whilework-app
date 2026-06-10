@@ -1,3 +1,5 @@
+import uuid
+
 from ninja import Schema
 from pydantic import EmailStr, Field
 
@@ -24,5 +26,9 @@ class LoginRequest(Schema):
 
 
 class CompanyBlacklistRequest(Schema):
-    slug: str
+    company_id: uuid.UUID
     delete: bool
+
+
+class ReadNotificationRequest(Schema):
+    notification_id: uuid.UUID
