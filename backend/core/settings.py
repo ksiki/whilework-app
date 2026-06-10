@@ -24,11 +24,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG")
+DEBUG = True
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 DEFAULT_FROM_EMAIL = "noreply@while.work"
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "app"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "app", "whilework.tech"]
 
 
 # Application definition
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.postgres",
+    "apps.system",
     "apps.inbox",
     "apps.vacancies",
     "apps.sources",
