@@ -5,10 +5,10 @@ from tests.factories import CompanyFactory, LocationFactory, VacancyFactory
 @pytest.mark.parametrize(
     "salary_min, salary_max, expectation",
     [
-        (None, 10_000, "-infinity - 10000 USD"),
-        (5_000, None, "5000 - infinity USD"),
-        (5_000, 10_000, "5000 - 10000 USD"),
-        (None, None, None),
+        (None, 10_000, "10000 USD"),
+        (5_000, None, "5000 USD"),
+        (5_000, 10_000, "5000–10000 USD"),
+        (None, None, ""),
     ],
 )
 @pytest.mark.django_db
