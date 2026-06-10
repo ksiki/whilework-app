@@ -1,6 +1,6 @@
 import logging
 
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 from ninja import Router
 from ninja.throttling import AnonRateThrottle, AuthRateThrottle
 
@@ -10,18 +10,17 @@ from .schemas import CreateMessageRequest, SuccessResponse
 
 logger = logging.getLogger(__name__)
 
-router = Router(
-    tags=["Cooperation API"],
-    throttle=[AnonRateThrottle("3/m"), AuthRateThrottle("3/m")],
-)
+router = Router(tags=["Cooperation API"])
 
 
 @router.post(
-    "/cooperation/create/message/",
+    "/create/message/",
     response={200: SuccessResponse},
-    throttle=[AnonRateThrottle("3/m"), AuthRateThrottle("3/m")],
+    throttle=[AnonRateThrottle("15/m"), AuthRateThrottle("15/m")],
 )
-async def create_message(request: HttpRequest, payload: CreateMessageRequest):
+async def create_message(
+    request: HttpRequest, payload: CreateMessageRequest
+) -> HttpResponse:
     try:
         await services.process_cooperation_offer(payload)
 
