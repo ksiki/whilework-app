@@ -1,13 +1,17 @@
 import logging
 import secrets
+import uuid
 from typing import Any
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
+from django.utils import timezone
 
 from .models import User as UserModel
+from .models import UserNotification
 
 logger = logging.getLogger(__name__)
 User = get_user_model()
@@ -71,3 +75,24 @@ def get_profile_data(email: str) -> dict[str, Any]:
         "notifications": user_notifs,
         "blacklist": black_list,
     }
+
+
+def edit_blacklist(user: UserModel, company_id: uuid.UUID, delete: bool) -> str:
+    if delete:
+        user.company_blacklist.remove(company_id)
+        message = "Company removed from blacklist"
+    else:
+        user.company_blacklist.add(company_id)
+        message = "Company added to blacklist"
+    return message
+
+
+def mark_notification_as_read(user_id: uuid.UUID, notif_id: uuid.UUID) -> None:
+    updated_count = UserNotification.objects.filter(
+        user_id=user_id, notification_id=notif_id
+    ).update(
+        is_read=True,
+        read_at=timezone.now(),
+    )
+    if updated_count == 0:
+        raise ObjectDoesNotExist("Notification not found")
