@@ -1,9 +1,16 @@
-from unittest.mock import patch
+import uuid
+from unittest.mock import Mock, patch
 
 import pytest
 from django.core.cache import cache
+from django.core.exceptions import ObjectDoesNotExist
 
-from .services import OTPAuthService, get_profile_data
+from .services import (
+    OTPAuthService,
+    edit_blacklist,
+    get_profile_data,
+    mark_notification_as_read,
+)
 
 
 @pytest.mark.django_db
@@ -63,3 +70,55 @@ def test_get_profile_data(django_user_model):
     assert profile_data["available_slots"] == 5
     assert "notifications" in profile_data
     assert "blacklist" in profile_data
+
+
+class TestEditBlacklist:
+    def test_edit_blacklist_add(self):
+        mock_user = Mock()
+        company_id = uuid.uuid4()
+
+        result = edit_blacklist(user=mock_user, company_id=company_id, delete=False)
+
+        mock_user.company_blacklist.add.assert_called_once_with(company_id)
+        assert result == "Company added to blacklist"
+
+    def test_edit_blacklist_remove(self):
+        mock_user = Mock()
+        company_id = uuid.uuid4()
+
+        result = edit_blacklist(user=mock_user, company_id=company_id, delete=True)
+
+        mock_user.company_blacklist.remove.assert_called_once_with(company_id)
+        assert result == "Company removed from blacklist"
+
+
+class TestMarkNotificationAsRead:
+    @patch("apps.accounts.services.timezone")
+    @patch("apps.accounts.services.UserNotification")
+    def test_mark_notification_as_read_success(
+        self, mock_user_notification, mock_timezone
+    ):
+        user_id = uuid.uuid4()
+        notif_id = uuid.uuid4()
+
+        mock_filter = mock_user_notification.objects.filter
+        mock_update = mock_filter.return_value.update
+        mock_update.return_value = 1
+
+        mock_now = mock_timezone.now.return_value
+
+        mark_notification_as_read(user_id=user_id, notif_id=notif_id)
+
+        mock_filter.assert_called_once_with(user_id=user_id, notification_id=notif_id)
+        mock_update.assert_called_once_with(is_read=True, read_at=mock_now)
+
+    @patch("apps.accounts.services.UserNotification")
+    def test_mark_notification_as_read_not_found(self, mock_user_notification):
+        user_id = uuid.uuid4()
+        notif_id = uuid.uuid4()
+
+        mock_update = mock_user_notification.objects.filter.return_value.update
+        mock_update.return_value = 0
+
+        with pytest.raises(ObjectDoesNotExist, match="Notification not found"):
+            mark_notification_as_read(user_id=user_id, notif_id=notif_id)
