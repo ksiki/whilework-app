@@ -1,5 +1,6 @@
 from django.db import models
-from django.utils.text import slugify
+from slugify import slugify
+from unidecode import unidecode
 
 
 class TimeStampedMixin(models.Model):
@@ -27,5 +28,5 @@ class SluggedMixin(models.Model):
 
     def save(self, *args, **kwargs) -> None:
         if self.name and not self.slug:
-            self.slug = slugify(self.name)
+            self.slug = slugify(unidecode(self.name))
         super().save(*args, **kwargs)

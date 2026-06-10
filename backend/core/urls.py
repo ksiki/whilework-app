@@ -27,3 +27,5 @@ urlpatterns = [
     path("", web_app.urls),
     path("api/internal/v1/", internal_api.urls),
 ]
+
+handler404 = "apps.system.endpoints.global_404_handler"
