@@ -2,6 +2,8 @@ import uuid6
 from core.models import SluggedMixin, TimeStampedMixin
 from django.contrib.postgres.indexes import GinIndex
 from django.db import models
+from django.urls import reverse
+from slugify import slugify
 
 
 class Company(SluggedMixin, TimeStampedMixin):
@@ -251,13 +253,17 @@ class Vacancy(TimeStampedMixin):
 
     @property
     def salary_string(self) -> str | None:
-        max = "infinity"
-        min = "-infinity"
+        if not self.salary_min and not self.salary_max:
+            return ""
 
-        if self.salary_min is None and self.salary_max is None:
-            return None
+        currency_str = self.currency if self.currency else ""
 
-        return f"{self.salary_min or min} - {self.salary_max or max} {self.currency}"
+        if self.salary_min and self.salary_max:
+            return f"{self.salary_min}–{self.salary_max} {currency_str}"
+        elif self.salary_min:
+            return f"{self.salary_min} {currency_str}"
+        else:
+            return f"{self.salary_max} {currency_str}"
 
     @property
     def meta_string(self) -> str | None:
@@ -275,3 +281,75 @@ class Vacancy(TimeStampedMixin):
             parts.extend([p for p in loc_parts if p])
 
         return " | ".join(parts) if parts else None
+
+    @property
+    def seo_title(self) -> str:
+        company_part = f", {self.company.name}" if self.company else ""
+        base_title = f"{self.title}{company_part}"
+
+        geo_parts = []
+        if self.work_format:
+            geo_parts.append(self.get_work_format_display())
+        if self.location and getattr(self.location, "city", None):
+            geo_parts.append(self.location.city)
+
+        geo_string = f", {', '.join(geo_parts)}" if geo_parts else ""
+
+        salary = self.salary_string
+        salary_part = f" — {salary}" if salary else ""
+
+        return f"{base_title}{geo_string}{salary_part}"
+
+    @property
+    def slug(self) -> str:
+        company_name = self.company.name if self.company else ""
+        return slugify(f"{self.title} {company_name}")
+
+    def get_absolute_url(self) -> str:
+        return reverse("web:vacancy_detail", kwargs={"id": self.id, "slug": self.slug})
+
+
+class Complaint(TimeStampedMixin):
+    class Reason(models.TextChoices):
+        SCAM = "SCM", "Scam / Fraud"
+        WRONG_SALARY = "SAL", "Fake salary"
+        UNRESPONSIVE = "UNR", "Employer is unresponsive"
+        OTHER = "OTH", "Other"
+
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid6.uuid7,
+        editable=False,
+        verbose_name="Complaint ID",
+    )
+
+    vacancy = models.ForeignKey(
+        "Vacancy",
+        on_delete=models.CASCADE,
+        related_name="complaints",
+        verbose_name="Vacancy",
+    )
+    author = models.ForeignKey(
+        "accounts.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="complaints",
+        verbose_name="Complainant",
+    )
+
+    reason = models.CharField(
+        max_length=3, choices=Reason.choices, db_index=True, verbose_name="Reason"
+    )
+    details = models.TextField(null=True, blank=True, verbose_name="Details")
+
+    class Meta:
+        db_table = "vacancies_complaint"
+        verbose_name = "Complaint"
+        verbose_name_plural = "Complaints"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return (
+            f"Complaint {self.id} on {self.vacancy.title} ({self.get_reason_display()})"
+        )
