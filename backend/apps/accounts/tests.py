@@ -1,5 +1,5 @@
 import uuid
-from unittest.mock import Mock, patch
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 from django.core.cache import cache
@@ -72,23 +72,31 @@ def test_get_profile_data(django_user_model):
     assert "blacklist" in profile_data
 
 
+@pytest.mark.asyncio
 class TestEditBlacklist:
-    def test_edit_blacklist_add(self):
+    async def test_edit_blacklist_add(self):
         mock_user = Mock()
+        mock_user.company_blacklist.aadd = AsyncMock()
+
         company_id = uuid.uuid4()
 
-        result = edit_blacklist(user=mock_user, company_id=company_id, delete=False)
+        result = await edit_blacklist(
+            user=mock_user, company_id=company_id, delete=False
+        )
 
-        mock_user.company_blacklist.add.assert_called_once_with(company_id)
+        mock_user.company_blacklist.aadd.assert_awaited_once_with(company_id)
         assert result == "Company added to blacklist"
 
-    def test_edit_blacklist_remove(self):
+    async def test_edit_blacklist_remove(self):
         mock_user = Mock()
+        mock_user.company_blacklist.aremove = AsyncMock()
         company_id = uuid.uuid4()
 
-        result = edit_blacklist(user=mock_user, company_id=company_id, delete=True)
+        result = await edit_blacklist(
+            user=mock_user, company_id=company_id, delete=True
+        )
 
-        mock_user.company_blacklist.remove.assert_called_once_with(company_id)
+        mock_user.company_blacklist.aremove.assert_awaited_once_with(company_id)
         assert result == "Company removed from blacklist"
 
 

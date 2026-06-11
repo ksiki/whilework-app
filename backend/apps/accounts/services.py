@@ -77,7 +77,7 @@ def get_profile_data(email: str) -> dict[str, Any]:
     }
 
 
-async def edit_blacklist(user: UserModel, company_id: uuid.UUID, delete: bool) -> bool:
+async def edit_blacklist(user: UserModel, company_id: uuid.UUID, delete: bool) -> str:
     if delete:
         await user.company_blacklist.aremove(company_id)
         message = "Company removed from blacklist"

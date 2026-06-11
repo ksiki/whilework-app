@@ -1,3 +1,4 @@
+import uuid
 from datetime import timedelta
 from unittest.mock import MagicMock
 
@@ -29,6 +30,9 @@ def mock_filter_services(mocker):
     base_path = "apps.vacancies.filter_services"
 
     return {
+        "blacklist": mocker.patch(
+            f"{base_path}.apply_blacklist_companies", side_effect=lambda qs, *args: qs
+        ),
         "text": mocker.patch(
             f"{base_path}.apply_text_search", side_effect=lambda qs, *args: qs
         ),
@@ -137,6 +141,8 @@ def test_get_page(vacancies: QuerySet["Vacancy"]) -> None:
 @pytest.mark.django_db
 def test_apply_filters_orchestration(mock_filter_services, mocker):
     mock_qs = MagicMock()
+    mock_blacklist = [uuid.uuid4()]
+
     params = {
         "search": {"query": "python"},
         "geo": {"city": "Prague"},
@@ -149,8 +155,11 @@ def test_apply_filters_orchestration(mock_filter_services, mocker):
     dynamic_key = list(services.FILTER_MAPPING.keys())[0]
     dynamic_field = services.FILTER_MAPPING[dynamic_key]
 
-    result = services.apply_filters(queryset=mock_qs, params=params)
+    result = services.apply_filters(
+        queryset=mock_qs, blacklist_companies=mock_blacklist, params=params
+    )
 
+    mock_filter_services["blacklist"].assert_called_once_with(mock_qs, mock_blacklist)
     mock_filter_services["text"].assert_called_once_with(mock_qs, params["search"])
     mock_filter_services["geo"].assert_called_once_with(mock_qs, params["geo"])
     mock_filter_services["source"].assert_called_once_with(mock_qs, params["sources"])
@@ -173,6 +182,7 @@ def test_apply_filters_empty_experience(mock_filter_services):
         "experience_from": "",
     }
 
-    services.apply_filters(queryset=mock_qs, params=params)
+    services.apply_filters(queryset=mock_qs, blacklist_companies=None, params=params)
 
+    mock_filter_services["blacklist"].assert_called_once_with(mock_qs, None)
     mock_filter_services["experience"].assert_called_once_with(mock_qs, 0)
