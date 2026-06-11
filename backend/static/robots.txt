@@ -1,0 +1,8 @@
+User-agent: *
+
+Disallow: /admin/
+Disallow: /api/
+Disallow: /api/internal/
+Disallow: /user/
+
+Sitemap: https://whilework.tech/sitemap.xml
