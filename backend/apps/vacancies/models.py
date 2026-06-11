@@ -1,3 +1,4 @@
+import nh3
 import uuid6
 from core.models import SluggedMixin, TimeStampedMixin
 from django.contrib.postgres.indexes import GinIndex
@@ -250,6 +251,25 @@ class Vacancy(TimeStampedMixin):
 
     def __str__(self):
         return f"{self.title} ({self.get_status_display()})"
+
+    def save(self, *args, **kwargs):
+        ALLOWED_TAGS = {
+            "p",
+            "h2",
+            "h3",
+            "h4",
+            "ul",
+            "ol",
+            "li",
+            "strong",
+            "em",
+            "b",
+            "i",
+            "br",
+        }
+        if self.description:
+            self.description = nh3.clean(self.description, tags=ALLOWED_TAGS)
+        super().save(*args, **kwargs)
 
     @property
     def salary_string(self) -> str | None:
