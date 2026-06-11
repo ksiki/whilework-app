@@ -16,14 +16,26 @@ Including another URLconf
 """
 
 from django.contrib import admin
+from django.contrib.sitemaps.views import sitemap
 from django.urls import path
 
 from .api.internal import internal_api
 from .api.web import web_app
+from .sitemaps import StaticSitemap, VacancySitemap
 
+sitemaps = {
+    "vacancies": VacancySitemap,
+    "static": StaticSitemap,
+}
 urlpatterns = [
     path("admin/", admin.site.urls),
     #
+    path(
+        "sitemap.xml",
+        sitemap,
+        {"sitemaps": sitemaps},
+        name="django.contrib.sitemaps.views.sitemap",
+    ),
     path("", web_app.urls),
     path("api/internal/v1/", internal_api.urls),
 ]
