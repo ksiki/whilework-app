@@ -8,7 +8,7 @@ from django.contrib.postgres.search import TrigramSimilarity
 from django.core.cache import cache
 from django.core.paginator import Page, Paginator
 from django.db import IntegrityError
-from django.db.models import Case, Count, Q, QuerySet, When
+from django.db.models import Case, Count, F, Q, QuerySet, When
 from django.utils import timezone
 
 from apps.vacancies.api.schemas import ComplaintRequest
@@ -33,7 +33,7 @@ def get_active_vacancies() -> QuerySet["Vacancy"]:
         )
 
         cache.set(cache_key, vacancy_ids, timeout=1800)
-    return Vacancy.objects.filter(id__in=vacancy_ids)
+    return Vacancy.objects.filter(id__in=vacancy_ids).order_by("-published_at")
 
 
 def vacancies_by_owner(owner_id: uuid.UUID) -> QuerySet["Vacancy"]:
@@ -71,8 +71,12 @@ FILTER_MAPPING: Final[MappingProxyType] = MappingProxyType(
 
 
 def apply_filters(
-    queryset: QuerySet["Vacancy"], params: dict[str, Any]
+    queryset: QuerySet["Vacancy"],
+    blacklist_companies: list[uuid.UUID] | None,
+    params: dict[str, Any],
 ) -> QuerySet["Vacancy"]:
+    queryset = filter_services.apply_blacklist_companies(queryset, blacklist_companies)
+
     search_data = params.get("search", {})
     queryset = filter_services.apply_text_search(queryset, search_data)
 
@@ -186,3 +190,21 @@ def make_context_for_vacancies_list() -> dict[str, Any]:
         "vacancies_per_month": vacancies_per_month,
         "vacancies_today": vacancies_today,
     }
+
+
+def update_views(vacancy: Vacancy, increment: int = 1) -> None:
+    Vacancy.objects.filter(pk=vacancy.pk).update(
+        views_count=F("views_count") + increment
+    )
+    vacancy.refresh_from_db(fields=["views_count"])
+
+
+async def update_contacts_views(vacancy_id: uuid.UUID, increment: int = 1) -> bool:
+    try:
+        updated_count = await Vacancy.objects.filter(id=vacancy_id).aupdate(
+            contacts_opened_count=F("contacts_opened_count") + increment
+        )
+        return updated_count > 0
+    except Exception as e:
+        logger.warning(e)
+        return False
