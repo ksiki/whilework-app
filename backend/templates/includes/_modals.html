@@ -1,0 +1,17 @@
+<div class="modal-overlay" id="interactive-modal" aria-hidden="true">
+    <div class="modal-content">
+        <button class="modal-close" id="modal-close" aria-label="Закрыть">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+        <div id="modal-body"></div>
+    </div>
+</div>
+
+<template id="tpl-auth-required">
+    <h3 class="modal-title" data-i18n="modal.auth_required">Требуется авторизация</h3>
+    <p style="color: var(--text-secondary); margin-bottom: 24px; line-height: 1.5;" data-i18n="modal.auth_text">Пожалуйста, войдите в свой аккаунт или зарегистрируйтесь, чтобы совершить это действие.</p>
+    <div style="display: flex; gap: 12px;">
+        <button class="btn btn--outline w-100" onclick="document.getElementById('interactive-modal').classList.remove('is-open')" data-i18n="common.cancel">Отмена</button>
+        <a href="/login/" class="btn btn--solid w-100" style="border: none; text-decoration: none; text-align: center; display: flex; align-items: center; justify-content: center;" data-i18n="common.login">Войти</a>
+    </div>
+</template>

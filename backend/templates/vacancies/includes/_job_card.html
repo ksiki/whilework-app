@@ -1,0 +1,53 @@
+{% for vacancy in vacancies %}
+    <article class="job-card {% if vacancy.id in viewed_vacancies %} viewed {% endif %}">
+        <div class="job-card__header">
+            {% if vacancy.meta_string %}
+                <span class="job-card__meta">{{ vacancy.meta_string }}</span>
+            {% else %}
+                <span class="job-card__meta" data-i18n="common.no_information_available">Информация отсутствует</span>
+            {% endif %}
+            
+            <div class="job-card__header-right">
+                {% if vacancy.id in viewed_vacancies %}
+                    <span class="viewed-status code-text">// read</span>
+                {% endif %}
+                <span class="job-card__date">{{ vacancy.published_at }}</span>
+            </div>
+        </div>
+        
+        <div class="job-card__main">
+            <div class="job-card__title-group">
+                <h2 class="job-card__title">
+                    <a href="{{ vacancy.get_absolute_url }}" class="job-card__link">{{ vacancy.title }}</a>
+                </h2>
+                <div class="job-card__specs">
+                    {% if vacancy.grade %}
+                        <span class="spec"><span data-i18n="filters.grade">Грейд</span>: <b>{{ vacancy.get_grade_display }}</b></span>
+                    {% endif %}
+                    {% if vacancy.work_format %}
+                        <span class="spec"><span data-i18n="filters.work_format">Формат</span>: <b>{{ vacancy.get_work_format_display }}</b></span>
+                    {% endif %}
+                    {% if vacancy.english_level %}
+                        <span class="spec"><span data-i18n="filters.english">Английский</span>: <b>{{ vacancy.get_english_level_display }}</b></span>
+                    {% endif %}
+                    {% if vacancy.experience_from %}
+                        <span class="spec"><span data-i18n="filters.experience_from_year">Опыт от</span>: <b>{{ vacancy.experience_from }}</b></span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="job-card__footer">
+            <div class="job-card__tags">
+                {% for skill in vacancy.skills.all %}
+                    <span class="tag">{{ skill.name }}</span>
+                {% endfor %}
+            </div>
+            {% if vacancy.salary_string %}
+                <div class="job-card__salary">{{ vacancy.salary_string }}</div>
+            {% else %}
+                <div class="job-card__salary job-card__salary--hidden" data-i18n="filters.salary_not_specified">зп не указана</div>
+            {% endif %}
+        </div>
+    </article>
+{% endfor %}

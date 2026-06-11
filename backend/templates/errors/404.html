@@ -1,0 +1,55 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}404 — Страница не найдена | WHILEWORK{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/errors/404.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="main-container error-page">
+    <div class="error-layout">
+        
+        <div class="error-visual">
+            <div class="error-deflection-container">
+                <span class="error-digit">4</span>
+                <div class="space-orb-container">
+                    <div class="space-orb"></div>
+                    <div class="space-orbit"></div>
+                </div>
+                <span class="error-digit">4</span>
+            </div>
+        </div>
+
+        <section class="error-info-panel">
+            <h1 class="auth-title" data-i18n="error_404.title">status_code = 404</h1>
+            <p class="error-text mt-8" data-i18n="error_404.description">Увы, запрашиваемый ресурс не найден в нашей базе данных. Возможно, ссылка устарела, страница была перемещена или вакансия удалена автором.</p>
+            
+            <div class="error-actions">
+                <a href="{% url 'web:vacancies_list' %}" class="btn btn--solid btn--large">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    <span data-i18n="error_404.back_home">Вернуться на главную</span>
+                </a>
+                <button class="btn btn--outline btn--large" id="btn-error-report" data-i18n="error_404.report_bug">
+                    Сообщить о баге
+                </button>
+            </div>
+        </section>
+
+    </div>
+
+    <template id="tpl-error-toast">
+        <div id="toast-coming-soon" class="toast show" style="background-color: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-primary); position: fixed; z-index: 9999; display: flex; align-items: center; gap: 12px; padding: 16px 24px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" style="width: 20px; height: 20px; flex-shrink: 0;">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span data-i18n="error_404.toast_success">Лог ошибки успешно отправлен команде разработки!</span>
+        </div>
+    </template>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/errors/404.js' %}"></script>
+{% endblock %}

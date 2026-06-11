@@ -1,0 +1,62 @@
+<header class="header">
+    <div class="header__container">
+        <div class="header__brand">
+            <a href="{% url 'web:vacancies_list' %}" class="header__logo">WHILE(WORK)</a>
+            <div class="header__slogan" id="slogan-container">
+                <span id="slogan-text"></span><span class="cursor">|</span>
+            </div>
+        </div>
+
+        <nav class="header__nav">
+            <div class="nav-dropdown">
+                <div class="nav-link nav-dropdown__toggle">
+                    <span data-i18n="header.applicants">Соискателям</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+                <div class="nav-dropdown__menu">
+                    <a href="#" class="nav-dropdown__item toast-trigger">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        <span data-i18n="header.how_to_make_resume">Как составить резюме</span>
+                    </a>
+                    <a href="#" class="nav-dropdown__item toast-trigger">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                        <span data-i18n="header.profile_statistics">Статистика профиля</span>
+                    </a>
+                </div>
+            </div>
+            <a href="#" class="nav-link nav-link--glow toast-trigger">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+                <span data-i18n="common.articles">Статьи</span>
+            </a>
+            <a href="{% url 'web:help' %}" class="nav-link nav-link--glow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                <span data-i18n="common.faq_help">FAQ</span>
+            </a>
+        </nav>
+
+        <div class="header__actions">
+            <a href="{% url 'web:cooperation' %}" class="btn btn--outline" data-i18n="header.cooperation">Сотрудничество</a>
+            <a href="#" class="btn btn--solid toast-trigger" data-i18n="header.post_job">Разместить вакансию</a>
+            
+            <div class="header__icons">
+                <button class="icon-btn" id="lang-toggle" aria-label="Change language">RU</button>
+                <button class="icon-btn" id="theme-toggle" aria-label="Change theme">
+                    <svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
+                <a href="{% url 'web:login_register_page' %}" 
+                class="icon-btn profile-btn {% if has_unread_messages %}has-unread{% endif %}" 
+                aria-label="Profile">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-coming-soon" class="toast">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span data-i18n="common.coming_soon">Скоро на сайте</span>
+    </div>
+</header>

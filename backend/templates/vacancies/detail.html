@@ -1,0 +1,208 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}{{ vacancy.seo_title }}{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/vacancies/detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="main-container detail-page">
+    <a href="{% url 'web:vacancies_list' %}" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        <span data-i18n="common.back">Назад</span>
+    </a>
+
+    <div class="job-detail-layout">
+        
+        <div class="job-detail__main" data-id="{{ vacancy.id }}">
+            <article class="job-card job-card--detailed">
+                <div class="job-card__meta">
+                    <span class="job-meta">{{ vacancy.meta_string }}</span>
+                    <span class="job-date">{{ vacancy.published_at }}</span>
+                </div>
+                
+                <h1 class="job-title">{{ vacancy.title }}</h1>
+                
+                <div class="job-salary-large">{{ vacancy.salary_string }}</div>
+
+                <div class="job-attributes">
+                    <div class="attr-item"><span class="attr-label"><span data-i18n="filters.grade">Грейд</span>:</span> <strong>{{ vacancy.get_grade_display }}</strong></div>
+                    <div class="attr-item"><span class="attr-label"><span data-i18n="filters.work_format">Формат</span>:</span> <strong>{{ vacancy.get_work_format_display }}</strong></div>
+                    <div class="attr-item"><span class="attr-label"><span data-i18n="filters.english">Английский</span>:</span> <strong>{{ vacancy.get_english_level_display }}</strong></div>
+                    {% if vacancy.source %}
+                        <div class="attr-item"><span class="attr-label"><span data-i18n="filters.source">Источник</span>:</span> <strong>{{ vacancy.source.get_platform_display }}</strong></div>
+                    {% else %}
+                        <div class="attr-item"><span class="attr-label"><span data-i18n="filters.source">Источник</span>:</span> <strong>WhileWork</strong></div>
+                    {% endif %}
+                </div>
+
+                <div class="job-tags">
+                    {% for skill in vacancy.skills.all %}
+                        <span class="tag">{{ skill.name }}</span>
+                    {% endfor %}
+                </div>
+            </article>
+
+            <section class="job-description-panel">
+                <h2 data-i18n="detail.job_description">Описание вакансии</h2>
+                <div class="rich-text">
+                    {{ vacancy.description|safe }}
+                </div>
+            </section>
+
+            <section class="similar-jobs-panel">
+                <div class="similar-jobs-header">
+                    <h2 data-i18n="detail.similar_jobs">Похожие вакансии</h2>
+                </div>
+
+                <div class="similar-jobs-grid">
+                    {% for sim_vacancy in similar_vacancies %}
+                        <a href="{{ sim_vacancy.get_absolute_url }}" class="s-job-card" style="--delay: 1;">
+                            <div class="s-job-card__gradient-border"></div>
+                            <div class="s-job-card__content">
+                                <div class="s-job-card__meta">
+                                    <span class="s-job-company">{{ sim_vacancy.meta_string }}</span>
+                                </div>
+                                <h3 class="s-job-title">{{ sim_vacancy.title }}</h3>
+                                <div class="s-job-salary">{{ sim_vacancy.salary_string }}</div>
+                                <div class="s-job-card__tags">
+                                    {% for skill in sim_vacancy.skills.all|slice:":3" %}
+                                        <span class="tag">{{ skill.name }}</span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+
+        <aside class="job-detail__sidebar">
+            <div class="action-panel sticky-panel">
+                
+                {% if is_auth %}
+                    <button class="btn btn--solid btn--large w-100 glow-effect" 
+                        id="btn-show-contacts"
+                        data-job-id="{{ vacancy.id }}"
+                        data-is-auth="true" 
+                        data-tg="{% for c in vacancy.contact.all %}{% if c.platform == 'TG' %}{{ c.details }}{% endif %}{% endfor %}"
+                        data-email="{% for c in vacancy.contact.all %}{% if c.platform == 'EM' %}{{ c.details }}{% endif %}{% endfor %}"
+                        data-discord="{% for c in vacancy.contact.all %}{% if c.platform == 'DS' %}{{ c.details }}{% endif %}{% endfor %}"
+                        data-i18n="detail.show_contacts">
+                        Показать контакты
+                    </button>
+                {% else %}
+                    <button class="btn btn--solid btn--large w-100 glow-effect" 
+                        id="btn-show-contacts"
+                        data-job-id="{{ vacancy.id }}"
+                        data-is-auth="false"
+                        data-i18n="detail.show_contacts">
+                        Показать контакты
+                    </button>
+                {% endif %}
+
+                <hr class="panel-divider">
+
+                <ul class="action-list">
+                    <li>
+                        <button class="action-btn" id="btn-share">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                            <span data-i18n="detail.share">Поделиться</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="action-btn" id="btn-report" 
+                                data-id="{{ vacancy.id }}" 
+                                data-is-auth="{% if is_auth %}true{% else %}false{% endif %}">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                            <span data-i18n="detail.report">Пожаловаться</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="action-btn" id="btn-blacklist" 
+                                data-id="{{ vacancy.company.id|default_if_none:'' }}" 
+                                data-company-name="{{ vacancy.company.name|default:'' }}"
+                                data-is-auth="{% if is_auth %}true{% else %}false{% endif %}">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+                            <span data-i18n="detail.add_to_blacklist">В черный список</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+
+    <template id="tpl-contacts">
+        <h3 class="modal-title" data-i18n="modal.employer_contacts">Контакты работодателя</h3>
+        <div class="contacts-container" style="display: flex; flex-direction: column; gap: 12px;">
+        </div>
+    </template>
+
+    <template id="tpl-report">
+        <h3 class="modal-title" data-i18n="detail.report">Пожаловаться</h3>
+        
+        <select id="report-reason" class="modal-input" required>
+            <option value="" disabled selected data-i18n="modal.report_reason_placeholder">Выберите причину...</option>
+            <option value="SCM" data-i18n="modal.reason_scam">Мошенничество / Скам</option>
+            <option value="SAL" data-i18n="modal.reason_salary">Неверная зарплата</option>
+            <option value="UNR" data-i18n="modal.reason_unresponsive">Работодатель не отвечает</option>
+            <option value="OTH" data-i18n="modal.reason_other">Другое</option>
+        </select>
+
+        <textarea id="report-text" class="modal-input modal-textarea" rows="4" data-i18n="modal.report_placeholder" placeholder="Опишите подробности (опционально)..."></textarea>
+        
+        <button class="btn btn--solid w-100" id="submit-report" style="background-color: #EF4444; border: none;" data-i18n="modal.send_report">Отправить репорт</button>
+    </template>
+
+    <template id="tpl-report-success">
+        <div style="text-align: center; padding: 20px 0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 48px; height: 48px; margin-bottom: 16px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            <h3 class="modal-title" style="margin-bottom: 8px;" data-i18n="modal.thank_you">Спасибо!</h3>
+            <p style="color: var(--text-secondary);" data-i18n="modal.report_sent">Ваша жалоба отправлена модераторам.</p>
+        </div>
+    </template>
+
+    <template id="tpl-blacklist">
+        <h3 class="modal-title" data-i18n="detail.add_to_blacklist">В черный список</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 24px; line-height: 1.5;">
+            <span data-i18n="modal.blacklist_sure">Вы уверены? Вакансии от</span> 
+            <strong style="color: var(--text-primary);" class="blacklist-company-name"></strong> 
+            <span data-i18n="modal.blacklist_wont_show">больше не будут отображаться в вашем поиске.</span>
+        </p>
+        <div style="display: flex; gap: 12px;">
+            <button class="btn btn--outline w-100" id="cancel-blacklist" data-i18n="common.cancel">Отмена</button>
+            <button class="btn btn--solid w-100" id="confirm-blacklist" style="background-color: #111827; border: none;" data-i18n="modal.yes_hide">Да, скрыть</button>
+        </div>
+    </template>
+
+    <template id="tpl-blacklist-success">
+        <div style="text-align: center; padding: 20px 0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 48px; height: 48px; margin-bottom: 16px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            <h3 class="modal-title" style="margin-bottom: 8px;" data-i18n="modal.added">Добавлено</h3>
+            <p style="color: var(--text-secondary);" data-i18n="modal.company_hidden">Компания скрыта из вашей выдачи.</p>
+        </div>
+    </template>
+
+    <template id="tpl-action-impossible">
+        <div style="text-align: center; padding: 10px 0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 48px; height: 48px; margin-bottom: 16px;"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+            <h3 class="modal-title" style="margin-bottom: 8px;" data-i18n="modal.error">Действие невозможно</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 24px;" data-i18n="modal.company_not_specified">У данной вакансии не указана компания.</p>
+            <button class="btn btn--outline w-100" id="close-impossible-modal" data-i18n="common.close">Понятно</button>
+        </div>
+    </template>
+
+</main>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/vacancies/detail.js' %}"></script>
+{% endblock %}
+
+{% block schema_markup %}
+    {% include 'vacancies/includes/_schema_job.html' with job=job %}
+    
+    {% include 'vacancies/includes/_schema_job_breadcrumbs.html' with job=job %}
+{% endblock %}

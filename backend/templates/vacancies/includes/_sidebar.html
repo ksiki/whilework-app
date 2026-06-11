@@ -1,0 +1,159 @@
+<aside class="sidebar-filters">
+    <div class="sidebar-stats">
+        <div class="stat-item">
+            <span class="stat-value">{{ vacancies_per_month }}</span>
+            <span class="stat-label" data-i18n="stats.vacancies_per_month">Вакансий за месяц</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+            <span class="stat-value">+ {{ vacancies_today }}</span>
+            <span class="stat-label" data-i18n="stats.today">Сегодня</span>
+        </div>
+    </div>
+
+    <div class="sidebar-hint">
+        <div class="sidebar-hint__icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        </div>
+        <div class="sidebar-hint__content">
+            <div class="sidebar-hint__title">system.advice</div>
+            <div class="sidebar-hint__text">
+                <span data-i18n="messages.hint_algorithm">Рекомендуем использовать алгоритм</span> <span class="highlight-text" data-i18n="common.exclude">Исключить</span>. <span data-i18n="messages.hint_selection">Жесткая выборка может скрыть отличные офферы, в которых работодатель забыл указать нужные теги.</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="filter-group">
+        <h3 class="filter-group__title" data-i18n="stats.sources">Источники</h3>
+        <div class="filter-group__toggle">
+            <label class="toggle-btn"><input type="radio" name="source_mode" value="choose" checked><span data-i18n="common.choose">Выбрать</span></label>
+            <label class="toggle-btn"><input type="radio" name="source_mode" value="exclude"><span data-i18n="common.exclude">Исключить</span></label>
+        </div>
+        <div class="filter-group__pills">
+            {% for code, name in sources %}
+                <label class="pill-checkbox"><input type="checkbox" name="sources" value="{{ code }}" checked><span>{{ name }}</span></label>
+            {% endfor %}
+            <label class="pill-checkbox"><input type="checkbox" name="sources" value="whilework" checked><span>WhileWork</span></label>
+        </div>
+    </div>
+
+    <hr class="filter-divider">
+
+    <div class="filter-group">
+        <h3 class="filter-group__title" data-i18n="filters.work_format">Формат работы</h3>
+        <div class="filter-group__logic">
+            <label class="radio-sm"><input type="radio" name="work_format_logic" value="and" checked><span data-i18n="common.and">И</span></label>
+            <label class="radio-sm"><input type="radio" name="work_format_logic" value="or"><span data-i18n="common.or">ИЛИ</span></label>
+            <div class="spacer"></div>
+            <label class="toggle-btn toggle-btn--sm"><input type="radio" name="work_format_mode" value="choose" checked><span data-i18n="common.choose">Выбрать</span></label>
+            <label class="toggle-btn toggle-btn--sm"><input type="radio" name="work_format_mode" value="exclude"><span data-i18n="common.exclude">Исключить</span></label>
+        </div>
+        <div class="filter-group__pills">
+            {% for code, name in work_formats %}
+                <label class="pill-checkbox"><input type="checkbox" name="work_format" value="{{ code }}"><span>{{ name }}</span></label>
+            {% endfor %}
+        </div>
+    </div>
+
+    <hr class="filter-divider">
+
+    <div class="filter-group">
+        <h3 class="filter-group__title" data-i18n="filters.skills">Навыки</h3>
+        <div class="filter-group__logic">
+            <label class="radio-sm"><input type="radio" name="skills_logic" value="and" checked><span data-i18n="common.and">И</span></label>
+            <label class="radio-sm"><input type="radio" name="skills_logic" value="or"><span data-i18n="common.or">ИЛИ</span></label>
+            <div class="spacer"></div>
+            <label class="toggle-btn toggle-btn--sm"><input type="radio" name="skills_mode" value="choose" checked><span data-i18n="common.choose">Выбрать</span></label>
+            <label class="toggle-btn toggle-btn--sm"><input type="radio" name="skills_mode" value="exclude"><span data-i18n="common.exclude">Исключить</span></label>
+        </div>
+        <div class="search-dropdown-wrapper">
+            <div class="search-input-box">
+                <svg class="skills-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="skills-search-input" placeholder="pyt..." autocomplete="off">
+            </div>
+            <ul class="dropdown-list" id="skills-dropdown-list"></ul>
+        </div>
+        <div class="filter-group__pills" id="skills-selected-pills"></div>
+    </div>
+
+    <hr class="filter-divider">
+
+    <div class="filter-group">
+        <h3 class="filter-group__title" data-i18n="filters.grade">Грейд</h3>
+        <div class="filter-group__logic">
+            <label class="radio-sm"><input type="radio" name="grade_logic" value="and" checked><span data-i18n="common.and">И</span></label>
+            <label class="radio-sm"><input type="radio" name="grade_logic" value="or"><span data-i18n="common.or">ИЛИ</span></label>
+            <div class="spacer"></div>
+            <label class="toggle-btn toggle-btn--sm"><input type="radio" name="grade_mode" value="choose" checked><span data-i18n="common.choose">Выбрать</span></label>
+            <label class="toggle-btn toggle-btn--sm"><input type="radio" name="grade_mode" value="exclude"><span data-i18n="common.exclude">Исключить</span></label>
+        </div>
+        <div class="filter-group__pills">
+            {% for code, name in grades %}
+                <label class="pill-checkbox"><input type="checkbox" name="grade" value="{{ code }}"><span>{{ name }}</span></label>
+            {% endfor %}
+        </div>
+    </div>
+
+    <hr class="filter-divider">
+
+    <div class="filter-group">
+        <h3 class="filter-group__title" data-i18n="filters.experience_from_year">Опыт работы от (лет)</h3>
+        <div class="search-input-box">
+            <input type="text" inputmode="numeric" pattern="[0-9]*" id="experience-from-input" placeholder="..." autocomplete="off">
+        </div>
+    </div>
+
+    <hr class="filter-divider">
+
+    <div class="filter-group">
+        <h3 class="filter-group__title" data-i18n="filters.location">Локация</h3>
+        <div class="filter-group__toggle">
+            <label class="toggle-btn"><input type="radio" name="geo_category" value="regions" checked><span data-i18n="filters.region">Регионы</span></label>
+            <label class="toggle-btn"><input type="radio" name="geo_category" value="countries"><span data-i18n="filters.country">Страны</span></label>
+            <label class="toggle-btn"><input type="radio" name="geo_category" value="cities"><span data-i18n="filters.city">Города</span></label>
+        </div>
+        <div class="filter-group__toggle">
+            <label class="toggle-btn toggle-btn--sm"><input type="radio" name="geo_mode" value="choose" checked><span data-i18n="common.choose">Выбрать</span></label>
+            <label class="toggle-btn toggle-btn--sm"><input type="radio" name="geo_mode" value="exclude"><span data-i18n="common.exclude">Исключить</span></label>
+        </div>
+        <div class="search-dropdown-wrapper">
+            <div class="search-input-box">
+                <svg class="geo-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="geo-search-input" placeholder="min..." autocomplete="off">
+            </div>
+            <ul class="dropdown-list" id="geo-dropdown-list"></ul>
+        </div>
+        <div class="filter-group__pills" id="geo-selected-pills"></div>
+    </div>
+
+    <hr class="filter-divider">
+
+    <div class="filter-group">
+        <h3 class="filter-group__title" data-i18n="filters.employment_type">Тип работы</h3>
+        <div class="filter-group__logic">
+            <label class="radio-sm"><input type="radio" name="work_type_logic" value="and" checked><span data-i18n="common.and">И</span></label>
+            <label class="radio-sm"><input type="radio" name="work_type_logic" value="or"><span data-i18n="common.or">ИЛИ</span></label>
+            <div class="spacer"></div>
+            <label class="toggle-btn toggle-btn--sm"><input type="radio" name="work_type_mode" value="choose" checked><span data-i18n="common.choose">Выбрать</span></label>
+            <label class="toggle-btn toggle-btn--sm"><input type="radio" name="work_type_mode" value="exclude"><span data-i18n="common.exclude">Исключить</span></label>
+        </div>
+        <div class="filter-group__pills">
+            {% for code, name in employment_types %}
+                <label class="pill-checkbox"><input type="checkbox" name="work_type" value="{{ code }}"><span>{{ name }}</span></label>
+            {% endfor %}
+        </div>
+    </div>
+
+    <hr class="filter-divider">
+
+    <div class="filter-group">
+        <h3 class="filter-group__title" data-i18n="filters.salary">Зарплата (от)</h3>
+        <div class="search-input-box">
+            <svg class="geo-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="1" x2="12" y2="23"></line>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+            <input type="number" id="salary-min-input" placeholder="2000" min="0" step="100" autocomplete="off">
+        </div>
+    </div>
+</aside>

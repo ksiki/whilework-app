@@ -1,0 +1,34 @@
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "JobPosting",
+  "title": "{{ vacancy.seo_title|escapejs }}",
+  "description": "{{ vacancy.description|striptags|escapejs }}",
+  "datePosted": "{{ vacancy.created_at|date:'Y-m-d' }}",
+  "validThrough": "{{ vacancy.valid_through|date:'Y-m-d' }}",
+  "employmentType": "{% if vacancy.work_format == 'Удаленно' %}TELECOMMUTE{% else %}FULL_TIME{% endif %}",
+  "hiringOrganization": {
+    "@type": "Organization",
+    "name": "{{ vacancy.company.name|escapejs }}",
+    "sameAs": "{{ vacancy.company.website|default:'' }}"
+  },
+  "jobLocation": {
+    "@type": "Place",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "{{ vacancy.city.name|escapejs }}",
+      "addressCountry": "BY"
+    }
+  },
+  "baseSalary": {
+    "@type": "MonetaryAmount",
+    "currency": "{{ vacancy.currency|default:'RUB' }}",
+    "value": {
+      "@type": "QuantitativeValue",
+      "minValue": {{ vacancy.salary_min|default:"null" }},
+      "maxValue": {{ vacancy.salary_max|default:"null" }},
+      "unitText": "MONTH"
+    }
+  }
+}
+</script>

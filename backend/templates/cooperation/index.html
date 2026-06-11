@@ -1,0 +1,207 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}Сотрудничество | WHILEWORK{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/cooperation/index.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="main-container cooperation-page">
+    <div class="coop-layout">
+        <section class="coop-hero-card bento-item tilt-effect">
+            <header class="coop-hero__header">
+                <span class="code-text text-accent">import { aggregator } from 'while_work'</span>
+                <h1 class="coop-title" data-i18n="cooperation.hero_title">IT-агрегатор вакансий для инженеров</h1>
+                <p class="coop-subtitle" data-i18n="cooperation.hero_subtitle">Мы собираем лучшие предложения со всего рынка в единую ленту. Никакого «воды» и HR-шума — только актуальные вакансии, которые соответствуют вашему стеку технологий. Хотите быть услышанными нашей аудиторией? Давайте сотрудничать.</p>
+            </header>
+            
+            <div class="coop-hero__stats mt-24">
+                <div class="coop-stat">
+                    <span class="coop-stat__value code-text">B2C</span>
+                    <span class="coop-stat__label" data-i18n="cooperation.stat_formats">Форматы интеграций</span>
+                </div>
+                <div class="coop-stat">
+                    <span class="coop-stat__value code-text" data-i18n="cis">СНГ</span>
+                    <span class="coop-stat__label" data-i18n="cooperation.stat_coverage">Охват платформы</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="coop-calc-card bento-item tilt-effect">
+            <h2 class="bento-title" data-i18n="cooperation.config_title">Конфигуратор интеграции</h2>
+            <p class="bento-desc" data-i18n="cooperation.config_desc">Выберите формат для генерации параметров.</p>
+            
+            <div class="coop-configurator mt-24">
+                <div class="config-options">
+                    <button class="config-pill active" data-type="banner" id="pill-banner" data-i18n="cooperation.config_banner">Баннер на сайте</button>
+                </div>
+                
+                <div class="config-preview mt-24">
+                    <div class="code-window">
+                        <div class="code-window__header">
+                            <div class="term-dots"><span class="term-dot red"></span><span class="term-dot yellow"></span><span class="term-dot green"></span></div>
+                            <span class="code-window__title">partnership_config.py</span>
+                        </div>
+                        <div class="code-window__body code-text" id="config-code-output"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="coop-media-grid">
+            <h2 class="visual-hidden" data-i18n="cooperation.media_title">Наши медиа-ресурсы и каналы связи</h2>
+            
+            <a href="https://youtube.com" target="_blank" rel="noopener" class="media-card media-card--youtube bento-item tilt-effect">
+                <div class="media-card__header">
+                    <div class="media-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                    </div>
+                    <span class="media-handle code-text">@while_work</span>
+                </div>
+                <div class="media-card__body mt-16">
+                    <h3 class="media-title" data-i18n="cooperation.youtube_title">YouTube</h3>
+                    <p class="media-desc" data-i18n="cooperation.youtube_desc">Шоу, код-ревью, разборы архитектурных провалов и стримы.</p>
+                </div>
+                <div class="media-card__footer mt-16">
+                    <span class="media-stat code-text" data-i18n="cooperation.watch_channel">Смотреть канал</span>
+                </div>
+            </a>
+
+            <a href="https://tiktok.com" target="_blank" rel="noopener" class="media-card media-card--tiktok bento-item tilt-effect">
+                <div class="media-card__header">
+                    <div class="media-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.02 1.63 4.18 1.14 1.25 2.74 2.01 4.41 2.23v3.83c-1.74-.06-3.44-.65-4.82-1.74-.24-.19-.46-.4-.67-.62v5.18c.01 3.52-2.07 6.84-5.38 8.06-3.71 1.44-8.08-.24-9.74-3.83C-.33 13.56 1.09 8.5 5.34 7.21c1.2-.38 2.49-.31 3.65.17v3.91c-.75-.3-1.58-.35-2.35-.14-1.39.36-2.39 1.69-2.39 3.13.02 2.02 2 3.53 3.95 3.16 1.34-.23 2.36-1.38 2.37-2.74V0h1.95z"/></svg>
+                    </div>
+                    <span class="media-handle code-text">@while_work.shorts</span>
+                </div>
+                <div class="media-card__body mt-16">
+                    <h3 class="media-title" data-i18n="cooperation.tiktok_title">TikTok</h3>
+                    <p class="media-desc" data-i18n="cooperation.tiktok_desc">IT-мемы, жиза на удаленке и быстрые лайфхаки для разработчиков.</p>
+                </div>
+                <div class="media-card__footer mt-16">
+                    <span class="media-stat code-text" data-i18n="cooperation.join">Присоединиться</span>
+                </div>
+            </a>
+
+            <a href="https://instagram.com" target="_blank" rel="noopener" class="media-card media-card--instagram bento-item tilt-effect">
+                <div class="media-card__header">
+                    <div class="media-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                    </div>
+                    <span class="media-handle code-text">@while_work</span>
+                </div>
+                <div class="media-card__body mt-16">
+                    <h3 class="media-title" data-i18n="cooperation.instagram_title">Instagram</h3>
+                    <p class="media-desc" data-i18n="cooperation.instagram_desc">Эстетика рабочих мест, анонсы релизов и внутренняя кухня разработки.</p>
+                </div>
+                <div class="media-card__footer mt-16">
+                    <span class="media-stat code-text" data-i18n="cooperation.subscribe">Подписаться</span>
+                </div>
+            </a>
+
+            <a href="https://threads.net" target="_blank" rel="noopener" class="media-card media-card--threads bento-item tilt-effect">
+                <div class="media-card__header">
+                    <div class="media-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14.28 11.72a.84.84 0 0 0-.25-.56.81.81 0 0 0-.57-.24h-.05A3.75 3.75 0 0 0 10.3 12a3.44 3.44 0 0 0 1 2.4 3.76 3.76 0 0 0 2.51 1 3.51 3.51 0 0 0 2-.6 4 4 0 0 0 1.4-1.63H19a5.94 5.94 0 0 1-2.4 3.4 6.78 6.78 0 0 1-4.11 1.2A7 7 0 0 1 7.15 17a7.61 7.61 0 0 1-2.22-5.46A7.8 7.8 0 0 1 7.25 6a7 7 0 0 1 5.3-2.14 7.63 7.63 0 0 1 5.56 2.15 8.16 8.16 0 0 1 2.19 5.86 10.37 10.37 0 0 1-.58 3.53 5.48 5.48 0 0 1-1.74 2.45 4.71 4.71 0 0 1-3 .92 4.41 4.41 0 0 1-3.21-1.28A4.89 4.89 0 0 1 10.66 14a4 4 0 0 1-.95-2.73 4.25 4.25 0 0 1 1.18-3.14 4 4 0 0 1 3-1.18 3.54 3.54 0 0 1 2.51.92 3.32 3.32 0 0 1 1 2.53v.53a1.44 1.44 0 0 1-1.44 1.44 1.34 1.34 0 0 1-.84-.28 1.49 1.49 0 0 1-.49-.69l-.16-.54h-.07a2.53 2.53 0 0 1-2.11 1.36 2.39 2.39 0 0 1-1.72-.64 2.29 2.29 0 0 1-.64-1.68 2.46 2.46 0 0 1 .73-1.84A2.82 2.82 0 0 1 13.1 9a3 3 0 0 1 1.18.23 2.11 2.11 0 0 1 .84.66h.06V9.45h1.76v4.61a1.59 1.59 0 0 0 .37 1.13.19.19 0 0 0 .15.06h.1a.57.57 0 0 0 .42-.18 1.07 1.07 0 0 0 .19-.66v-.48a6.11 6.11 0 0 0-1.63-4.4 5.67 5.67 0 0 0-4.17-1.57A5.07 5.07 0 0 0 8.85 9.1a5.61 5.61 0 0 0-1.57 4 5.49 5.49 0 0 0 1.59 4 5.17 5.17 0 0 0 3.73 1.47 5.66 5.66 0 0 0 3.31-.95A5 5 0 0 0 17.59 15h1.66a6.38 6.38 0 0 1-2.22 2.65 6.73 6.73 0 0 1-4.08 1.16A7.47 7.47 0 0 1 7.37 17a7.93 7.93 0 0 1-2.42-6 8 8 0 0 1 2.32-5.78A8 8 0 0 1 13 3a8.47 8.47 0 0 1 6.07 2.32 8.78 8.78 0 0 1 2.45 6.46 11.39 11.39 0 0 1-.68 4 6.64 6.64 0 0 1-2.17 3.09 6.22 6.22 0 0 1-4.12 1.25A6.29 6.29 0 0 1 10 18.73a6.15 6.15 0 0 1-2.13-4.7 5.56 5.56 0 0 1 1.44-3.87A5.55 5.55 0 0 1 13.43 8.6a4.89 4.89 0 0 1 3.51 1.34 5.09 5.09 0 0 1 1.39 3.78z"/></svg>
+                    </div>
+                    <span class="media-handle code-text">@while_work</span>
+                </div>
+                <div class="media-card__body mt-16">
+                    <h3 class="media-title" data-i18n="cooperation.threads_title">Threads</h3>
+                    <p class="media-desc" data-i18n="cooperation.threads_desc">Текстовые микро-блоги, инсайды и дискуссии.</p>
+                </div>
+                <div class="media-card__footer mt-16">
+                    <span class="media-stat code-text" data-i18n="cooperation.read">Читать</span>
+                </div>
+            </a>
+
+            <a href="https://reddit.com" target="_blank" rel="noopener" class="media-card media-card--reddit bento-item tilt-effect">
+                <div class="media-card__header">
+                    <div class="media-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 11.5c0-1.65-1.35-3-3-3-.96 0-1.86.48-2.42 1.24-1.64-1-3.84-1.64-6.24-1.72l1.32-4.16 3.6.76c.04.92.8 1.64 1.74 1.64 1 0 1.8-.8 1.8-1.8s-.8-1.8-1.8-1.8c-.84 0-1.56.56-1.74 1.32l-3.96-.84c-.16-.04-.36.04-.44.2l-1.52 4.8c-2.44.04-4.64.68-6.32 1.72A3.33 3.33 0 0 0 4.5 8.5c-1.65 0-3 1.35-3 3 0 1.32.84 2.44 2.04 2.84-.04.24-.04.48-.04.72 0 3.84 4.44 7 9.8 7s9.8-3.16 9.8-7c0-.24 0-.48-.04-.72 1.16-.4 2.04-1.52 2.04-2.84zM6.5 12.5c0-1 1-1.8 2.2-1.8s2.2.8 2.2 1.8c0 1-1 1.8-2.2 1.8s-2.2-.8-2.2-1.8zm11.4 4.5c-1.08 1.08-3.12 1.2-3.9 1.2s-2.82-.12-3.9-1.2c-.16-.16-.16-.44 0-.6.16-.16.44-.16.6 0 .84.84 2.52.96 3.3.96s2.46-.12 3.3-.96c.16-.16.44-.16.6 0 .12.16.12.4-.04.6zm-.4-2.7c-1.2 0-2.2-.8-2.2-1.8 0-1 1-1.8 2.2-1.8s2.2.8 2.2 1.8c0 1-1 1.8-2.2 1.8z"/></svg>
+                    </div>
+                    <span class="media-handle code-text">r/while_work</span>
+                </div>
+                <div class="media-card__body mt-16">
+                    <h3 class="media-title" data-i18n="cooperation.reddit_title">Reddit</h3>
+                    <p class="media-desc" data-i18n="cooperation.reddit_desc">Инженерный хаб для гайдов, обмена опытом и опенсорс-инициатив.</p>
+                </div>
+                <div class="media-card__footer mt-16">
+                    <span class="media-stat code-text" data-i18n="cooperation.community">Комьюнити</span>
+                </div>
+            </a>
+
+            <div class="media-card media-card--email bento-item tilt-effect">
+                <div class="media-card__header">
+                    <div class="media-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    </div>
+                    <span class="media-handle code-text">partner@while.work</span>
+                </div>
+                <div class="media-card__body mt-16">
+                    <h3 class="media-title" data-i18n="cooperation.direct_pitch">Direct</h3>
+                    <p class="media-desc" data-i18n="cooperation.email_desc">Готовы предложить что-то уникальное? Напишите нашему продюсеру напрямую.</p>
+                </div>
+                <div class="media-card__footer mt-16">
+                    <button class="btn btn--solid btn--full" id="btn-copy-email" style="width: 100%;" data-i18n="cooperation.copy_email">Скопировать Email</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="coop-form-card bento-item tilt-effect">
+            <h2 class="bento-title" data-i18n="cooperation.form_title">Инициализировать сессию связи</h2>
+            <p class="bento-desc" data-i18n="cooperation.form_desc">Заполните поля, и наш бэкенд доставит ваш оффер команде.</p>
+            
+            <form class="coop-form mt-24" id="partnership-form" novalidate onsubmit="event.preventDefault();">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="cooperation.label_name">Ваше имя / Компания</label>
+                        <div class="input-wrapper">
+                            <input type="text" name="name" class="form-input" placeholder="Google / Илья" data-i18n="cooperation.placeholder_name">
+                        </div>
+                        <span class="error-msg" id="error-name" data-i18n=""></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="cooperation.label_email">Контактный Email</label>
+                        <div class="input-wrapper">
+                            <input type="email" name="email" class="form-input" placeholder="partner@company.com">
+                        </div>
+                        <span class="error-msg" id="error-email" data-i18n=""></span>
+                    </div>
+                </div>
+                <div class="form-group mt-16">
+                    <label class="form-label" data-i18n="cooperation.label_offer">Суть вашего предложения</label>
+                    <div class="input-wrapper">
+                        <textarea name="message" class="form-input form-textarea" rows="4" placeholder="Опишите ваши идеи, бюджет, сроки..." data-i18n="cooperation.placeholder_offer"></textarea>
+                    </div>
+                    <span class="error-msg" id="error-message" data-i18n=""></span>
+                </div>
+
+                <div id="form-system-error" class="error-msg text-center mt-16" style="display: none;"></div>
+
+                <button type="submit" class="btn btn--solid btn--full mt-24" id="btn-submit-coop" style="padding: 14px 28px;" data-i18n="cooperation.submit_offer">
+                    Отправить оффер
+                </button>
+            </form>
+        </section>
+    </div>
+
+    <template id="tpl-coop-success">
+        <div class="coop-success-state">
+            <div class="success-matrix-effect">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+            <h3 class="success-title">status = "SUCCESS"</h3>
+            <p class="success-desc" data-i18n="cooperation.success_desc">Ваше предложение успешно сериализовано и отправлено в очередь обработки. Менеджер свяжется с вами в течение 2-х часов.</p>
+        </div>
+    </template>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/cooperation/index.js' %}"></script>
+{% endblock %}

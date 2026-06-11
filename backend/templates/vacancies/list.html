@@ -1,0 +1,123 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}
+    {% if request.COOKIES.django_language == 'en' %}
+        IT and Digital Jobs: Fresh Vacancies and Internships | WhileWork
+    {% else %}
+        Работа в IT и Digital: свежие вакансии, стажировки | WhileWork
+    {% endif %}
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/vacancies/list.css' %}">
+    <link rel="stylesheet" href="{% static 'css/vacancies/includes/banner.css' %}">
+    <link rel="stylesheet" href="{% static 'css/vacancies/includes/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/vacancies/includes/job_card.css' %}">
+{% endblock %}
+
+{% block content %}
+
+{% include 'vacancies/includes/_banner.html' %}
+
+<main class="main-container">
+    
+    {% include 'vacancies/includes/_sidebar.html' %}
+
+    <section class="content-area">
+        <div class="search-section">
+            <div class="search-bar">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="main-search-input" placeholder="data engine..." class="search-input">
+                <button class="btn btn--solid search-btn" data-i18n="common.search">Поиск</button>
+            </div>
+            
+            <div class="search-filters">
+                <div class="checkbox-group">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" name="search_in" value="title" checked>
+                        <span class="checkmark"></span>
+                        <p data-i18n="filters.search_title">Название</p>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" name="search_in" value="skills">
+                        <span class="checkmark"></span>
+                        <p data-i18n="filters.search_skills">Навыки</p>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" name="search_in" value="company">
+                        <span class="checkmark"></span>
+                        <p data-i18n="filters.search_companies">Компании</p>
+                    </label>
+                </div>
+                
+                <div class="custom-sort" id="custom-sort-dropdown">
+                    <div class="custom-sort__header" id="custom-sort-header">
+                        <span id="custom-sort-value" data-value="date" data-i18n="filters.by_published_date"></span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </div>
+                    <ul class="custom-sort__list" id="custom-sort-list">
+                        <li class="custom-sort__item active" data-value="date" data-i18n="filters.by_published_date">Дата публикации</li>
+                        <li class="custom-sort__item" data-value="salary" data-i18n="filters.by_salary">По зарплате</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="jobs-list" id="jobs-list-container">
+            {% include 'vacancies/includes/_job_card.html' %}
+        </div>
+
+        <div id="loading-sentinel" class="loading-sentinel" style="text-align: center; padding: 20px; visibility: hidden;">
+            <svg class="spinner" viewBox="0 0 50 50" style="width: 30px; height: 30px; animation: rotate 2s linear infinite;">
+                <circle cx="25" cy="25" r="20" fill="none" stroke="var(--primary-accent)" stroke-width="4" stroke-dasharray="1, 200" stroke-dashoffset="0" stroke-linecap="round" style="animation: dash 1.5s ease-in-out infinite;"></circle>
+            </svg>
+        </div>
+
+        <div id="no-more-jobs" style="text-align: center; padding: 60px 20px; color: var(--text-secondary); display: none;">
+            <h3 style="margin-bottom: 8px; color: var(--text-primary);" data-i18n="list.vacancies_ended_1">Вы просмотрели все вакансии 🚀</h3>
+            <p data-i18n="list.vacancies_ended_2">Попробуйте изменить параметры фильтра, чтобы увидеть больше вариантов.</p>
+        </div>
+
+        <style>
+            @keyframes rotate { 100% { transform: rotate(360deg); } }
+            @keyframes dash {
+                0% { stroke-dasharray: 1, 200; stroke-dashoffset: 0; }
+                50% { stroke-dasharray: 89, 200; stroke-dashoffset: -35px; }
+                100% { stroke-dasharray: 89, 200; stroke-dashoffset: -124px; }
+            }
+        </style>
+    </section>
+
+    <template id="pill-tag-template">
+        <div class="pill-tag">
+            <span class="pill-tag__text"></span>
+            <span class="pill-tag__remove">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </span>
+        </div>
+    </template>
+
+    <template id="dropdown-item-template">
+        <li class="dropdown-item"></li>
+    </template>
+
+</main>
+{% endblock %}
+
+{% block extra_js %}
+    {{ skills|json_script:"skills-data" }}
+    {{ geo|json_script:"geo-data" }}
+    <script src="{% static 'js/vacancies/list.js' %}"></script>
+    <script src="{% static 'js/vacancies/includes/banner.js' %}"></script>
+{% endblock %}
+
+{% block schema_markup %}
+    {% include 'vacancies/includes/_schema_list.html' %}
+    {% include 'vacancies/includes/_schema_item_list.html' %}
+{% endblock %}

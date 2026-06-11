@@ -1,0 +1,167 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}Авторизация | WHILEWORK{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/auth/login_register.css' %}">
+{% endblock %}
+
+{% block content %}
+<div id="csrf-token-container" style="display: none;">{% csrf_token %}</div>
+
+<main class="main-container auth-page">
+    <div class="auth-layout">
+        
+        <div class="auth-presentation">
+            <div class="presentation-content">
+                <h2 class="presentation-title">while(unregistered) {<br>&nbsp;&nbsp;signup();<br>}</h2>
+                <p class="presentation-desc" data-i18n="messages.presentation_desc">Получи доступ к скрытым вакансиям, создай свой черный список и управляй откликами.</p>
+                
+                <div class="terminal-window mt-24">
+                    <div class="terminal-header">
+                        <span class="term-dot red"></span>
+                        <span class="term-dot yellow"></span>
+                        <span class="term-dot green"></span>
+                    </div>
+                    <div class="terminal-body code-text">
+                        <div class="term-line"><span class="term-prompt">~/$</span> ./init_user.sh</div>
+                        <div class="term-line text-secondary">&gt; System check... <span class="term-ok">OK</span></div>
+                        <div class="term-line text-secondary">&gt; Establishing secure connection... <span class="term-ok">OK</span></div>
+                        <div class="term-line typing-anim" id="term-status">Awaiting credentials<span class="cursor">_</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="auth-form-wrapper">
+            <div class="auth-card">
+                
+                <div id="register-view" class="auth-view active">
+                    <div class="auth-header">
+                        <h1 class="auth-title" data-i18n="auth.create_account">Создать аккаунт</h1>
+                    </div>
+
+                    <a href="/auth/login/google/" class="btn-oauth mt-24" style="text-decoration: none;">
+                        <svg class="oauth-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                        </svg>
+                        <span data-i18n="auth.continue_with_google">Продолжить с Google</span>
+                    </a>
+
+                    <div class="auth-divider mt-24">
+                        <span data-i18n="auth.or_by_email">или по email</span>
+                    </div>
+
+                    <div id="auth-step-1" class="auth-step active mt-24">
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                                <input type="email" class="form-input with-icon" id="reg-email" placeholder="dev@while.work">
+                            </div>
+                        </div>
+                        <div class="form-group mt-16">
+                            <label class="form-label" data-i18n="auth.password">Пароль</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                                <input type="password" class="form-input with-icon" id="reg-password" data-i18n="auth.create_password" placeholder="Придумайте пароль">
+                            </div>
+                        </div>
+                        <div class="form-group mt-16">
+                            <label class="form-label" data-i18n="auth.repeat_password">Повторите пароль</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                                <input type="password" class="form-input with-icon" id="reg-password-confirm" data-i18n="auth.repeat_password" placeholder="Повторите пароль">
+                            </div>
+                            <span id="password-error" class="text-danger mt-8" style="display: none; font-size: 13px; font-weight: 500;" data-i18n="_"></span>
+                        </div>
+                        
+                        <button class="btn btn--solid btn--full auth-submit-btn" style="margin-top: 24px;" id="btn-next-step" data-i18n="common.continue">Продолжить</button>
+                    </div>
+
+                    <div id="auth-step-2" class="auth-step mt-24">
+                        <div class="otp-info text-center">
+                            <div class="otp-mail-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                            </div>
+                            <p class="mt-16"><span data-i18n="auth.code_sent">Мы отправили 4-значный код на</span><br><strong id="display-email" class="code-text text-primary"></strong></p>
+                        </div>
+
+                        <div class="otp-inputs mt-24" id="otp-container">
+                            <input type="text" class="otp-digit" maxlength="1" placeholder="•" autocomplete="off">
+                            <input type="text" class="otp-digit" maxlength="1" placeholder="•" autocomplete="off">
+                            <input type="text" class="otp-digit" maxlength="1" placeholder="•" autocomplete="off">
+                            <input type="text" class="otp-digit" maxlength="1" placeholder="•" autocomplete="off">
+                        </div>
+                        <span id="otp-error" class="text-danger text-center" style="display: none; font-size: 13px; font-weight: 500; width: 100%;" data-i18n="_"></span>
+
+                        <button class="btn btn--solid btn--full auth-submit-btn" style="margin-top: 24px;" id="btn-verify" data-i18n="auth.complete_registration">Завершить регистрацию</button>
+                        <button class="btn-text btn--full mt-16" id="btn-back-step" data-i18n="auth.change_email">← Изменить email</button>
+                    </div>
+
+                    <div class="auth-footer mt-24 text-center">
+                        <span class="text-secondary" data-i18n="auth.already_have_account">Уже есть аккаунт?</span> 
+                        <button class="btn-text auth-link" id="switch-to-login" data-i18n="auth.login_system">Войти в систему</button>
+                    </div>
+                </div>
+
+                <div id="login-view" class="auth-view">
+                    <div class="auth-header">
+                        <h1 class="auth-title" data-i18n="auth.welcome_back">С возвращением</h1>
+                        <p class="auth-subtitle" data-i18n="auth.login_to_continue">Войдите, чтобы продолжить работу</p>
+                    </div>
+
+                    <a href="/auth/login/google/" class="btn-oauth mt-24" style="text-decoration: none;">
+                        <svg class="oauth-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                        </svg>
+                        <span data-i18n="auth.continue_with_google">Продолжить с Google</span>
+                    </a>
+
+                    <div class="auth-divider mt-24">
+                        <span data-i18n="auth.or_by_email">или по email</span>
+                    </div>
+
+                    <div class="form-group mt-24">
+                        <label class="form-label">Email</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                            <input type="email" class="form-input with-icon" id="login-email" placeholder="dev@while.work">
+                        </div>
+                    </div>
+                    <div class="form-group mt-16">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <label class="form-label" data-i18n="auth.password">Пароль</label>
+                            <a href="#" class="auth-link" style="font-size: 13px; font-weight: 500;" data-i18n="auth.forgot_password">Забыли пароль?</a>
+                        </div>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            <input type="password" class="form-input with-icon" id="login-password" data-i18n="auth.your_password" placeholder="Ваш пароль">
+                        </div>
+                        <span id="login-error" class="text-danger mt-8" style="display: none; font-size: 13px; font-weight: 500;" data-i18n="_"></span>
+                    </div>
+
+                    <button class="btn btn--solid btn--full auth-submit-btn" style="margin-top: 24px;" id="btn-login-submit" data-i18n="common.login">Войти</button>
+
+                    <div class="auth-footer mt-24 text-center">
+                        <span class="text-secondary" data-i18n="auth.no_account">Нет аккаунта?</span> 
+                        <button class="btn-text auth-link" id="switch-to-register" data-i18n="auth.create_account">Создать аккаунт</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/auth/login_register.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}База знаний (FAQ) | WHILEWORK{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/faq/index.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="main-container faq-page">
+    <div class="faq-layout">
+        
+        <aside class="faq-sidebar">
+            <h3 class="faq-sidebar-title" data-i18n="faq.nav_title">Навигация</h3>
+            <nav class="faq-nav">
+                <button class="faq-nav__btn active" data-category="all" data-i18n="faq.cat_all">Все вопросы</button>
+                <button class="faq-nav__btn" data-category="general" data-i18n="faq.cat_general">Общие вопросы</button>
+                <!-- <button class="faq-nav__btn" data-category="slots" data-i18n="faq.cat_slots">Слоты и оплата</button>
+                <button class="faq-nav__btn" data-category="jobs" data-i18n="faq.cat_jobs">Размещение вакансий</button> -->
+                <button class="faq-nav__btn" data-category="tech" data-i18n="faq.cat_tech">Технические детали</button>
+            </nav>
+            
+            <div class="faq-support-box mt-24">
+                <div class="support-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                </div>
+                <h4 class="mt-16 text-primary" data-i18n="faq.support_title">Не нашли ответ?</h4>
+                <p class="text-secondary mt-8" style="font-size: 13px;" data-i18n="faq.support_desc">Если база знаний не помогла, наша команда готова решить любую проблему.</p>
+                <button id="btn-open-support" class="btn btn--outline btn--full mt-16" data-is-auth="{% if is_auth %}true{% else %}false{% endif %}" style="display: flex; justify-content: center; align-items: center; gap: 8px;" data-i18n="faq.write_to_support">
+                    Написать в саппорт
+                </button>
+            </div>
+        </aside>
+
+        <div class="faq-content">
+            <div class="faq-header">
+                <h1 class="auth-title" data-i18n="faq.page_title">База знаний (FAQ)</h1>
+                <p class="auth-subtitle" data-i18n="faq.page_subtitle">Быстрые ответы на главные вопросы по платформе</p>
+                
+                <div class="input-wrapper mt-24">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" class="form-input with-icon" id="faq-search" data-i18n="faq.search_placeholder" placeholder="Найти ответ... (например: покупка слота)">
+                </div>
+            </div>
+
+            <div class="faq-list mt-24">
+                
+                <div class="faq-item" data-category="general">
+                    <button class="faq-item__header">
+                        <span class="faq-item__title">Как работает алгоритм подбора и лента?</span>
+                        <svg class="faq-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-item__body">
+                        <div class="faq-item__content">
+                            <p>Платформа использует точный мэтчинг на основе введенных навыков (тегов) и грейда. Вы не увидите информационный шум — только целевые предложения. Компании из вашего <span class="code-text">Черного списка</span> автоматически исключаются из выдачи на уровне БД.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="general">
+                    <button class="faq-item__header">
+                        <span class="faq-item__title">Как добавить токсичную компанию в Черный список?</span>
+                        <svg class="faq-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-item__body">
+                        <div class="faq-item__content">
+                            <p>Откройте страницу конкретной вакансии от компании, которую хотите заблокировать. В правой панели действий (под контактами) нажмите на кнопку с иконкой перечеркнутого круга "В черный список".</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="tech">
+                    <button class="faq-item__header">
+                        <span class="faq-item__title">Есть ли у вас открытый API для интеграции?</span>
+                        <svg class="faq-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div class="faq-item__body">
+                        <div class="faq-item__content">
+                            <p>В данный момент API находится в стадии закрытого бета-тестирования <span class="status-dot" style="background: #F59E0B; display: inline-block;"></span>. Если вы хотите получить ранний доступ для автоматической выгрузки вакансий из своей ATS-системы, напишите нам в саппорт.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="faq-empty-state" style="display: none; text-align: center; padding: 40px 0;">
+                    <p class="text-secondary" data-i18n="faq.empty_state">По вашему запросу ничего не найдено.</p>
+                </div>
+
+            </div>
+        </div>
+
+        <template id="tpl-support">
+            <h3 class="modal-title" data-i18n="faq.modal_title">Служба поддержки</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 24px; font-size: 14px;" data-i18n="faq.modal_desc">Опишите вашу проблему, и мы ответим на email, привязанный к вашему аккаунту.</p>
+            
+            <div style="margin-bottom: 16px;">
+                <label style="display: block; font-size: 14px; margin-bottom: 8px; color: var(--text-secondary);" data-i18n="faq.topic_label">Тема обращения</label>
+                <input type="text" id="support-topic" style="width: 100%; padding: 12px; border-radius: var(--radius-btn); border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-primary); font-family: var(--font-ui);" placeholder="Например: Проблема с оплатой слота" data-i18n="faq.topic_placeholder">
+            </div>
+
+            <div style="margin-bottom: 24px;">
+                <label style="display: block; font-size: 14px; margin-bottom: 8px; color: var(--text-secondary);" data-i18n="faq.message_label">Сообщение</label>
+                <textarea id="support-message" rows="4" style="width: 100%; padding: 12px; border-radius: var(--radius-btn); border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-primary); resize: vertical; font-family: var(--font-ui);" placeholder="Подробно опишите ситуацию..." data-i18n="faq.message_placeholder"></textarea>
+            </div>
+            
+            <button class="btn btn--solid w-100" id="btn-send-support" style="border: none;" data-i18n="faq.send_request">Отправить запрос</button>
+        </template>
+        
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/faq/index.js' %}"></script>
+{% endblock %}
