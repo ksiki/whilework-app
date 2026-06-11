@@ -22,7 +22,15 @@ def vacancies_list(
 
     if query.filters:
         try:
-            vacancies = services.apply_filters(queryset=vacancies, params=query.filters)
+            blacklist = None
+            if request.user.is_authenticated:
+                blacklist = request.user.company_blacklist.values_list("id", flat=True)
+
+            vacancies = services.apply_filters(
+                queryset=vacancies,
+                blacklist_companies=blacklist,
+                params=query.filters,
+            )
         except (UnknownSortingError, UnknownModeError) as e:
             return HttpResponse(
                 f"Bad Request: filtering params error e:{e}", status=400
@@ -41,6 +49,10 @@ def vacancies_list(
     context["sources"] = sources_services.get_source_types()
     context["vacancies"] = page.object_list
     context["has_next"] = page.has_next()
+    if request.user.is_authenticated:
+        context["viewed_vacancies"] = request.user.viewed_vacancies.values_list(
+            "id", flat=True
+        )
 
     return render(request, template, context)
 
@@ -53,6 +65,7 @@ def vacancy_detail(request: HttpRequest, id: uuid.UUID, slug: str) -> HttpRespon
         ).prefetch_related("contact"),
         id=id,
     )
+    services.update_views(vacancy=vacancy)
 
     is_auth = request.user.is_authenticated
     context = {
