@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.postgres",
+    "django.contrib.sites",
+    "django.contrib.sitemaps",
     "apps.system",
     "apps.inbox",
     "apps.vacancies",
@@ -49,6 +51,7 @@ INSTALLED_APPS = [
     "apps.cooperation",
     "apps.navbar",
 ]
+SITE_ID = 1
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -74,6 +77,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "apps.accounts.context_processors.unread_messages_processor",
             ],
         },
     },
@@ -172,3 +176,29 @@ SOURCE_MAX_ERRORS = 5
 
 # Env variables
 INTERNAL_API_SECRET = os.getenv("INTERNAL_API_SECRET")
+
+
+# Logging
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {
+        "suppress_unauthorized_vacancy": {
+            "()": "core.log_filters.SuppressUnauthorizedVacancyViewFilter",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "filters": ["suppress_unauthorized_vacancy"],
+        },
+    },
+    "loggers": {
+        "django.request": {
+            "handlers": ["console"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+    },
+}
