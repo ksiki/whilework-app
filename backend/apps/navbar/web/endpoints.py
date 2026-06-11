@@ -5,7 +5,7 @@ from ninja import Router
 router = Router(tags=["Navbar"])
 
 
-@router.get("/faq/", include_in_schema=False)
-def faq(request: HttpRequest) -> HttpResponse:
+@router.get("/help/", include_in_schema=False)
+def help(request: HttpRequest) -> HttpResponse:
     context = {"is_auth": request.user.is_authenticated}
     return render(request, "faq/index.html", context)
