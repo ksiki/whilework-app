@@ -13,3 +13,7 @@ class ComplaintRequest(Schema):
     vacancy: uuid.UUID
     reason: Complaint.Reason
     details: str | None = None
+
+
+class ShowContactsRequest(Schema):
+    vacancy: uuid.UUID
