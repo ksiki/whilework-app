@@ -24,6 +24,8 @@ class UserAdmin(ShortIdAdminMixin, admin.ModelAdmin):
     list_per_page = 50
     show_full_result_count = False
 
+    autocomplete_fields = ("company_blacklist", "viewed_vacancies")
+
     autocomplete_fields = ("company_blacklist",)
 
     filter_horizontal = ("groups", "user_permissions")
@@ -58,6 +60,12 @@ class UserAdmin(ShortIdAdminMixin, admin.ModelAdmin):
             "Slots and Restrictions",
             {
                 "fields": ("available_slots", "company_blacklist"),
+            },
+        ),
+        (
+            "User Activity",
+            {
+                "fields": ("viewed_vacancies",),
             },
         ),
         (
