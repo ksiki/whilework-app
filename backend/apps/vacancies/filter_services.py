@@ -1,4 +1,5 @@
 import logging
+import uuid
 from typing import Any
 
 from django.db.models import Q, QuerySet
@@ -18,6 +19,16 @@ def _apply_q_object(
         case "exclude":
             return queryset.exclude(q_obj).distinct()
     raise UnknownModeError(f"Unknown mode '{mode}'")
+
+
+def apply_blacklist_companies(
+    queryset: QuerySet["Vacancy"], blacklist: list[uuid.UUID] | None
+) -> QuerySet["Vacancy"]:
+    if blacklist is None or len(blacklist) == 0:
+        return queryset
+
+    search_filter = Q(company_id__in=blacklist)
+    return _apply_q_object(queryset=queryset, q_obj=search_filter, mode="exclude")
 
 
 def apply_text_search(
@@ -43,7 +54,7 @@ def apply_text_search(
         logger.error(
             f"Search filtering error. Query: {query}; Fields: {fields}; E: {e}"
         )
-        return queryset
+        raise
 
 
 def apply_geo_filters(
