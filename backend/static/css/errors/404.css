@@ -1,0 +1,175 @@
+/* ==========================================
+   СТРАНИЦА ОШИБКИ 404 (ERROR 404 PAGE)
+========================================== */
+
+/* Переопределение центрирования контента для страницы ошибки */
+.main-container.error-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 200px);
+    padding: 40px 24px;
+}
+
+.error-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+    width: 100%;
+    max-width: 1000px;
+}
+
+/* --- Левая часть: Интерактивный визуал --- */
+.error-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.error-deflection-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    position: relative;
+}
+
+.error-digit {
+    font-size: 140px;
+    font-weight: 800;
+    color: var(--text-primary);
+    font-family: var(--font-code);
+    line-height: 1;
+    user-select: none;
+}
+
+/* Контейнер космической сферы */
+.space-orb-container {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0; /* Защита сферы от сплющивания */
+}
+
+/* Центральная планета */
+.space-orb {
+    width: 80%;
+    height: 80%;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-accent) 0%, var(--tag-text) 100%);
+    box-shadow: 0 0 32px rgba(124, 58, 237, 0.4);
+    animation: orbFloat 4s ease-in-out infinite alternate;
+    z-index: 2;
+}
+
+/* Крутящееся пунктирное кольцо */
+.space-orbit {
+    position: absolute;
+    width: 150%;
+    height: 150%;
+    border: 2px dashed var(--primary-accent);
+    border-radius: 50%;
+    transform: rotateX(70deg) rotateY(-15deg);
+    animation: ringRotate 20s linear infinite;
+    opacity: 0.6;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* --- Правая часть: Текст и инфо --- */
+.error-info-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    animation: errorFadeIn 0.5s ease forwards;
+}
+
+.error-text {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.error-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 32px !important; /* Фикс жесткого отступа кнопок */
+}
+
+.error-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.error-actions .btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* --- КЛЮЧЕВЫЕ АНИМАЦИИ --- */
+
+/* Эффект парения планеты */
+@keyframes orbFloat {
+    0% { transform: translateY(0) scale(1); }
+    100% { transform: translateY(-16px) scale(1.02); }
+}
+
+/* Вращение кольца по 3D-орбите */
+@keyframes ringRotate {
+    0% { transform: rotateX(70deg) rotateY(-15deg) rotate(0deg); }
+    100% { transform: rotateX(70deg) rotateY(-15deg) rotate(360deg); }
+}
+
+/* Появление текста */
+@keyframes errorFadeIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* --- Адаптивность --- */
+@media (max-width: 768px) {
+    .main-container.error-page {
+        min-height: calc(100vh - 240px);
+        padding: 24px 16px;
+    }
+
+    .error-layout {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        text-align: center;
+    }
+
+    .error-info-panel {
+        align-items: center;
+        text-align: center;
+    }
+
+    .error-actions {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .error-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .error-digit {
+        font-size: 100px;
+    }
+
+    .space-orb-container {
+        width: 100px;
+        height: 100px;
+    }
+}

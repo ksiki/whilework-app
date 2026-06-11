@@ -1,0 +1,600 @@
+/* ==========================================
+   СТРАНИЦА СОТРУДНИЧЕСТВА (CLEAN BENTO V2)
+========================================== */
+
+.main-container.cooperation-page {
+  display: block;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* --- 1. Главная сетка Bento --- */
+.coop-layout {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 24px;
+  align-items: stretch;
+}
+
+/* Строгие солидные карточки */
+.bento-item {
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  position: relative;
+  overflow: hidden; /* Важно для фоновой сетки Hero */
+}
+
+.bento-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.bento-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.visual-hidden {
+  display: none;
+}
+
+/* --- 2. Эффект наклона карточек --- */
+.tilt-effect {
+  transition:
+    transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    box-shadow 0.4s ease,
+    border-color 0.4s ease;
+}
+
+.tilt-effect:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 20px 40px -10px rgba(124, 58, 237, 0.15);
+  border-color: var(--primary-accent);
+}
+
+/* --- 3. Hero Section (Интро) --- */
+.coop-hero-card {
+  grid-column: span 7;
+  background: linear-gradient(
+    145deg,
+    var(--bg-color) 0%,
+    var(--surface-color) 100%
+  );
+}
+
+/* Строгая статичная IT-сетка на фоне баннера */
+.coop-hero-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-image:
+    linear-gradient(var(--border-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+  background-size: 32px 32px;
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.coop-hero__header,
+.coop-hero__stats {
+  position: relative;
+  z-index: 1;
+}
+
+.text-accent {
+  color: var(--primary-accent);
+  font-weight: 700;
+  font-size: 13px;
+  display: inline-block;
+  margin-bottom: 16px;
+  background: var(--tag-accent);
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+}
+
+.coop-title {
+  font-size: 38px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  letter-spacing: -1px;
+}
+.coop-subtitle {
+  font-size: 16px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.coop-hero__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  margin-top: auto;
+  padding-top: 32px;
+  border-top: 1px dashed var(--border-color);
+}
+.coop-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.coop-stat__value {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+.coop-stat__label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* --- 4. Калькулятор и Терминал --- */
+.coop-calc-card {
+  grid-column: span 5;
+}
+
+.config-options {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.config-pill {
+  padding: 8px 16px;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-pill);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-family: var(--font-ui);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.config-pill:hover {
+  border-color: var(--primary-accent);
+  color: var(--text-primary);
+}
+.config-pill.active {
+  background: var(--primary-accent);
+  border-color: var(--primary-accent);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+}
+
+/* Идеальный Терминал */
+.coop-configurator {
+  margin-top: 24px !important;
+}
+.config-preview {
+  margin-top: 24px !important;
+  width: 100%;
+}
+
+.code-window {
+  background: #0f172a;
+  border-radius: 12px;
+  border: 1px solid #334155;
+  overflow: hidden;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.code-window__header {
+  background: #1e293b;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #334155;
+  position: relative;
+  min-height: 48px;
+  box-sizing: border-box;
+}
+
+.term-dots {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.term-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.term-dot.red {
+  background: #ef4444;
+}
+.term-dot.yellow {
+  background: #f59e0b;
+}
+.term-dot.green {
+  background: #10b981;
+}
+
+.code-window__title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-code);
+  font-size: 13px;
+  color: #94a3b8;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.code-window__scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.code-window__body {
+  padding: 24px !important;
+  margin: 0 !important;
+  font-size: 14px !important;
+  line-height: 1.8 !important;
+  color: #f8fafc !important;
+  font-family: var(--font-code) !important;
+  white-space: pre;
+  min-height: 160px;
+}
+
+/* Раскраска синтаксиса */
+.token-keyword {
+  color: #f472b6;
+}
+.token-class {
+  color: #34d399;
+  font-weight: bold;
+}
+.token-string {
+  color: #fcd34d;
+}
+.token-builtin {
+  color: #60a5fa;
+}
+
+/* --- 5. Социальные карточки --- */
+.coop-media-grid {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  grid-column: span 12;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.media-card {
+  text-decoration: none;
+  cursor: pointer;
+  padding: 24px;
+}
+.media-card__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.media-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-color);
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+}
+.media-icon svg {
+  width: 24px;
+  height: 24px;
+}
+.media-handle {
+  font-size: 14px;
+  color: var(--text-primary);
+  font-weight: 700;
+}
+.media-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.media-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.media-card__footer {
+  margin-top: auto;
+  padding-top: 16px;
+}
+.media-stat {
+  display: inline-block;
+  padding: 6px 12px;
+  background: var(--surface-color);
+  border-radius: var(--radius-btn);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  transition: background 0.3s ease;
+}
+
+/* Цвета брендов при наведении */
+.media-card--youtube:hover {
+  border-color: #ff0000;
+  box-shadow: 0 10px 40px -10px rgba(255, 0, 0, 0.15);
+}
+.media-card--youtube:hover .media-icon {
+  background: rgba(255, 0, 0, 0.1);
+  color: #ff0000;
+}
+.media-card--youtube:hover .media-stat {
+  background: #ff0000;
+  color: #fff;
+}
+
+.media-card--tiktok:hover {
+  border-color: #00f2fe;
+  box-shadow: 0 10px 40px -10px rgba(0, 242, 254, 0.15);
+}
+.media-card--tiktok:hover .media-icon {
+  background: rgba(0, 242, 254, 0.1);
+  color: #00f2fe;
+}
+[data-theme="light"] .media-card--tiktok:hover .media-icon {
+  color: #000;
+}
+.media-card--tiktok:hover .media-stat {
+  background: #000;
+  color: #fff;
+  border: 1px solid #00f2fe;
+}
+
+.media-card--instagram:hover {
+  border-color: #e1306c;
+  box-shadow: 0 10px 40px -10px rgba(225, 48, 108, 0.15);
+}
+.media-card--instagram:hover .media-icon {
+  background: linear-gradient(
+    45deg,
+    #f09433 0%,
+    #e6683c 25%,
+    #dc2743 50%,
+    #cc2366 75%,
+    #bc1888 100%
+  );
+  color: #fff;
+}
+.media-card--instagram:hover .media-stat {
+  background: #e1306c;
+  color: #fff;
+}
+
+.media-card--threads:hover {
+  border-color: var(--text-primary);
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.15);
+}
+.media-card--threads:hover .media-icon {
+  background: var(--text-primary);
+  color: var(--bg-color);
+}
+.media-card--threads:hover .media-stat {
+  background: var(--text-primary);
+  color: var(--bg-color);
+}
+
+.media-card--reddit:hover {
+  border-color: #ff4500;
+  box-shadow: 0 10px 40px -10px rgba(255, 69, 0, 0.15);
+}
+.media-card--reddit:hover .media-icon {
+  background: rgba(255, 69, 0, 0.1);
+  color: #ff4500;
+}
+.media-card--reddit:hover .media-stat {
+  background: #ff4500;
+  color: #fff;
+}
+
+.media-card--email:hover {
+  border-color: var(--primary-accent);
+  box-shadow: 0 10px 40px -10px rgba(124, 58, 237, 0.15);
+}
+.media-card--email:hover .media-icon {
+  background: var(--tag-accent);
+  color: var(--primary-accent);
+}
+
+/* --- 6. Пуленепробиваемая Форма отправки --- */
+.coop-form-card {
+  grid-column: span 12;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.coop-form .form-group {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
+
+.coop-form .input-wrapper {
+  width: 100% !important;
+  display: flex !important;
+}
+
+/* Отступы для инпутов формы */
+.coop-form .form-input,
+.coop-form .form-textarea {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 14px 16px !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radius-btn) !important;
+  background-color: var(--bg-color) !important;
+  color: var(--text-primary) !important;
+  font-family: var(--font-ui) !important;
+  font-size: 14px !important;
+  outline: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.coop-form .form-input:focus,
+.coop-form .form-textarea:focus {
+  border-color: var(--primary-accent) !important;
+  box-shadow: 0 0 0 3px var(--tag-accent) !important;
+}
+
+.coop-form .form-input.input-error,
+.coop-form .form-textarea.input-error {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+
+.coop-form .form-textarea {
+  resize: vertical !important;
+  min-height: 120px !important;
+  line-height: 1.5 !important;
+}
+
+/* Состояние успеха */
+.coop-success-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 24px;
+  animation: fadeInScale 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  height: 100%;
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.success-matrix-effect {
+  width: 80px;
+  height: 80px;
+  border-radius: 24px;
+  background: var(--tag-accent);
+  color: #10b981;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  box-shadow: 0 0 30px rgba(16, 185, 129, 0.15);
+}
+
+.success-matrix-effect svg {
+  width: 40px;
+  height: 40px;
+}
+
+.success-title {
+  font-family: var(--font-code);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.success-desc {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+/* --- Адаптивность (Mobile) --- */
+@media (max-width: 992px) {
+  .coop-hero-card,
+  .coop-calc-card {
+    grid-column: span 12;
+  }
+  .coop-hero-card {
+    padding: 40px 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .coop-title {
+    font-size: 30px;
+    letter-spacing: -0.5px;
+  }
+  .coop-stat__value {
+    font-size: 20px;
+  }
+  .coop-hero__stats {
+    gap: 20px;
+    justify-content: space-between;
+    flex-direction: column;
+  }
+  .bento-item {
+    border-radius: 20px;
+    padding: 24px;
+  }
+}
+
+/* Сообщения об ошибках валидации */
+.error-msg {
+    display: none;
+    font-size: 13px;
+    color: #ef4444;
+    margin-top: 6px;
+    font-weight: 500;
+    animation: slideDownError 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.error-msg.visible {
+    display: block;
+}
+
+@keyframes slideDownError {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

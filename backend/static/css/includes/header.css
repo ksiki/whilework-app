@@ -1,0 +1,325 @@
+.header {
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-color);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header__container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 32px;
+}
+
+.header__brand {
+  display: flex;
+  flex-direction: column;
+}
+.header__logo {
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+.header__slogan {
+  font-family: var(--font-code);
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+  height: 18px;
+}
+.slogan-highlight {
+  color: var(--primary-accent);
+}
+.cursor {
+  display: inline-block;
+  width: 8px;
+  color: var(--text-secondary);
+  animation: blink 1s step-start infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.header__nav {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.nav-link {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px 0;
+    transition: color 0.2s ease;
+}
+
+.nav-link svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease, color 0.2s ease;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--primary-accent);
+    transition: width 0.3s ease, left 0.3s ease;
+    border-radius: 2px;
+}
+
+.nav-link:hover::after,
+.nav-dropdown:hover .nav-link::after {
+    width: 100%;
+    left: 0;
+}
+
+.nav-link:hover,
+.nav-dropdown:hover .nav-link {
+    color: var(--primary-accent);
+}
+
+.nav-link--glow:hover svg {
+    filter: drop-shadow(0 0 6px rgba(124, 58, 237, 0.5));
+}
+
+/* --- Dropdown Контейнер --- */
+.nav-dropdown {
+    position: relative;
+}
+
+/* Вращение стрелочки при наведении */
+.nav-dropdown:hover .nav-dropdown__toggle svg {
+    transform: rotate(180deg);
+}
+
+/* --- Само выпадающее меню --- */
+.nav-dropdown__menu {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-card);
+    padding: 8px;
+    min-width: 220px;
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* Пружинистая анимация */
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Показ меню при наведении на родителя */
+.nav-dropdown:hover .nav-dropdown__menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(16px);
+}
+
+/* --- Элементы внутри меню --- */
+.nav-dropdown__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: var(--radius-btn);
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.nav-dropdown__item svg {
+    width: 18px;
+    height: 18px;
+    color: var(--text-secondary);
+    transition: color 0.2s ease;
+}
+
+/* Эффект при наведении на пункт меню (сдвиг вправо) */
+.nav-dropdown__item:hover {
+    background: var(--surface-color);
+    color: var(--text-primary);
+    transform: translateX(4px);
+}
+
+.nav-dropdown__item:hover svg {
+    color: var(--primary-accent);
+}
+
+.header__actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-self: end;
+  white-space: nowrap;
+}
+
+.header__icons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 8px;
+  border-left: 1px solid var(--border-color);
+  padding-left: 16px;
+}
+
+.icon-btn {
+  position: relative;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+.icon-btn:hover {
+  background-color: var(--surface-color);
+  color: var(--primary-accent);
+}
+.icon-btn svg {
+  width: 20px;
+  height: 20px;
+}
+.icon-btn.has-unread::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  background-color: #ef4444;
+  border-radius: 50%;
+  border: 2px solid var(--background-color, #ffffff); 
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes popIn {
+  0% { transform: scale(0); }
+  100% { transform: scale(1); }
+}
+
+@media (max-width: 1024px) {
+  .header__nav {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .header__container {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 16px;
+  }
+  .header__nav,
+  .btn--outline,
+  .btn--solid {
+    display: none;
+  }
+  .header__icons {
+    margin-left: 0;
+    border-left: none;
+    padding-left: 0;
+  }
+  .header__slogan {
+    height: auto;
+    min-height: 18px;
+    line-height: 1.4;
+    margin-top: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header__actions .btn {
+    display: none;
+  }
+  .header__logo {
+    font-size: 16px;
+  }
+}
+
+
+/* ==========================================
+   Toast Уведомление (Скоро на сайте)
+========================================== */
+.toast {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 12px 20px;
+    border-radius: var(--radius-card); 
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+    transform: translateY(100px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    z-index: 1000;
+}
+
+.toast.show {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+.toast svg {
+    width: 20px;
+    height: 20px;
+    color: var(--primary-accent);
+}
+
+@media (max-width: 480px) {
+    .toast {
+        bottom: 24px;
+        right: 50%;
+        transform: translate(50%, 100px);
+        width: max-content;
+    }
+    .toast.show {
+        transform: translate(50%, 0);
+    }
+}

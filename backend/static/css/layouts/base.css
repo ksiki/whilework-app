@@ -1,0 +1,163 @@
+/* ==========================================
+   CSS Variables (Светлая и Темная темы)
+========================================== */
+:root {
+    --bg-color: #FFFFFF;
+    --surface-color: #F9FAFB;
+    --primary-accent: #7C3AED;
+    --text-primary: #111827;
+    --text-secondary: #6B7280;
+    --border-color: #E5E7EB;
+    --tag-accent: #F5F3FF;
+    --tag-text: #7C3AED;
+
+    --font-ui: 'Inter', sans-serif;
+    --font-code: 'JetBrains Mono', monospace;
+
+    --radius-card: 12px;
+    --radius-btn: 8px;
+    --radius-search: 10px;
+    --radius-pill: 9999px;
+    --radius-checkbox: 4px;
+}
+
+[data-theme="dark"] {
+    --bg-color: #0F172A;
+    --surface-color: #1E293B;
+    --primary-accent: #8B5CF6;
+    --text-primary: #F8FAFC;
+    --text-secondary: #94A3B8;
+    --border-color: #334155;
+    --tag-accent: #2E1065;
+    --tag-text: #C4B5FD;
+}
+
+/* ==========================================
+   Базовый сброс и настройки
+========================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-ui);
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    line-height: 1.5;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style: none;
+}
+
+.btn {
+    font-family: var(--font-ui);
+    font-weight: 500;
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: var(--radius-btn);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.btn--outline {
+    background-color: transparent;
+    border: 1px solid var(--primary-accent);
+    color: var(--primary-accent);
+}
+
+.btn--outline:hover {
+    background-color: var(--tag-accent);
+}
+
+.btn--solid {
+    background-color: var(--primary-accent);
+    color: #FFFFFF;
+}
+
+.btn--solid:hover {
+    opacity: 0.9;
+}
+
+.main-container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 32px 24px;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 32px;
+}
+
+@media (max-width: 768px) {
+    .main-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* --- Модальное окно --- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.modal-overlay.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-content {
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  width: 90%;
+  max-width: 420px;
+  padding: 32px 24px;
+  position: relative;
+  transform: translateY(20px) scale(0.95);
+  transition: transform 0.3s ease;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-overlay.is-open .modal-content {
+  transform: translateY(0) scale(1);
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.modal-close:hover {
+  color: var(--text-primary);
+}
+
+.modal-title {
+  font-size: 20px;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  font-weight: 600;
+}

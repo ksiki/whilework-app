@@ -1,0 +1,722 @@
+/* ==========================================
+   Страница вакансии (Job Detail)
+========================================== */
+
+.main-container.detail-page {
+  display: block;
+}
+
+/* Кнопка "Назад" */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 24px;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.back-link svg {
+  width: 18px;
+  height: 18px;
+}
+
+.back-link:hover {
+  color: var(--primary-accent);
+  transform: translateX(-4px);
+}
+
+/* Сетка страницы: 2 колонки одинаковой высоты */
+.job-detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 32px;
+  align-items: stretch !important;
+}
+
+/* --- Левая колонка: Карточка --- */
+.job-card.job-card--detailed {
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  padding: 24px 32px;
+  transition: none; /* Отключаем интерактивность */
+}
+
+.job-card.job-card--detailed:hover {
+  border-color: var(--border-color);
+  box-shadow: none;
+  cursor: default;
+}
+
+.job-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.job-date {
+  font-family: var(--font-code);
+  font-size: 13px;
+  margin-left: auto;
+}
+
+.job-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+  margin-bottom: 16px;
+  letter-spacing: -0.5px;
+}
+
+.job-salary-large {
+  font-family: var(--font-code);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 24px;
+}
+
+.job-attributes {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  background-color: var(--surface-color);
+  padding: 16px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 24px;
+}
+
+.attr-item {
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+
+.attr-item strong {
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+.job-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.job-card--detailed .tag {
+  font-family: var(--font-code);
+  font-size: 13px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  background-color: var(--tag-accent);
+  color: var(--tag-text);
+  border: 1px solid transparent;
+  cursor: default;
+}
+
+.job-card--detailed .tag:hover {
+  background-color: var(--tag-accent);
+  color: var(--tag-text);
+  border-color: transparent;
+  transform: none;
+}
+
+/* Описание вакансии */
+.job-description-panel {
+  margin-top: 32px;
+  padding: 0 16px;
+}
+
+.job-description-panel h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: var(--text-primary);
+}
+
+.rich-text h3 {
+  font-size: 18px;
+  color: var(--text-primary);
+  margin: 24px 0 12px 0;
+}
+
+.rich-text p {
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+.rich-text ul {
+  list-style-type: none;
+  padding-left: 8px;
+  margin-bottom: 16px;
+}
+
+.rich-text ul li {
+  position: relative;
+  padding-left: 24px;
+  margin-bottom: 10px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.rich-text ul li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--primary-accent);
+  font-family: var(--font-code);
+}
+
+.rich-text strong {
+  color: var(--text-primary);
+}
+
+/* --- Правая колонка: Сайдбар (Панель действий) --- */
+.sticky-panel {
+  position: sticky;
+  top: 100px;
+  margin-top: 0 !important;
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.w-100 {
+  width: 100%;
+}
+.btn--large {
+  padding: 14px 24px;
+  font-size: 16px;
+}
+
+.glow-effect {
+  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
+}
+.glow-effect:hover {
+  box-shadow: 0 6px 28px rgba(124, 58, 237, 0.5);
+  transform: translateY(-2px);
+}
+
+.panel-divider {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: 20px 0;
+}
+
+.action-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-btn);
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.action-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.action-btn:hover {
+  background-color: var(--surface-color);
+  color: var(--text-primary);
+}
+
+/* Специфичные эффекты кнопок сайдбара */
+#btn-share:hover {
+  color: var(--primary-accent);
+  background-color: var(--tag-accent);
+  border-color: rgba(124, 58, 237, 0.3);
+  transform: translateX(6px);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.1);
+}
+#btn-share:active {
+  transform: scale(0.97) translateX(6px);
+}
+
+#btn-report:hover {
+  color: #f59e0b;
+  background-color: rgba(245, 158, 11, 0.05);
+  border-color: rgba(245, 158, 11, 0.4);
+  transform: translateX(6px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.1);
+}
+#btn-report:active {
+  transform: scale(0.97) translateX(6px);
+}
+
+#btn-blacklist:hover {
+  color: #ef4444;
+  background-color: rgba(239, 68, 68, 0.05);
+  border-color: rgba(239, 68, 68, 0.4);
+  transform: translateX(6px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+}
+#btn-blacklist:hover svg {
+  animation: danger-pulse 1.2s infinite ease-in-out;
+}
+#btn-blacklist:active {
+  transform: scale(0.97) translateX(6px);
+}
+
+@keyframes danger-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+    color: #dc2626;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* --- Адаптивность --- */
+@media (max-width: 1024px) {
+  .job-detail-layout {
+    grid-template-columns: 1fr 280px;
+    gap: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .job-detail-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .job-card.job-card--detailed {
+    padding: 20px;
+    height: auto;
+  }
+  .job-title {
+    font-size: 24px;
+  }
+  .job-salary-large {
+    font-size: 22px;
+  }
+  .job-attributes {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .sticky-panel {
+    position: static;
+    height: auto;
+    margin-top: 16px !important;
+    padding: 16px;
+  }
+
+  .job-detail__sidebar .btn--solid {
+    display: block !important;
+    width: 100%;
+  }
+
+  .modal-content .btn--solid,
+  .modal-content .btn--outline {
+    display: flex !important;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .modal-content div[style*="display: flex"] {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+}
+
+/* ==========================================
+   Элементы форм в модальных окнах
+========================================== */
+
+.modal-input {
+    width: 100%;
+    padding: 12px;
+    border-radius: var(--radius-btn);
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    font-family: var(--font-ui);
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.modal-input:focus {
+    outline: none;
+    border-color: var(--primary-accent);
+}
+
+.modal-input.has-error {
+    border-color: #EF4444;
+}
+
+/* Специфичные стили для селекта */
+select.modal-input {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='gray' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+    cursor: pointer;
+}
+
+select.modal-input:invalid {
+    color: var(--text-secondary); /* Цвет плейсхолдера, пока опция не выбрана */
+}
+
+/* Специфичные стили для текстового поля */
+.modal-textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* ==========================================
+   Блок: Похожие вакансии
+========================================== */
+
+.similar-jobs-panel {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid var(--border-color);
+}
+
+.similar-jobs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.similar-jobs-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Бэйджик и пульсирующая точка (из ТЗ) */
+.similar-jobs-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-pill);
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #10B981; /* Зеленый "Успех / Онлайн" из ТЗ */
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  animation: pulse-green 2s infinite cubic-bezier(0.66, 0, 0, 1);
+}
+
+@keyframes pulse-green {
+  to {
+    box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+  }
+}
+
+.badge-text {
+  font-size: 13px;
+  font-family: var(--font-code);
+  color: var(--text-secondary);
+}
+
+/* Сетка карточек */
+.similar-jobs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+/* Карточка: База и скрытие до анимации */
+.s-job-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  border-radius: var(--radius-card);
+  z-index: 1;
+  opacity: 0; /* Скрыто по умолчанию для JS-анимации */
+  transform: translateY(20px);
+}
+
+/* Класс, который добавит JS при скролле для каскадной анимации */
+.similar-jobs-grid.is-animated .s-job-card {
+  animation: cascadeFadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--delay) * 0.15s);
+}
+
+@keyframes cascadeFadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Магический неоновый бордюр (Градиент) */
+.s-job-card__gradient-border {
+  position: absolute;
+  inset: -2px; /* Выступает за края на 2px */
+  z-index: -1;
+  border-radius: calc(var(--radius-card) + 2px);
+  /* Градиент в стилистике ТЗ (акцентный фиолетовый + синий) */
+  background: linear-gradient(
+    135deg, 
+    var(--primary-accent), 
+    #3B82F6, 
+    var(--primary-accent)
+  );
+  background-size: 200% 200%;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+@keyframes bg-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Внутренний контент карточки */
+.s-job-card__content {
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  transition: border-color 0.4s ease, transform 0.4s ease;
+}
+
+/* Интерактив (Hover) */
+.s-job-card:hover {
+  outline: none;
+}
+
+.s-job-card:hover .s-job-card__gradient-border {
+  opacity: 1; /* Включаем свечение */
+  animation: bg-shift 3s ease infinite; /* Двигаем градиент */
+}
+
+.s-job-card:hover .s-job-card__content {
+  border-color: transparent; /* Прячем обычную рамку */
+  transform: translateY(-4px); /* Приподнимаем контент */
+}
+
+/* Текстовые элементы внутри карточки */
+.s-job-card__meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.s-job-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  line-height: 1.3;
+  transition: color 0.2s ease;
+}
+
+.s-job-card:hover .s-job-title {
+  color: var(--primary-accent);
+}
+
+.s-job-salary {
+  font-family: var(--font-code);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.s-job-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.s-job-card__tags .tag {
+  font-family: var(--font-code);
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background-color: var(--surface-color);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+}
+
+.s-job-card:hover .tag {
+  background-color: var(--tag-accent);
+  color: var(--tag-text);
+  border-color: transparent;
+}
+
+@media (max-width: 768px) {
+  .similar-jobs-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}
+
+/* ==========================================
+   АРХИВНАЯ ВАКАНСИЯ (Archived State - Fixed Spacing)
+========================================== */
+
+/* 1. Информационная системная плашка */
+.archived-notice {
+    background: var(--surface-color);
+    border: 1px dashed var(--border-color);
+    border-left: 4px solid var(--text-secondary); /* Серый строгий статус архива */
+    padding: 24px 32px; /* Увеличили воздух внутри плашки */
+    display: flex;
+    gap: 20px; /* Больше отступ между иконкой и текстовым блоком */
+    align-items: flex-start;
+    border-radius: var(--radius-card);
+    margin-bottom: 32px; /* ФИКС: Жесткий барьер до карточки вакансии ниже */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01);
+}
+
+[data-theme="dark"] .archived-notice {
+    background: rgba(30, 41, 59, 0.4);
+}
+
+.archived-notice__icon {
+    color: var(--text-secondary);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.archived-notice__icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.archived-notice__text h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 8px 0; /* Отступ от заголовка плашки до ее текста */
+    line-height: 1.4;
+}
+
+.archived-notice__text p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.6; /* Сделали чтение системного текста свободным */
+}
+
+/* 2. Карточка архивной вакансии */
+.job-card--archived {
+    opacity: 0.85; 
+    filter: grayscale(75%); /* Благородное приглушение цвета */
+    box-shadow: none !important;
+    margin-top: 0 !important; /* Управляется чистым margin-bottom плашки выше */
+}
+
+/* Жестко страхуем hover-эффекты от базовой карточки, чтобы ничего не прыгало */
+.job-card--archived:hover {
+    border-color: var(--border-color) !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Фикс тега даты закрытия — теперь выглядит как аккуратный системный статус */
+.job-card--archived .job-date {
+    color: #EF4444; 
+    font-weight: 600;
+    background: rgba(239, 68, 68, 0.08);
+    padding: 4px 12px;
+    border-radius: var(--radius-pill);
+    font-size: 12px;
+}
+
+/* 3. Сайдбар: Контейнер заблокированных действий */
+.archived-actions {
+    padding: 32px 24px; /* Добавили простора внутри блока контактов */
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-card);
+    margin-bottom: 32px; /* ФИКС: Отодвигаем виджет похожих вакансий ниже */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Заблокированная кнопка контактов */
+.btn--disabled {
+    background: rgba(148, 163, 184, 0.08) !important;
+    color: var(--text-secondary) !important;
+    border: 1px dashed var(--border-color) !important;
+    cursor: not-allowed !important;
+    pointer-events: none;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 20px !important;
+}
+
+.btn--disabled svg {
+    width: 18px;
+    height: 18px;
+    opacity: 0.7;
+}
+
+.archived-hint {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 16px 0 0 0; /* Красивый отступ от кнопки до пояснения */
+    max-width: 260px;
+}
+
+/* Кнопка поиска альтернатив */
+.archived-actions .btn--outline {
+    margin-top: 24px; /* Отделяем основную кнопку действия от подсказки */
+    width: 100%;
+}

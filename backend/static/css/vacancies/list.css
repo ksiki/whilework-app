@@ -1,0 +1,214 @@
+.main-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 32px;
+}
+
+.content-area {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.search-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-search);
+  padding: 6px 6px 6px 16px;
+  transition: border-color 0.2s ease;
+}
+.search-bar:focus-within {
+  border-color: var(--primary-accent);
+  box-shadow: 0 0 0 3px var(--tag-accent);
+}
+.search-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--primary-accent);
+}
+.search-input {
+  flex-grow: 1;
+  border: none;
+  background: transparent;
+  padding: 8px 12px;
+  font-size: 15px;
+  color: var(--text-primary);
+  outline: none;
+  font-family: var(--font-ui);
+}
+.search-input::placeholder {
+  color: var(--text-secondary);
+}
+
+.search-filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.checkbox-group {
+  display: flex;
+  gap: 20px;
+}
+
+.custom-checkbox {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  position: relative;
+  padding-left: 24px;
+}
+.custom-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+.checkmark {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-checkbox);
+  transition: all 0.2s;
+}
+.custom-checkbox input:checked ~ .checkmark {
+  background-color: var(--primary-accent);
+  border-color: var(--primary-accent);
+}
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.custom-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.custom-sort {
+  position: relative;
+  width: 180px;
+}
+.custom-sort__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+.custom-sort__header:hover,
+.custom-sort.active .custom-sort__header {
+  color: var(--primary-accent);
+}
+.custom-sort__header svg {
+  transition: transform 0.2s ease;
+}
+.custom-sort.active .custom-sort__header svg {
+  transform: rotate(180deg);
+}
+.custom-sort__list {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  width: 100%;
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-btn);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s ease;
+}
+.custom-sort.active .custom-sort__list {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.custom-sort__item {
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+.custom-sort__item:hover {
+  background-color: var(--surface-color);
+  color: var(--primary-accent);
+}
+.custom-sort__item.active {
+  font-weight: 600;
+  color: var(--primary-accent);
+  background-color: var(--tag-accent);
+}
+
+.jobs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .main-container {
+    grid-template-columns: 1fr;
+  }
+  .search-filters {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -35px;
+  }
+  100% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -124px;
+  }
+}

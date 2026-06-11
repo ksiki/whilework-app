@@ -1,0 +1,180 @@
+.job-card {
+  position: relative;
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-card);
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.job-card:hover {
+  border-color: var(--primary-accent);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.08);
+}
+.job-card__header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.job-card__main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+.job-card__title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.job-card__title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.job-card__link::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.job-card__specs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.job-card__specs b {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+.job-card__footer {
+  margin-top: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.job-card__salary {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.job-card__salary--hidden {
+  color: var(--text-secondary);
+}
+
+.job-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  position: relative;
+  z-index: 2;
+}
+
+.tag {
+  background-color: var(--surface-color);
+  color: var(--text-secondary);
+  font-size: 12px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease;
+}
+.job-card:hover .tag {
+  background-color: var(--tag-accent);
+  color: var(--tag-text);
+  border-color: transparent;
+}
+
+@media (max-width: 768px) {
+  .job-card__main {
+    flex-direction: column;
+    gap: 20px;
+  }
+  .job-card__footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .job-card__salary {
+    margin-top: 4px;
+  }
+}
+
+/* ==========================================
+   СОСТОЯНИЕ: ПРОСМОТРЕННАЯ ВАКАНСИЯ (Viewed)
+========================================== */
+
+/* Контейнер в шапке для выравнивания индикатора и даты */
+.job-card__header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Эстетичный IT-индикатор в виде комментария кода */
+.viewed-status {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  opacity: 0.6;
+  letter-spacing: 0.5px;
+}
+
+/* Модификации самой карточки, когда она прочитана */
+.job-card.viewed {
+  border-color: rgba(0, 0, 0, 0.05); /* Делаем рамку более прозрачной */
+  background-color: rgba(249, 250, 251, 0.50); /* Мягкий налет "прочитанности" */
+}
+
+/* Фикс фона прочитанной карточки для темной темы */
+[data-theme="dark"] .job-card.viewed {
+  border-color: rgba(255, 255, 255, 0.04);
+  background-color: rgba(30, 41, 59, 0.25);
+}
+
+/* Приглушаем заголовок вакансии */
+.job-card.viewed .job-card__title .job-card__link {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* Слегка обесцвечиваем остальные элементы карточки, кроме важных тегов */
+.job-card.viewed .job-card__meta,
+.job-card.viewed .job-card__date,
+.job-card.viewed .job-card__specs,
+.job-card.viewed .job-card__salary {
+  opacity: 0.75;
+  transition: opacity 0.2s ease;
+}
+
+/* Интерактивность: При наведении карточка должна "оживать" обратно */
+.job-card.viewed:hover {
+  border-color: var(--primary-accent);
+  background-color: var(--bg-color); /* Возвращаем чистый фон */
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.06);
+}
+
+.job-card.viewed:hover .job-card__title .job-card__link {
+  color: var(--primary-accent); /* Подсвечиваем заголовок акцентом при ховере */
+}
+
+.job-card.viewed:hover .job-card__meta,
+.job-card.viewed:hover .job-card__date,
+.job-card.viewed:hover .job-card__specs,
+.job-card.viewed:hover .job-card__salary {
+  opacity: 1; /* Возвращаем 100% контраст при наведении */
+}

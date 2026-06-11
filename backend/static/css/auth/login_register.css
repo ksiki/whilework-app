@@ -1,0 +1,347 @@
+/* ==========================================
+   Страница Авторизации / Регистрации (Auth Page)
+========================================== */
+
+/* Переопределение базовой сетки для центрирования */
+.main-container.auth-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 200px);
+}
+
+.auth-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+    width: 100%;
+    max-width: 1100px;
+}
+
+/* --- Левая колонка: Презентация и Терминал --- */
+.auth-presentation {
+    display: flex;
+    flex-direction: column;
+}
+
+.presentation-title {
+    font-family: var(--font-code);
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--primary-accent);
+    line-height: 1.3;
+    margin-bottom: 16px;
+}
+
+.presentation-desc {
+    color: var(--text-secondary);
+    font-size: 16px;
+    line-height: 1.6;
+    max-width: 400px;
+}
+
+/* Стилизация Терминала */
+.terminal-window {
+    background: #0F172A; /* Всегда темный фон для эффекта терминала */
+    border-radius: var(--radius-card);
+    border: 1px solid #334155;
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+.terminal-header {
+    background: #1E293B;
+    padding: 12px 16px;
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid #334155;
+}
+
+.term-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.term-dot.red { background: #EF4444; }
+.term-dot.yellow { background: #F59E0B; }
+.term-dot.green { background: #10B981; }
+
+.terminal-body {
+    padding: 24px;
+    font-family: var(--font-code);
+    font-size: 14px;
+    line-height: 1.6;
+    color: #F8FAFC; 
+}
+
+.term-prompt { color: var(--primary-accent); font-weight: 700; }
+.text-secondary { color: #94A3B8; }
+.term-ok { color: #10B981; font-weight: 700; }
+.text-danger { color: #EF4444; }
+
+.typing-anim {
+    color: #F8FAFC;
+    margin-top: 16px;
+}
+
+/* --- Правая колонка: Форма --- */
+.auth-form-wrapper {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 440px;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-card);
+    padding: 40px;
+    box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.05);
+}
+
+.auth-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.auth-subtitle {
+    font-size: 15px;
+    color: var(--text-secondary);
+}
+
+/* Кнопка Google OAuth */
+.btn-oauth {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 24px;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-btn);
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-oauth:hover {
+    background: var(--bg-color);
+    border-color: var(--primary-accent);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.1);
+}
+
+.oauth-icon { width: 24px; height: 24px; }
+
+/* Разделитель "или" */
+.auth-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.auth-divider span { padding: 0 16px; }
+
+/* --- Поля ввода --- */
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.input-icon {
+    position: absolute;
+    left: 14px;
+    width: 20px;
+    height: 20px;
+    color: var(--text-secondary);
+    pointer-events: none;
+    transition: color 0.2s ease;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+    width: 100%;
+}
+
+.form-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-btn);
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.form-input.with-icon {
+    padding-left: 44px;
+}
+
+.form-input:focus {
+    border-color: var(--primary-accent);
+    box-shadow: 0 0 0 3px var(--tag-accent);
+}
+
+.input-wrapper:focus-within .input-icon {
+    color: var(--primary-accent);
+}
+
+.input-error {
+    border-color: #EF4444 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+
+/* --- Ввод OTP кода --- */
+.otp-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 8px;
+}
+
+.otp-mail-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: var(--tag-accent);
+    color: var(--primary-accent);
+    border-radius: 50%;
+    margin: 0 auto 16px auto;
+}
+
+.otp-mail-icon svg { width: 24px; height: 24px; }
+
+.otp-inputs {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin: 24px 0 16px 0;
+}
+
+.otp-digit {
+    width: 56px;
+    height: 64px;
+    padding: 0;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    font-family: var(--font-code);
+    background: var(--bg-color);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-btn);
+    color: var(--text-primary);
+    outline: none;
+    box-shadow: none;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.otp-digit:focus {
+    border-color: var(--primary-accent);
+    box-shadow: 0 0 0 4px var(--tag-accent);
+    transform: translateY(-2px);
+}
+
+/* --- Вспомогательные элементы формы --- */
+.btn-text {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.btn-text:hover { color: var(--text-primary); }
+
+.auth-footer { text-align: center; font-size: 14px; }
+.auth-link { color: var(--primary-accent); font-weight: 600; text-decoration: none; background: none; border: none; padding: 0; cursor: pointer;}
+.auth-link:hover { text-decoration: underline; }
+
+.text-primary { color: var(--text-primary); }
+.text-center { text-align: center; }
+.btn--full { width: 100%; display: block; }
+.mt-8 { margin-top: 8px; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+
+/* --- Анимации переключения (HTMX-like) --- */
+.auth-view, .auth-step {
+    display: none;
+    animation: authFadeIn 0.3s ease forwards;
+}
+
+.auth-view.active, .auth-step.active {
+    display: block;
+}
+
+@keyframes authFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Адаптивность (Mobile) --- */
+@media (max-width: 992px) {
+    .auth-layout {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    
+    .auth-presentation {
+        text-align: center;
+        align-items: center;
+    }
+    
+    .presentation-desc { margin: 0 auto; }
+    
+    .terminal-window {
+        max-width: 500px;
+        width: 100%;
+        text-align: left;
+    }
+    
+    .auth-form-wrapper { justify-content: center; }
+}
+
+@media (max-width: 480px) {
+    .auth-card { padding: 24px; border: none; box-shadow: none; }
+    .terminal-window { display: none; }
+    .presentation-title { font-size: 24px; }
+    .otp-digit { width: 48px; height: 56px; font-size: 20px; }
+}
