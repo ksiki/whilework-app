@@ -10,6 +10,7 @@ from ninja.throttling import AnonRateThrottle, AuthRateThrottle
 
 from apps.accounts import services
 from apps.accounts.api.schemas import (
+    AddViewedVacancy,
     CompanyBlacklistRequest,
     LoginRequest,
     ReadNotificationRequest,
@@ -21,7 +22,7 @@ from apps.accounts.api.schemas import (
 logger = logging.getLogger(__name__)
 router = Router(
     tags=["Accounts API"],
-    throttle=[AnonRateThrottle("50/m"), AuthRateThrottle("50/m")],
+    throttle=[AnonRateThrottle("100/m"), AuthRateThrottle("200/m")],
 )
 User = get_user_model()
 
@@ -119,11 +120,11 @@ def login_user(request: HttpRequest, payload: LoginRequest) -> HttpResponse:
     auth=django_auth,
     response={200: SuccessResponse, 400: dict},
 )
-def edit_companies_blacklist(
+async def edit_companies_blacklist(
     request: HttpRequest, payload: CompanyBlacklistRequest
 ) -> HttpResponse:
     try:
-        message = services.edit_blacklist(
+        message = await services.edit_blacklist(
             user=request.user, company_id=payload.company_id, delete=payload.delete
         )
     except IntegrityError:
@@ -134,6 +135,27 @@ def edit_companies_blacklist(
         "message": message,
         "i18n": "",
     }
+
+
+@router.post(
+    "/add-viewed-vacancy/",
+    auth=django_auth,
+    response={200: SuccessResponse, 400: dict},
+)
+async def add_viewed_vacancy(
+    request: HttpRequest, payload: AddViewedVacancy
+) -> HttpResponse:
+    try:
+        success = await services.update_viewed_vacancies(
+            user=request.user, vacancy_id=payload.vacancy
+        )
+    except Exception as e:
+        logger.error(f"Update viewed vacancies is failde: {str(e)}", exc_info=True)
+        return 400, {"message": "Update viewed vacancies is failde"}
+    else:
+        if not success:
+            return 400, {"message": "Vacancy or User not found"}
+    return 200, {"success": True, "message": "The vacancy is marked as viewed"}
 
 
 @router.post(

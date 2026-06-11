@@ -30,5 +30,9 @@ class CompanyBlacklistRequest(Schema):
     delete: bool
 
 
+class AddViewedVacancy(Schema):
+    vacancy: uuid.UUID
+
+
 class ReadNotificationRequest(Schema):
     notification_id: uuid.UUID

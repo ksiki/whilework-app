@@ -77,12 +77,12 @@ def get_profile_data(email: str) -> dict[str, Any]:
     }
 
 
-def edit_blacklist(user: UserModel, company_id: uuid.UUID, delete: bool) -> str:
+async def edit_blacklist(user: UserModel, company_id: uuid.UUID, delete: bool) -> bool:
     if delete:
-        user.company_blacklist.remove(company_id)
+        await user.company_blacklist.aremove(company_id)
         message = "Company removed from blacklist"
     else:
-        user.company_blacklist.add(company_id)
+        await user.company_blacklist.aadd(company_id)
         message = "Company added to blacklist"
     return message
 
@@ -96,3 +96,11 @@ def mark_notification_as_read(user_id: uuid.UUID, notif_id: uuid.UUID) -> None:
     )
     if updated_count == 0:
         raise ObjectDoesNotExist("Notification not found")
+
+
+async def update_viewed_vacancies(user: UserModel, vacancy_id: uuid.UUID) -> bool:
+    try:
+        await user.viewed_vacancies.aadd(vacancy_id)
+        return True
+    except Exception:
+        return False

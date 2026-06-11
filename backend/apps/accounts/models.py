@@ -49,6 +49,9 @@ class User(AbstractBaseUser, PermissionsMixin, TimeStampedMixin):
     company_blacklist = models.ManyToManyField(
         "vacancies.Company", related_name="users", blank=True
     )
+    viewed_vacancies = models.ManyToManyField(
+        "vacancies.Vacancy", related_name="users", blank=True
+    )
 
     objects = UserManager()
 
