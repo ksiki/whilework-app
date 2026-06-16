@@ -12,6 +12,6 @@
     <p style="color: var(--text-secondary); margin-bottom: 24px; line-height: 1.5;" data-i18n="modal.auth_text">Пожалуйста, войдите в свой аккаунт или зарегистрируйтесь, чтобы совершить это действие.</p>
     <div style="display: flex; gap: 12px;">
         <button class="btn btn--outline w-100" onclick="document.getElementById('interactive-modal').classList.remove('is-open')" data-i18n="common.cancel">Отмена</button>
-        <a href="/login/" class="btn btn--solid w-100" style="border: none; text-decoration: none; text-align: center; display: flex; align-items: center; justify-content: center;" data-i18n="common.login">Войти</a>
+        <a href="{% url 'web:login_register_page' %}" class="btn btn--solid w-100" style="border: none; text-decoration: none; text-align: center; display: flex; align-items: center; justify-content: center;" data-i18n="common.login">Войти</a>
     </div>
 </template>

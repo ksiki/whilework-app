@@ -1,0 +1,14 @@
+{% for log in logs %}
+    <div class="log-entry mt-16">
+        <span class="log-date">{{ log.created_at }}</span>
+        {% if log.type == "FEAT" %}
+            <span class="token-builtin">
+        {% elif log.type == "FIX" %}
+            <span class="token-keyword">
+        {% elif log.type == "INIT" %}
+            <span class="token-class">
+        {% endif %}
+            {{ log.get_type_display }}:
+        </span> {{ log.description }}
+    </div>
+{% endfor %}

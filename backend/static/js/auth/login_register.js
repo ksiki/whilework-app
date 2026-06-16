@@ -247,6 +247,9 @@ class AuthController {
         const password = this.elements.regPass.value;
         const passwordConfirm = this.elements.regPassConfirm.value;
 
+        const turnstileInput = document.querySelector('[name="cf-turnstile-response"]');
+        const turnstileToken = turnstileInput ? turnstileInput.value : '';
+
         if (!email || !password) {
             this.translateError(this.elements.passError, 'fill_all_fields', 'Заполните все поля');
             return;
@@ -259,13 +262,24 @@ class AuthController {
             return;
         }
 
+        const turnstileErrorEl = document.getElementById('turnstile-error');
+        if (!turnstileToken) {
+            this.translateError(turnstileErrorEl, 'solve_captcha', 'Пожалуйста, пройдите проверку на робота');
+            return;
+        }
+        if (turnstileErrorEl) turnstileErrorEl.style.display = 'none';
+
         this.elements.regPassConfirm.classList.remove('input-error');
         this.elements.passError.style.display = 'none';
         
         UIManager.toggleLoading(btn, true);
         this.terminal.updateStatus(`> Creating user record... <span class="cursor">_</span>`);
 
-        const result = await AuthApi.post('/api/user/register/', { email, password });
+        const result = await AuthApi.post('/api/user/register/', { 
+            email, 
+            password,
+            turnstile_token: turnstileToken 
+        });
 
         if (result.success) {
             if (this.elements.displayEmail) this.elements.displayEmail.textContent = email;
@@ -278,6 +292,11 @@ class AuthController {
         } else {
             this.translateError(this.elements.passError, result.i18n, result.error);
             this.terminal.updateStatus(`> Creating user record... <span class="text-danger">FAILED</span><br><br>Awaiting credentials<span class="cursor">_</span>`);
+            
+            if (window.turnstile) {
+                window.turnstile.reset();
+            }
+
             UIManager.toggleLoading(btn, false, 'Продолжить');
         }
     }
