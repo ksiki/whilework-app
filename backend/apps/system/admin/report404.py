@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Report404
+from apps.system.models import Report404
 
 
 @admin.register(Report404)
