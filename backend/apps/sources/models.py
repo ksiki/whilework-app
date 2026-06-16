@@ -5,8 +5,8 @@ from django.db import models
 
 class Source(TimeStampedMixin):
     class Platform(models.TextChoices):
-        DISCORD = "DIS", "Discord"
         TELEGRAM = "TLG", "Telegram"
+        # DISCORD = "DIS", "Discord"
 
     id = models.UUIDField(
         primary_key=True, default=uuid6.uuid7, editable=False, verbose_name="Source ID"
