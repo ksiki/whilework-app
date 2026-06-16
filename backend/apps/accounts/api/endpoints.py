@@ -29,8 +29,13 @@ User = get_user_model()
 
 @router.post("/register/", response={200: SuccessResponse, 400: dict})
 def register_user(request: HttpRequest, payload: RegisterRequest) -> HttpResponse:
-    email = payload.email
+    if not services.CaptchaService.verify_turnstile(payload.turnstile_token):
+        return 400, {
+            "error": "The robot was not checked. Try again",
+            "i18n": "captcha_verification_failed",
+        }
 
+    email = payload.email
     user = User.objects.filter(email=email).first()
 
     if user:
@@ -163,7 +168,9 @@ async def add_viewed_vacancy(
     auth=django_auth,
     response={200: SuccessResponse, 404: dict},
 )
-def read_notification(request: HttpRequest, payload: ReadNotificationRequest):
+def read_notification(
+    request: HttpRequest, payload: ReadNotificationRequest
+) -> HttpResponse:
     try:
         services.mark_notification_as_read(
             user_id=request.user.id, notif_id=payload.notification_id

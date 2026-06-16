@@ -12,7 +12,7 @@ router = Router(tags=["Accounts Web"])
 @router.get("/login/", include_in_schema=False)
 def login_register_page(request: HttpRequest) -> HttpResponse:
     if request.user.is_authenticated:
-        return redirect("/profile/")
+        return redirect("/user/profile/")
 
     return render(request, "auth/login_register.html")
 

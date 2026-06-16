@@ -3,6 +3,7 @@ import secrets
 import uuid
 from typing import Any
 
+import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
@@ -62,6 +63,27 @@ class OTPAuthService:
             return True
 
         return False
+
+
+class CaptchaService:
+    @staticmethod
+    def verify_turnstile(token: str, ip_address: str = None) -> bool:
+        if not token:
+            return False
+
+        url = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
+        payload = {
+            "secret": settings.TURNSTILE_SECRET_KEY,
+            "response": token,
+        }
+
+        try:
+            response = requests.post(url, data=payload, timeout=5)
+            result = response.json()
+            return result.get("success", False)
+        except requests.RequestException as e:
+            logger.error(f"Turnstile API error: {e}")
+            return False
 
 
 def get_profile_data(email: str) -> dict[str, Any]:

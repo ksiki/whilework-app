@@ -7,6 +7,7 @@ from pydantic import EmailStr, Field
 class RegisterRequest(Schema):
     email: EmailStr
     password: str = Field(..., min_length=8)
+    turnstile_token: str
 
 
 class VerifyOTPRequest(Schema):
