@@ -48,7 +48,6 @@ def vacancies_list(
     context = services.make_context_for_vacancies_list()
     context["sources"] = sources_services.get_source_types()
     context["vacancies"] = page.object_list
-    context["has_next"] = page.has_next()
     if request.user.is_authenticated:
         context["viewed_vacancies"] = request.user.viewed_vacancies.values_list(
             "id", flat=True
