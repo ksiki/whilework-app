@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     "apps.vacancies",
     "apps.sources",
     "apps.accounts",
-    "apps.cooperation",
+    "apps.community",
     "apps.navbar",
 ]
 SITE_ID = 1
@@ -153,11 +153,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
-
-USE_I18N = True
+TIME_ZONE = "Europe/Moscow"
 
 USE_TZ = True
+
+USE_I18N = True
 
 
 # Static files (CSS, JavaScript, Images)
@@ -175,8 +175,12 @@ MEDIA_ROOT = "/app/media/"
 SOURCE_MAX_ERRORS = 5
 
 # Env variables
-INTERNAL_API_SECRET = os.getenv("INTERNAL_API_SECRET")
 
+INTERNAL_API_SECRET = os.getenv("INTERNAL_API_SECRET")
+TURNSTILE_SECRET_KEY = os.getenv("TURNSTILE_SECRET_KEY")
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "dummy_key_for_local_development")
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
+RABBITMQ_URL = os.getenv("RABBITMQ_URL", "amqp://guest:guest@localhost:5672/")
 
 # Logging
 
