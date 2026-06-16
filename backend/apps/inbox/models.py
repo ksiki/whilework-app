@@ -12,6 +12,7 @@ class ParserRawMessage(TimeStampedMixin):
         PENDING = "PND", "Pending"
         PROCESSED = "PRC", "Processed"
         FAILED = "FLD", "Failed"
+        REJECTED = "REJ", "Rejected (Not a vacancy)"
 
     id = models.UUIDField(
         primary_key=True,

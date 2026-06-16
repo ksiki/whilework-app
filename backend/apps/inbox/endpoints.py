@@ -5,6 +5,7 @@ from ninja import Router
 
 from .schemas import BatchRequestSchema, ErrorResponseSchema, SuccessResponseSchema
 from .services import atomic_saved_messages_and_update_sources
+from .tasks import process_pending_messages_task
 
 logger = logging.getLogger(__name__)
 
@@ -26,8 +27,10 @@ def receive_raw_batch(request: HttpRequest, payload: BatchRequestSchema):
 
     try:
         atomic_saved_messages_and_update_sources(messages_data=payload.messages)
-        return 201, {"detail": "Processed messages successfully"}
 
+        process_pending_messages_task.kiq(count=len(payload.messages))
+
+        return 201, {"detail": "Processed messages successfully"}
     except Exception as e:
         logger.error("Error saving batch: %s", str(e), exc_info=True)
         return 500, {"error": f"Database error: {str(e)}"}
