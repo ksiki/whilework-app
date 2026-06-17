@@ -6,7 +6,7 @@ from pydantic import BaseModel, ConfigDict, Field
 class RawMessageCreate(BaseModel):
     model_config = ConfigDict(frozen=True, strict=True)
 
-    source_id: int = Field(..., description="Source ID in the Django database")
+    source_id: str = Field(..., description="Source ID in the Django database")
     external_msg_id: str = Field(
         ...,
         max_length=255,

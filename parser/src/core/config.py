@@ -1,26 +1,27 @@
-from typing import Final
+from typing import Any, Optional
 
-from pydantic import field_validator
-from pydantic_settings import BaseSettings
+from pydantic import BaseModel
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-class Config(BaseSettings):
-    auth_credentials: str
-
+class ParseTarget(BaseModel):
     source_id: str
-    platform: str
     identifier: str
-    last_parsed_id: str | None
+    topic_uuid: Optional[str] = None
+    topic_id: Optional[str] = None
+    last_parsed_id: str
 
+
+class InternalAPIData(BaseSettings):
     internal_api_token: str
     internal_backend_url: str
 
-    @field_validator("last_parsed_id", mode="before")
-    @classmethod
-    def empty_str_to_none(cls, value: str | None) -> str | None:
-        if value == "":
-            return None
-        return value
+    model_config = SettingsConfigDict(env_ignore_empty=True, extra="ignore")
 
 
-config: Final[Config] = Config()
+class ParseData(BaseSettings):
+    platform: str
+    sources_batch: list[dict[str, Any]]
+    auth_data: dict[str, Any]
+
+    model_config = SettingsConfigDict(env_ignore_empty=True, extra="ignore")
