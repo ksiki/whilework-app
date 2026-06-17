@@ -18,10 +18,12 @@ logger = logging.getLogger(__name__)
 
 def _get_auth_data(platform: str) -> dict[str, Any]:
     if platform == "telegram":
+        tg_config = Variable.get("TG_CONFIG", deserialize_json=True, default_var={})
         return {
-            "TG_SESSION": Variable.get("TG_MAIN_SESSION", default_var=""),
-            "TG_API_ID": Variable.get("TG_API_ID", default_var=""),
-            "TG_API_HASH": Variable.get("TG_API_HASH", default_var=""),
+            "TG_SESSION": tg_config.get("session", ""),
+            "TG_API_ID": tg_config.get("api_id", ""),
+            "TG_API_HASH": tg_config.get("api_hash", ""),
+            "PROXY_URL": tg_config.get("proxy_url", ""),
         }
     elif platform == "discord":
         return {
@@ -42,8 +44,8 @@ DEFAULT_ARGS: Final[dict[str, Any]] = {
 @dag(
     dag_id="master_parser_orchestrator",
     default_args=DEFAULT_ARGS,
-    schedule="*/5 * * * *",
-    start_date=datetime(2026, 5, 20),
+    schedule="0 */12 * * *",
+    start_date=datetime(2026, 6, 17),
     catchup=False,
     max_active_runs=1,
 )
