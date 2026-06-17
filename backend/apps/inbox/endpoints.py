@@ -1,5 +1,6 @@
 import logging
 
+from asgiref.sync import sync_to_async
 from django.http import HttpRequest
 from ninja import Router
 
@@ -21,14 +22,16 @@ router = Router(tags=["Inbox Batch"])
     },
     summary="Process a raw batch of messages",
 )
-def receive_raw_batch(request: HttpRequest, payload: BatchRequestSchema):
+async def receive_raw_batch(request: HttpRequest, payload: BatchRequestSchema):
     if not payload.messages:
         return 400, {"error": "Empty batch"}
 
     try:
-        atomic_saved_messages_and_update_sources(messages_data=payload.messages)
+        await sync_to_async(
+            atomic_saved_messages_and_update_sources, thread_sensitive=True
+        )(messages_data=payload.messages)
 
-        process_pending_messages_task.kiq(count=len(payload.messages))
+        await process_pending_messages_task.kiq(count=len(payload.messages))
 
         return 201, {"detail": "Processed messages successfully"}
     except Exception as e:

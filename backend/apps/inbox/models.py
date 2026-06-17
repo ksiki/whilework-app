@@ -11,6 +11,7 @@ class ParserRawMessage(TimeStampedMixin):
     class Status(models.TextChoices):
         PENDING = "PND", "Pending"
         PROCESSED = "PRC", "Processed"
+        PROCESSING = "PRCG", "Processing"
         FAILED = "FLD", "Failed"
         REJECTED = "REJ", "Rejected (Not a vacancy)"
 
@@ -43,7 +44,7 @@ class ParserRawMessage(TimeStampedMixin):
     metadata = models.JSONField(default=dict, blank=True)
 
     status = models.CharField(
-        max_length=3, default=Status.PENDING, choices=Status.choices
+        max_length=4, default=Status.PENDING, choices=Status.choices
     )
 
     class Meta:

@@ -16,6 +16,9 @@ class Source(TimeStampedMixin):
         max_length=3, choices=Platform.choices, verbose_name="Platform name"
     )
     name = models.CharField(max_length=255, verbose_name="Source name")
+    link = models.CharField(
+        max_length=255, null=True, blank=True, verbose_name="Link on source"
+    )
     identifier = models.CharField(
         max_length=255,
         unique=True,

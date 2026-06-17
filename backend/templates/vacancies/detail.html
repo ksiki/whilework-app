@@ -31,6 +31,7 @@
                     <div class="attr-item"><span class="attr-label"><span data-i18n="filters.grade">Грейд</span>:</span> <strong>{{ vacancy.get_grade_display }}</strong></div>
                     <div class="attr-item"><span class="attr-label"><span data-i18n="filters.work_format">Формат</span>:</span> <strong>{{ vacancy.get_work_format_display }}</strong></div>
                     <div class="attr-item"><span class="attr-label"><span data-i18n="filters.english">Английский</span>:</span> <strong>{{ vacancy.get_english_level_display }}</strong></div>
+                    <div class="attr-item"><span class="attr-label"><span data-i18n="filters.experience_from_year">Опыт от</span>:</span> <strong>{{ vacancy.experience_from }}</strong></div>
                     {% if vacancy.source %}
                         <div class="attr-item"><span class="attr-label"><span data-i18n="filters.source">Источник</span>:</span> <strong>{{ vacancy.source.get_platform_display }}</strong></div>
                     {% else %}

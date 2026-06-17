@@ -21,9 +21,20 @@ def generate_content_hash(text: str) -> str:
 
 @broker.task
 def process_pending_messages_task(count: int) -> None:
-    messages = ParserRawMessage.objects.filter(status=ParserRawMessage.Status.PENDING)[
-        :count
-    ]
+    with transaction.atomic():
+        messages_qs = ParserRawMessage.objects.filter(
+            status=ParserRawMessage.Status.PENDING
+        ).select_for_update(skip_locked=True)[:count]
+
+        message_ids = list(messages_qs.values_list("id", flat=True))
+        if not message_ids:
+            return
+
+        ParserRawMessage.objects.filter(id__in=message_ids).update(
+            status=ParserRawMessage.Status.PROCESSING
+        )
+
+    messages = ParserRawMessage.objects.filter(id__in=message_ids)
 
     for msg in messages:
         try:
@@ -37,6 +48,15 @@ def process_pending_messages_task(count: int) -> None:
                 logger.info(f"Skipped message {msg.id}. Reason: {clean_data.reasoning}")
                 msg.status = ParserRawMessage.Status.REJECTED
                 msg.metadata["reject_reason"] = clean_data.reasoning
+                msg.save(update_fields=["status", "metadata", "updated_at"])
+                continue
+
+            if not clean_data.description or not clean_data.description.strip():
+                logger.info(f"Skipped message {msg.id}. Reason: Empty description")
+                msg.status = ParserRawMessage.Status.REJECTED
+                msg.metadata["reject_reason"] = (
+                    "LLM не смогла извлечь описание вакансии"
+                )
                 msg.save(update_fields=["status", "metadata", "updated_at"])
                 continue
 
@@ -61,7 +81,7 @@ def process_pending_messages_task(count: int) -> None:
                         city=clean_data.location_city,
                     )[0]
 
-                vacancy = Vacancy.objects.create(
+                vacancy, created = Vacancy.objects.get_or_create(
                     source=msg.source,
                     company=company_obj,
                     location=location_obj,
@@ -90,26 +110,29 @@ def process_pending_messages_task(count: int) -> None:
                     published_at=msg.metadata.get("publish_date", timezone.now()),
                 )
 
-                if clean_data.skills:
-                    skill_objects = []
-                    for skill_name in clean_data.skills:
-                        clean_skill = skill_name.strip().lower()
-                        if clean_skill:
-                            skill_obj = Skill.objects.get_or_create(name=clean_skill)[0]
-                            skill_objects.append(skill_obj)
+                if created:
+                    if clean_data.skills:
+                        skill_objects = []
+                        for skill_name in clean_data.skills:
+                            clean_skill = skill_name.strip().lower()
+                            if clean_skill:
+                                skill_obj = Skill.objects.get_or_create(
+                                    name=clean_skill
+                                )[0]
+                                skill_objects.append(skill_obj)
 
-                    vacancy.skills.set(skill_objects)
+                        vacancy.skills.set(skill_objects)
 
-                if clean_data.contacts:
-                    contact_objects = []
-                    for contact_data in clean_data.contacts:
-                        contact_obj = Contact.objects.get_or_create(
-                            platform=contact_data.platform,
-                            details=contact_data.details.strip(),
-                        )[0]
-                        contact_objects.append(contact_obj)
+                    if clean_data.contacts:
+                        contact_objects = []
+                        for contact_data in clean_data.contacts:
+                            contact_obj = Contact.objects.get_or_create(
+                                platform=contact_data.platform,
+                                details=contact_data.details.strip(),
+                            )[0]
+                            contact_objects.append(contact_obj)
 
-                    vacancy.contact.set(contact_objects)
+                        vacancy.contact.set(contact_objects)
 
                 msg.status = ParserRawMessage.Status.PROCESSED
                 msg.save(update_fields=["status", "updated_at"])

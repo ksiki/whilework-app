@@ -28,7 +28,7 @@ sitemaps = {
     "static": StaticSitemap,
 }
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path("portal-manage-xyz/", admin.site.urls),
     #
     path(
         "sitemap.xml",

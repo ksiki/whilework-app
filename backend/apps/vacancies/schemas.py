@@ -54,9 +54,12 @@ class CleanVacancySchema(BaseModel):
         description="True, если текст является предложением о работе от работодателя. False в любом другом случае."
     )
 
-    title: str = Field(description="Название вакансии (чистое, без зарплаты и грейда)")
+    title: str = Field(
+        None, description="Название вакансии (чистое, без зарплаты и грейда)"
+    )
     description: str = Field(
-        description="Подробное описание вакансии в HTML (разрешены теги p, h2, h3, ul, li, strong, br)"
+        None,
+        description="Подробное описание вакансии в HTML (разрешены теги p, h2, h3, ul, li, strong, br)",
     )
 
     salary_min: Optional[int] = Field(

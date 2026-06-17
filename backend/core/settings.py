@@ -25,11 +25,18 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-DEFAULT_FROM_EMAIL = "noreply@while.work"
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "app", "whilework.tech"]
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "app",
+    "whilework.site",
+    "www.whilework.site",
+]
 
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = True
 
 # Application definition
 
@@ -170,6 +177,15 @@ STATIC_ROOT = "/app/static/"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = "/app/media/"
 
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
+    },
+}
+
 # Source app config
 
 SOURCE_MAX_ERRORS = 5
@@ -179,7 +195,6 @@ SOURCE_MAX_ERRORS = 5
 INTERNAL_API_SECRET = os.getenv("INTERNAL_API_SECRET")
 TURNSTILE_SECRET_KEY = os.getenv("TURNSTILE_SECRET_KEY")
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "dummy_key_for_local_development")
-REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
 RABBITMQ_URL = os.getenv("RABBITMQ_URL", "amqp://guest:guest@localhost:5672/")
 
 # Logging
@@ -206,3 +221,12 @@ LOGGING = {
         },
     },
 }
+
+# EMAIL
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = os.getenv("EMAIL_PORT", 587)
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS = True
