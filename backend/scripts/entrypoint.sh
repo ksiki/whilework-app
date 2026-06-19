@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 
+# find /app/static -type f -exec touch {} +
 python manage.py collectstatic --noinput
 python manage.py migrate --noinput
 
