@@ -71,7 +71,7 @@ class TelegramParser(BaseAsyncParser):
         if self.last_parsed_id:
             iter_kwargs["min_id"] = int(self.last_parsed_id)
         else:
-            days_depth = 14
+            days_depth = 3
             cold_start_date = datetime.datetime.now(
                 datetime.timezone.utc
             ) - datetime.timedelta(days=days_depth)
