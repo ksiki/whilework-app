@@ -34,9 +34,9 @@ ALLOWED_HOSTS = [
     "www.whilework.site",
 ]
 
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
-SECURE_SSL_REDIRECT = True
+# CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True
+# SECURE_SSL_REDIRECT = True
 
 # Application definition
 
@@ -170,12 +170,16 @@ USE_I18N = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 
-STATIC_ROOT = "/app/static/"
+STATIC_ROOT = "/app/staticfiles/"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = "/app/media/"
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
 STORAGES = {
     "default": {
@@ -224,6 +228,7 @@ LOGGING = {
 
 # EMAIL
 
+DEFAULT_FROM_EMAIL = "noreply@whilework.site"
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = os.getenv("EMAIL_HOST")
 EMAIL_PORT = os.getenv("EMAIL_PORT", 587)

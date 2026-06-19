@@ -28,6 +28,8 @@ services:
     container_name: database
     restart: always
     command: postgres -c shared_buffers=128MB -c max_connections=50
+    ports:
+      - "127.0.0.1:5432:5432"
     environment:
       TZ: Europe/Moscow
       POSTGRES_USER: ${DB_USER}
@@ -89,7 +91,7 @@ services:
         condition: service_healthy
     volumes:
       - ./backend:/app
-      - static:/app/static
+      - static:/app/staticfiles
       - media:/app/media
     dns:
       - 8.8.8.8
@@ -165,7 +167,7 @@ services:
       - "443:443"
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
-      - static:/app/static
+      - static:/app/staticfiles
       - media:/app/media
     depends_on:
       - app
