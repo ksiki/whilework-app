@@ -43,11 +43,7 @@ def get_suggests(
     if suggests is None:
         return HttpResponse("")
 
-    liked_suggest_ids = []
-    if request.user.is_authenticated:
-        liked_suggest_ids = request.user.liked_suggests.filter(
-            id__in=[s.id for s in suggests]
-        ).values_list("id", flat=True)
+    liked_suggest_ids = services.get_liked_suggest_ids(request.user, suggests)
 
     context = {
         "suggests": suggests,

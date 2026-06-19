@@ -1,5 +1,6 @@
 import uuid
 
+from django.contrib.auth.models import AbstractBaseUser, AnonymousUser
 from django.core.paginator import Page, Paginator
 from django.db.models import F, QuerySet
 
@@ -41,6 +42,19 @@ def get_suggests(page_num: int, order_by: str) -> QuerySet["Suggest"] | None:
     if page_num > page.paginator.num_pages:
         return None
     return page.object_list
+
+
+def get_liked_suggest_ids(
+    user: AbstractBaseUser | AnonymousUser, suggests: QuerySet["Suggest"]
+) -> list:
+    if not user.is_authenticated or not suggests:
+        return []
+
+    suggest_ids = [s.id for s in suggests]
+
+    return list(
+        user.liked_suggests.filter(id__in=suggest_ids).values_list("id", flat=True)
+    )
 
 
 async def like_suggest(suggest_id: uuid.UUID, user_id: uuid.UUID) -> bool:

@@ -1,6 +1,7 @@
 import uuid
 from datetime import date
 from typing import Any, Iterable
+from unittest.mock import patch
 
 import pytest
 from django.db.models import Q, QuerySet
@@ -158,6 +159,37 @@ def test_apply_q_object(
 
 
 @pytest.mark.parametrize(
+    "blacklist, expected_call",
+    [
+        ([], False),
+        (None, False),
+        ([UUID_1_ID, UUID_2_ID], True),
+    ],
+)
+@patch("apps.vacancies.filter_services._apply_q_object")
+def test_apply_blacklist_companies(
+    mock_apply_q_object: Any,
+    blacklist: list[uuid.UUID] | None,
+    expected_call: bool,
+    vacancies: QuerySet["Vacancy"],
+) -> None:
+    if expected_call:
+        mock_apply_q_object.return_value = vacancies
+
+    queryset = filter_services.apply_blacklist_companies(
+        queryset=vacancies, blacklist=blacklist
+    )
+
+    if expected_call:
+        mock_apply_q_object.assert_called_once()
+        assert mock_apply_q_object.call_args.kwargs["mode"] == "exclude"
+        assert queryset == vacancies
+    else:
+        mock_apply_q_object.assert_not_called()
+        assert queryset == vacancies
+
+
+@pytest.mark.parametrize(
     "sort_by, expectation",
     [
         ("date", (UUID_1_ID, UUID_4_ID, UUID_3_ID, UUID_5_ID, UUID_2_ID)),
@@ -212,6 +244,20 @@ def test_apply_text_search(
     )
 
     assert_queryset_match_expectation(queryset=queryset, expectation=expectation)
+
+
+@patch("apps.vacancies.filter_services._apply_q_object")
+def test_apply_text_search_exception(
+    mock_apply_q_object: Any,
+    vacancies: QuerySet["Vacancy"],
+) -> None:
+    mock_apply_q_object.side_effect = Exception("DB Error")
+
+    with pytest.raises(Exception, match="DB Error"):
+        filter_services.apply_text_search(
+            queryset=vacancies,
+            search_data={"query": "test", "fields": ["title"]},
+        )
 
 
 @pytest.mark.parametrize(

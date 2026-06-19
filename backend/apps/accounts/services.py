@@ -7,6 +7,7 @@ import requests
 from asgiref.sync import sync_to_async
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractBaseUser
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
@@ -78,7 +79,7 @@ class CaptchaService:
             return False
 
 
-async def delete_user(user: UserModel, password: str) -> bool:
+async def delete_user(user: AbstractBaseUser, password: str) -> bool:
     is_password_valid = await sync_to_async(user.check_password)(password)
 
     if not is_password_valid:
@@ -101,7 +102,9 @@ def get_profile_data(email: str) -> dict[str, Any]:
     }
 
 
-async def edit_blacklist(user: UserModel, company_id: uuid.UUID, delete: bool) -> str:
+async def edit_blacklist(
+    user: AbstractBaseUser, company_id: uuid.UUID, delete: bool
+) -> str:
     if delete:
         await user.company_blacklist.aremove(company_id)
         message = "Company removed from blacklist"
@@ -122,7 +125,9 @@ def mark_notification_as_read(user_id: uuid.UUID, notif_id: uuid.UUID) -> None:
         raise ObjectDoesNotExist("Notification not found")
 
 
-async def update_viewed_vacancies(user: UserModel, vacancy_id: uuid.UUID) -> bool:
+async def update_viewed_vacancies(
+    user: AbstractBaseUser, vacancy_id: uuid.UUID
+) -> bool:
     try:
         await user.viewed_vacancies.aadd(vacancy_id)
         return True
