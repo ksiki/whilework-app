@@ -55,7 +55,7 @@ class CleanVacancySchema(BaseModel):
     )
 
     title: str = Field(
-        None, description="Название вакансии (чистое, без зарплаты и грейда)"
+        None, description="Название вакансии (чистое, без зарплаты, грейда и условий)"
     )
     description: str = Field(
         None,
@@ -112,7 +112,9 @@ class CleanVacancySchema(BaseModel):
     location_city: Optional[str] = Field(None)
 
     skills: List[str] = Field(
-        default_factory=list, description="Список ключевых навыков"
+        default_factory=list,
+        description="Список ключевых hard-skills (технологии, языки, инструменты). "
+        "СТРОГО ИГНОРИРУЙ soft-skills (внимательность к деталям, коммуникабельность, проактивность, стрессоустойчивость и т.д.).",
     )
     contacts: List[ContactSchema] = Field(
         default_factory=list, description="Найденные контакты"
