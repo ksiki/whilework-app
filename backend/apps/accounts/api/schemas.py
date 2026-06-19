@@ -26,6 +26,10 @@ class LoginRequest(Schema):
     password: str
 
 
+class DeleteUserRequest(Schema):
+    password: str
+
+
 class CompanyBlacklistRequest(Schema):
     company_id: uuid.UUID
     delete: bool

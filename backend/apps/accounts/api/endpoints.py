@@ -1,6 +1,7 @@
 import logging
 
-from django.contrib.auth import authenticate, get_user_model, login
+from asgiref.sync import sync_to_async
+from django.contrib.auth import aauthenticate, alogin, get_user_model, login
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
 from django.http import HttpRequest, HttpResponse
@@ -12,6 +13,7 @@ from apps.accounts import services
 from apps.accounts.api.schemas import (
     AddViewedVacancy,
     CompanyBlacklistRequest,
+    DeleteUserRequest,
     LoginRequest,
     ReadNotificationRequest,
     RegisterRequest,
@@ -28,7 +30,7 @@ User = get_user_model()
 
 
 @router.post("/register/", response={200: SuccessResponse, 400: dict})
-def register_user(request: HttpRequest, payload: RegisterRequest) -> HttpResponse:
+async def register_user(request: HttpRequest, payload: RegisterRequest) -> HttpResponse:
     if not services.CaptchaService.verify_turnstile(payload.turnstile_token):
         return 400, {
             "error": "The robot was not checked. Try again",
@@ -36,7 +38,7 @@ def register_user(request: HttpRequest, payload: RegisterRequest) -> HttpRespons
         }
 
     email = payload.email
-    user = User.objects.filter(email=email).first()
+    user = await User.objects.filter(email=email).afirst()
 
     if user:
         if user.is_active:
@@ -46,13 +48,13 @@ def register_user(request: HttpRequest, payload: RegisterRequest) -> HttpRespons
             }
 
         user.set_password(payload.password)
-        user.save()
+        await user.asave()
     else:
-        user = User.objects.create_user(
+        user = await sync_to_async(User.objects.create_user)(
             email=email, password=payload.password, is_active=False
         )
 
-    otp_sent = services.OTPAuthService.generate_and_send_otp(email)
+    otp_sent = await services.OTPAuthService.generate_and_send_otp(email)
 
     if not otp_sent:
         logger.error(f"Failed to send OTP to {email}")
@@ -95,8 +97,10 @@ def verify_otp(request: HttpRequest, payload: VerifyOTPRequest) -> HttpResponse:
 
 
 @router.post("/login/", response={200: SuccessResponse, 400: dict})
-def login_user(request: HttpRequest, payload: LoginRequest) -> HttpResponse:
-    user = authenticate(request, username=payload.email, password=payload.password)
+async def login_user(request: HttpRequest, payload: LoginRequest) -> HttpResponse:
+    user = await aauthenticate(
+        request, username=payload.email, password=payload.password
+    )
 
     if user is None:
         return 400, {
@@ -105,18 +109,45 @@ def login_user(request: HttpRequest, payload: LoginRequest) -> HttpResponse:
         }
 
     if not user.is_active:
-        services.OTPAuthService.generate_and_send_otp(user.email)
+        await services.OTPAuthService.generate_and_send_otp(user.email)
         return 400, {
             "error": "Your account has not been activated. We have sent a new OTP code to your email.",
             "i18n": "account_not_activated",
         }
 
-    login(request, user)
+    await alogin(request, user)
 
     return 200, {
         "success": True,
         "message": "Authorization is successful.",
         "i18n": "authorization_successful",
+    }
+
+
+@router.post(
+    "/delete/",
+    auth=django_auth,
+    response={200: SuccessResponse, 400: dict},
+)
+async def delete_user(request: HttpRequest, payload: DeleteUserRequest) -> HttpResponse:
+    try:
+        success = await services.delete_user(request.user, payload.password)
+    except Exception as e:
+        logger.error(f"Delete user is failde: {str(e)}", exc_info=True)
+        return 400, {
+            "message": "Delete user is failde",
+            "i18n": "delete_user_failed",
+        }
+    else:
+        if not success:
+            return 400, {
+                "message": "Password is incorrect",
+                "i18n": "delete_user_password_incorrect",
+            }
+    return 200, {
+        "success": True,
+        "message": "Delete user is seccusse",
+        "i18n": "delete_user_seccusse",
     }
 
 

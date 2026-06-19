@@ -4,15 +4,16 @@ import uuid
 from typing import Any
 
 import requests
+from asgiref.sync import sync_to_async
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.mail import send_mail
 from django.utils import timezone
 
 from .models import User as UserModel
 from .models import UserNotification
+from .tasks import send_otp_email_task
 
 logger = logging.getLogger(__name__)
 User = get_user_model()
@@ -26,7 +27,7 @@ class OTPAuthService:
         return str(secrets.randbelow(9000) + 1000)
 
     @classmethod
-    def generate_and_send_otp(cls, email: str) -> bool:
+    async def generate_and_send_otp(cls, email: str) -> bool:
         """
         Generates a code, stores it in a cache linked to an email and sends it to the mail.
         """
@@ -35,19 +36,10 @@ class OTPAuthService:
         cache.set(cache_key, otp_code, timeout=cls.OTP_EXPIRY_TIMEOUT)
 
         try:
-            subject = "Registration confirmation code| WHILEWORK"
-            message = f"Your code to complete the registration: {otp_code}\nThe code is valid for 5 minutes."
-
-            send_mail(
-                subject=subject,
-                message=message,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[email],
-                fail_silently=False,
-            )
+            await send_otp_email_task.kiq(email, otp_code)
             return True
         except Exception as e:
-            logger.error(f"Error sending OTP to email{email}: {e}")
+            logger.error(f"Error queuing OTP task for {email}: {e}")
             return False
 
     @classmethod
@@ -84,6 +76,16 @@ class CaptchaService:
         except requests.RequestException as e:
             logger.error(f"Turnstile API error: {e}")
             return False
+
+
+async def delete_user(user: UserModel, password: str) -> bool:
+    is_password_valid = await sync_to_async(user.check_password)(password)
+
+    if not is_password_valid:
+        return False
+
+    await sync_to_async(user.delete)()
+    return True
 
 
 def get_profile_data(email: str) -> dict[str, Any]:
