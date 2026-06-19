@@ -1,23 +1,27 @@
-{% for suggest in suggests %}                
-    <div class="idea-card">
-        <button class="idea-upvote {% if suggest.id in liked_suggest_ids %}active{% endif %}" data-id="{{ suggest.id }}">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
-            <span class="upvote-count">{{ suggest.likes }}</span>
-        </button>
-        <div class="idea-content">
-            <h4 class="idea-title">{{ suggest.title }}</h4>
-            <p class="idea-text">{{ suggest.description }}</p>
-            <div class="idea-meta">
-                {% if suggest.status == "NEW" %}
-                    <span class="idea-status status-new">
-                {% elif suggest.status == "PLN" %}
-                    <span class="idea-status status-planned">
-                {% elif suggest.status == "RVW" %}
-                    <span class="idea-status status-review">
-                {% endif %}
-                    {{ suggest.get_status_display }}
-                </span>
+{% if suggests %}    
+    {% for suggest in suggests %}                
+        <div class="idea-card">
+            <button class="idea-upvote {% if suggest.id in liked_suggest_ids %}active{% endif %}" data-id="{{ suggest.id }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                <span class="upvote-count">{{ suggest.likes }}</span>
+            </button>
+            <div class="idea-content">
+                <h4 class="idea-title">{{ suggest.title }}</h4>
+                <p class="idea-text">{{ suggest.description }}</p>
+                <div class="idea-meta">
+                    {% if suggest.status == "NEW" %}
+                        <span class="idea-status status-new">
+                    {% elif suggest.status == "PLN" %}
+                        <span class="idea-status status-planned">
+                    {% elif suggest.status == "RVW" %}
+                        <span class="idea-status status-review">
+                    {% endif %}
+                        {{ suggest.get_status_display }}
+                    </span>
+                </div>
             </div>
         </div>
-    </div>
-{% endfor %}
+    {% endfor %}
+{% else %}
+    <p class="text-center py-4" style="opacity: 0.6;" data-i18n="community.no_ideas">Идей пока нет. Предложите первую!</p>
+{% endif %}

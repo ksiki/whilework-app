@@ -19,7 +19,8 @@
       "continue": "Продолжить",
       "faq_help": "Помощь",
       "articles": "Статьи",
-      "back_to_search": "Вернуться к поиску"
+      "back_to_search": "Вернуться к поиску",
+      "server_error": "Внутренняя ошибка сервера"
     },
     "header": {
       "applicants": "Соискателям",
@@ -71,7 +72,8 @@
       "add_to_blacklist": "В черный список",
       "similar_jobs": "Похожие вакансии",
       "found_matches": "Найдено совпадений:",
-      "copy": "Скопированно!"
+      "copy": "Скопированно!",
+      "no_similar_jobs": "Нет похожих вакансий"
     },
     "modal": {
       "auth_required": "Требуется авторизация",
@@ -177,7 +179,10 @@
       "delete": "Удалить",
       "close_job_question": "Закрыть вакансию?",
       "close_job_desc": "Вакансия полностью удалится из вашего профиля и перестанет отображаться в поиске.",
-      "yes_close": "Да, закрыть"
+      "yes_close": "Да, закрыть",
+      "enter_password": "Пожалуйста, введите пароль",
+      "delete_user_failed": "Не удалось удалить аккаунт. Попробуйте позже.",
+      "delete_user_password_incorrect": "Неверный пароль. Попробуйте снова."
     },
     "faq": {
       "nav_title": "Навигация",
@@ -202,8 +207,8 @@
       "send_request": "Отправить запрос"
     },
     "community": {
-      "hero_title": "Хаб комьюнити WHILEWORK",
-      "hero_subtitle": "Платформу делают инженеры для инженеров. Здесь мы публикуем технические логи обновлений, собираем ваш фидбек и вместе формируем бэклог. Предлагайте свои фичи, голосуйте за идеи других и влияйте на то, каким будет агрегатор завтра.",
+      "hero_title": "Комьюнити WHILEWORK",
+      "hero_subtitle": "Здесь мы публикуем технические логи обновлений, собираем ваш фидбек и вместе формируем бэклог. Предлагайте свои фичи, голосуйте за идеи других и влияйте на то, каким будет агрегатор завтра.",
       "stat_mindset": "Подход к разработке",
       "stat_coop": "Форматы сотрудничества",
       "changelog_title": "Releases & Changelog",
@@ -214,7 +219,7 @@
       "ig_desc": "Эстетика рабочих мест и внутренняя кухня проекта.",
       "th_desc": "Текстовые микро-блоги, инсайды и дискуссии.",
       "rd_desc": "Инженерный хаб для гайдов и опенсорс-инициатив.",
-      "email_title": "B2B & Партнеры",
+      "email_title": "Связаться с нами",
       "email_desc": "Предложения по интеграциям и сотрудничеству.",
       "copy_email": "Скопировать Email",
       "ideas_title": "Предложить идею",
@@ -228,7 +233,8 @@
       "filter_popular": "Popular",
       "filter_newest": "Newest",
       "success_title": "200 OK",
-      "success_desc": "Ваша идея успешно добавлена в ленту! Теперь другие пользователи смогут за нее проголосовать."
+      "success_desc": "Ваша идея успешно добавлена в ленту! Теперь другие пользователи смогут за нее проголосовать.",
+      "no_ideas": "Идей пока нет. Предложите первую!"
     },
     "banner": {
       "title": "WHILE(WORK) — агрегатор вакансий с прямыми контактами",
@@ -277,7 +283,8 @@
       "continue": "Continue",
       "faq_help": "Help",
       "articles": "Articles",
-      "back_to_search": "Back to search"
+      "back_to_search": "Back to search",
+      "server_error": "Internal server error"
     },
     "header": {
       "applicants": "Applicants",
@@ -329,7 +336,8 @@
       "add_to_blacklist": "Blacklist",
       "similar_jobs": "Similar jobs",
       "found_matches": "Found matches:",
-      "copy": "Copied!"
+      "copy": "Copied!",
+      "no_similar_jobs": "No similar vacancies"
     },
     "modal": {
       "auth_required": "Authorization required",
@@ -435,7 +443,10 @@
       "delete": "Delete",
       "close_job_question": "Close job?",
       "close_job_desc": "The job will be completely removed from your profile and search results.",
-      "yes_close": "Yes, close"
+      "yes_close": "Yes, close",
+      "enter_password": "Please enter your password",
+      "delete_user_failed": "Failed to delete account. Please try again later.",
+      "delete_user_password_incorrect": "Incorrect password. Please try again."
     },
     "faq": {
       "nav_title": "Navigation",
@@ -460,8 +471,8 @@
       "send_request": "Send request"
     },
     "community": {
-      "hero_title": "WHILEWORK Community Hub",
-      "hero_subtitle": "The platform is built by engineers for engineers. Here we publish technical update logs, collect your feedback, and shape the backlog together. Suggest your features, vote for others' ideas, and influence what the aggregator will be tomorrow.",
+      "hero_title": "WHILEWORK Community",
+      "hero_subtitle": "Here we publish technical update logs, collect your feedback, and shape the backlog together. Suggest your features, vote for others' ideas, and influence what the aggregator will be tomorrow.",
       "stat_mindset": "Development approach",
       "stat_coop": "Cooperation formats",
       "changelog_title": "Releases & Changelog",
@@ -472,7 +483,7 @@
       "ig_desc": "Workspace aesthetics and behind-the-scenes of the project.",
       "th_desc": "Text micro-blogs, insides, and discussions.",
       "rd_desc": "Engineering hub for guides and open-source initiatives.",
-      "email_title": "B2B & Partners",
+      "email_title": "Contact us",
       "email_desc": "Proposals for integrations and cooperation.",
       "copy_email": "Copy Email",
       "ideas_title": "Suggest an idea",
@@ -486,7 +497,8 @@
       "filter_popular": "Popular",
       "filter_newest": "Newest",
       "success_title": "200 OK",
-      "success_desc": "Your idea has been successfully added to the feed! Now other users can vote for it."
+      "success_desc": "Your idea has been successfully added to the feed! Now other users can vote for it.",
+      "no_ideas": "There are no ideas yet. Suggest the first one!"
     },
     "banner": {
       "title": "WHILE(WORK) — job aggregator with direct contacts",

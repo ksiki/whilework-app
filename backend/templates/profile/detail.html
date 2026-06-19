@@ -192,12 +192,15 @@
         </div>
         <h3 class="modal-title danger-text text-center" data-i18n="profile.delete_account_question">Удалить аккаунт?</h3>
         <p class="modal-desc text-center mt-8" data-i18n="profile.delete_account_confirm">Для подтверждения введите ваш текущий пароль. Это действие отменить невозможно.</p>
+        
         <div class="form-group mt-16">
-            <input type="password" class="form-input" data-i18n="profile.your_password" placeholder="Ваш пароль">
+            <input type="password" id="delete-password-input" class="form-input" data-i18n="profile.your_password" placeholder="Ваш пароль">
+            <div id="delete-error-msg" class="danger-text mt-8" style="display: none; font-size: 13px;"></div>
         </div>
+        
         <div class="modal-actions-row mt-24">
             <button class="btn btn--outline" id="btn-cancel-modal" style="flex: 1;" data-i18n="common.cancel">Отмена</button>
-            <button class="btn btn--danger" style="flex: 1;" data-i18n="profile.delete">Удалить</button>
+            <button class="btn btn--danger" id="btn-confirm-delete" style="flex: 1;" data-i18n="profile.delete">Удалить</button>
         </div>
     </template>
 

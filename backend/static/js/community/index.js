@@ -7,7 +7,7 @@
 class CommunityClipboard {
     constructor() {
         this.btn = document.getElementById('btn-copy-email');
-        this.email = 'partner@while.work';
+        this.email = 'cooperation@whilework.site';
         
         if (this.btn) {
             this.init();
@@ -183,9 +183,6 @@ class IdeasFeed {
 
             if (!html.trim()) {
                 this.hasMore = false;
-                if (!append) {
-                    this.feedContainer.innerHTML = '<p class="text-center py-4" style="opacity: 0.6;">Идей пока нет. Предложите первую!</p>';
-                }
             } else {
                 if (append) {
                     this.feedContainer.insertAdjacentHTML('beforeend', html);

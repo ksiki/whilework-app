@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}TITLE{% endblock %} | WhileWork</title>
 
+    <link rel="icon" type="image/png" href="{% static 'favicon.png' %}">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -26,6 +28,12 @@
 
     {% include 'includes/_modals.html' %}
 
+    <script>
+        window.AppConfig = window.AppConfig || {};
+        window.AppConfig.urls = {
+            i18n: "{% static 'assets/i18n.json' %}"
+        };
+    </script>
     <script src="{% static 'js/layouts/base.js' %}"></script>
     <script src="{% static 'js/includes/header.js' %}"></script>
     

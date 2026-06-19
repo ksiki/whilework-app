@@ -74,7 +74,11 @@ class I18nManager {
 
     async init() {
         try {
-            const response = await fetch('/static/assets/i18n.json');
+            const url = window.AppConfig?.urls?.i18n;
+            if (!url) throw new Error('URL for i18n not found in AppConfig');
+            const response = await fetch(url);
+            
+            console.log('Response status:', response.status);
             if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
             
             this.translations = await response.json();

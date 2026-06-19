@@ -127,6 +127,47 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btn-open-delete')?.addEventListener('click', () => {
             window.App.modal.open('tpl-delete-account', (clone) => {
                 clone.querySelector('#btn-cancel-modal').onclick = () => window.App.modal.close();
+
+                const btnConfirm = clone.querySelector('#btn-confirm-delete');
+                const passInput = clone.querySelector('#delete-password-input');
+                const errorMsg = clone.querySelector('#delete-error-msg');
+
+                btnConfirm.addEventListener('click', async () => {
+                    const password = passInput.value;
+                    
+                    if (!password) {
+                        errorMsg.textContent = window.App.i18n.getTranslation('profile.enter_password') || 'Пожалуйста, введите пароль'; 
+                        errorMsg.style.display = 'block';
+                        return;
+                    }
+
+                    errorMsg.style.display = 'none';
+                    btnConfirm.disabled = true;
+
+                    try {
+                        const response = await window.App.api.post('/api/user/delete/', { 
+                            password: password 
+                        });
+
+                        if (response.ok) {
+                            window.location.href = '/';
+                        } else {
+                            const data = await response.json();
+                            
+                            const translationKey = data.i18n ? `profile.${data.i18n}` : null;
+                            const translatedError = translationKey ? window.App.i18n.getTranslation(translationKey) : null;
+
+                            errorMsg.textContent = translatedError || data.message;
+                            errorMsg.style.display = 'block';
+                            btnConfirm.disabled = false;
+                        }
+                    } catch (error) {
+                        console.error('Delete user API error:', error);
+                        errorMsg.textContent = window.App.i18n.getTranslation('common.server_error') || 'Внутренняя ошибка сервера';
+                        errorMsg.style.display = 'block';
+                        btnConfirm.disabled = false;
+                    }
+                });
             });
         });
         

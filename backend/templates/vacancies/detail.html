@@ -58,25 +58,33 @@
                     <h2 data-i18n="detail.similar_jobs">Похожие вакансии</h2>
                 </div>
 
-                <div class="similar-jobs-grid">
-                    {% for sim_vacancy in similar_vacancies %}
-                        <a href="{{ sim_vacancy.get_absolute_url }}" class="s-job-card" style="--delay: 1;">
-                            <div class="s-job-card__gradient-border"></div>
-                            <div class="s-job-card__content">
-                                <div class="s-job-card__meta">
-                                    <span class="s-job-company">{{ sim_vacancy.meta_string }}</span>
+                {% if similar_vacancies %}
+                    <div class="similar-jobs-grid">
+                        {% for sim_vacancy in similar_vacancies %}
+                            <a href="{{ sim_vacancy.get_absolute_url }}" class="s-job-card" style="--delay: 1;">
+                                <div class="s-job-card__gradient-border"></div>
+                                <div class="s-job-card__content">
+                                    <div class="s-job-card__meta">
+                                        <span class="s-job-company">{{ sim_vacancy.meta_string }}</span>
+                                    </div>
+                                    <h3 class="s-job-title">{{ sim_vacancy.title }}</h3>
+                                    <div class="s-job-salary">{{ sim_vacancy.salary_string }}</div>
+                                    <div class="s-job-card__tags">
+                                        {% for skill in sim_vacancy.skills.all|slice:":3" %}
+                                            <span class="tag">{{ skill.name }}</span>
+                                        {% endfor %}
+                                    </div>
                                 </div>
-                                <h3 class="s-job-title">{{ sim_vacancy.title }}</h3>
-                                <div class="s-job-salary">{{ sim_vacancy.salary_string }}</div>
-                                <div class="s-job-card__tags">
-                                    {% for skill in sim_vacancy.skills.all|slice:":3" %}
-                                        <span class="tag">{{ skill.name }}</span>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        </a>
-                    {% endfor %}
-                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="no-similar-jobs" style="padding: 20px 0;">
+                        <p style="color: var(--text-secondary);" data-i18n="detail.no_similar_jobs">
+                            Похожих вакансий нет
+                        </p>
+                    </div>
+                {% endif %}
             </section>
         </div>
 
