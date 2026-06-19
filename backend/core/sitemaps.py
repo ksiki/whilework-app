@@ -20,7 +20,7 @@ class StaticSitemap(Sitemap):
     def items(self):
         return [
             "/",
-            "/cooperation/",
+            "/community/",
             "/navbar/help/",
         ]
 
