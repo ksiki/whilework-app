@@ -26,7 +26,6 @@ class SourceTopicAdmin(ParserAdminMixin, admin.ModelAdmin):
 
     search_fields = (
         "topic_id",
-        "name",
         "source__name",
         "source__identifier",
         "last_error_message",
@@ -49,7 +48,6 @@ class SourceTopicAdmin(ParserAdminMixin, admin.ModelAdmin):
                     "is_active",
                     "source",
                     "topic_id",
-                    "name",
                 )
             },
         ),

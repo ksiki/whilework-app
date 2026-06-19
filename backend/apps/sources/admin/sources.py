@@ -29,7 +29,7 @@ class SourceAdmin(ParserAdminMixin, admin.ModelAdmin):
         "created_at",
     )
 
-    search_fields = ("name", "link", "identifier", "last_error_message")
+    search_fields = ("id", "name", "link", "identifier", "last_error_message")
     list_per_page = 50
     show_full_result_count = False
 
