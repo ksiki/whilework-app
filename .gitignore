@@ -1,3 +1,7 @@
+# django static
+backend/staticfiles
+
+
 # airfow
 airflow/logs
 airflow/plugins
