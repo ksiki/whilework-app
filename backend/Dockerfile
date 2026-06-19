@@ -22,8 +22,9 @@ RUN poetry config virtualenvs.create false \
 
 COPY . .
 
+RUN useradd -m -U django_user
 RUN mkdir -p /app/static /app/media
-RUN useradd -U django_user && chown -R django_user:django_user /app
+RUN chown -R django_user:django_user /app
 RUN chmod +x /app/scripts/entrypoint.sh
 USER django_user
 
