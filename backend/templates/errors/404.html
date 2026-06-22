@@ -1,7 +1,13 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
 
-{% block title %}404 — Страница не найдена | WHILEWORK{% endblock %}
+{% block title %}
+    {% if request.COOKIES.django_language == 'en' %}
+        404 — Page not found
+    {% else %}
+        404 — Страница не найдена
+    {% endif %}
+{% endblock %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/errors/404.css' %}">

@@ -1,7 +1,14 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
 
-{% block title %}Профиль | WHILEWORK{% endblock %}
+{% block title %}
+    {% if request.COOKIES.django_language == 'en' %}
+        Profile
+    {% else %}
+        Профиль
+    {% endif %}
+{% endblock %}
+
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/profile/detail.css' %}">

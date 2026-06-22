@@ -1,7 +1,14 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
 
-{% block title %}База знаний (FAQ) | WHILEWORK{% endblock %}
+{% block title %}
+    {% if request.COOKIES.django_language == 'en' %}
+        Knowledge Base (FAQ)
+    {% else %}
+        База знаний (FAQ)
+    {% endif %}
+{% endblock %}
+
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/faq/index.css' %}">

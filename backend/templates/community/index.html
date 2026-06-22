@@ -1,7 +1,13 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
 
-{% block title %}Комьюнити и Идеи | WHILEWORK{% endblock %}
+{% block title %}
+    {% if request.COOKIES.django_language == 'en' %}
+        Community and Ideas
+    {% else %}
+        Комьюнити и Идеи
+    {% endif %}
+{% endblock %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/community/index.css' %}">
