@@ -30,7 +30,7 @@
       "post_job": "Разместить вакансию"
     },
     "footer": {
-      "description": "Платформа для инженеров. Парсим лучшие офферы, строим комьюнити, дебажим карьеру.",
+      "description": "Парсим лучшие офферы, строим комьюнити, дебажим карьеру.",
       "ecosystem": "Экосистема",
       "vacancies_feed": "Лента вакансий",
       "tracked": "Отслеживаемое",
@@ -294,7 +294,7 @@
       "post_job": "Post a Job"
     },
     "footer": {
-      "description": "Platform for engineers. We parse the best offers, build a community, debug careers.",
+      "description": "We parse the best offers, build a community, debug careers.",
       "ecosystem": "Ecosystem",
       "vacancies_feed": "Vacancies Feed",
       "tracked": "Tracked",
