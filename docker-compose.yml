@@ -92,7 +92,6 @@ services:
       redis:
         condition: service_healthy
     volumes:
-      - ./backend:/app
       - static:/app/staticfiles
       - media:/app/media
     dns:
