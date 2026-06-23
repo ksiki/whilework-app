@@ -5,7 +5,7 @@ x-airflow-common: &airflow-common
   user: "${AIRFLOW_UID:-50000}:0"
   env_file: .env
   environment:  
-    - TZ: Europe/Moscow
+    - TZ="Europe/Moscow"
     - AIRFLOW__CORE__EXECUTOR=LocalExecutor
     - AIRFLOW__CORE__LOAD_EXAMPLES=False
     - AIRFLOW__CORE__PARALLELISM=4
