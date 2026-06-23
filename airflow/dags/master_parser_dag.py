@@ -45,7 +45,7 @@ DEFAULT_ARGS: Final[dict[str, Any]] = {
     dag_id="master_parser_orchestrator",
     default_args=DEFAULT_ARGS,
     schedule="0 */8 * * *",
-    start_date=datetime(2026, 6, 22),
+    start_date=datetime(2026, 6, 24),
     catchup=False,
     max_active_runs=1,
 )
