@@ -11,7 +11,7 @@
         <meta property="og:description" content="Актуальные вакансии, удаленная работа и только прямые контакты!">
         <meta property="og:type" content="website">
         <meta property="og:url" content="{{ request.build_absolute_uri }}">
-        {# <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'og-preview.png' %}"> #}
+        <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'og-preview.png' %}">
     {% endblock %}
 
     <link rel="icon" type="image/png" href="{% static 'favicon.png' %}">

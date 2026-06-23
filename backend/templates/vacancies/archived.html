@@ -3,6 +3,14 @@
 
 {% block title %}{{ vacancy.seo_title }}{% endblock %}
 
+{% block og_tags %}
+    <meta property="og:title" content="{{ vacancy.seo_title }} | WhileWork">
+    <meta property="og:description" content="Вакансия на WhileWork. Перейдите по ссылке, чтобы узнать подробности.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{ vacancy.get_absolute_url }}">
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'og-preview.png' %}">
+{% endblock %}
+
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/vacancies/detail.css' %}">
 {% endblock %}
