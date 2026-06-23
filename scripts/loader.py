@@ -19,7 +19,7 @@ BASE_DIR: Final[Path] = Path.cwd()
 load_dotenv(dotenv_path=BASE_DIR.parent / ".env")
 db_user = os.getenv("DB_USER")
 db_password = os.getenv("DB_PASSWORD")
-db_host = "localhost"
+db_host = "db"
 db_port = "5432"
 db_name = os.getenv("DB_NAME")
 
