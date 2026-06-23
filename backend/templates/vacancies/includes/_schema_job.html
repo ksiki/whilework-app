@@ -5,30 +5,41 @@
   "title": "{{ vacancy.seo_title|escapejs }}",
   "description": "{{ vacancy.description|striptags|escapejs }}",
   "datePosted": "{{ vacancy.created_at|date:'Y-m-d' }}",
+  
+  {% if vacancy.valid_through %}
   "validThrough": "{{ vacancy.valid_through|date:'Y-m-d' }}",
-  "employmentType": "{% if vacancy.work_format == 'Удаленно' %}TELECOMMUTE{% else %}FULL_TIME{% endif %}",
+  {% endif %}
+  
+  "employmentType": "{% if vacancy.work_format == 'Remove' %}TELECOMMUTE{% else %}FULL_TIME{% endif %}",
+  
   "hiringOrganization": {
     "@type": "Organization",
-    "name": "{{ vacancy.company.name|escapejs }}",
-    "sameAs": "{{ vacancy.company.website|default:'' }}"
+    "name": "{{ vacancy.company.name|default:'WhileWork'|escapejs }}"{% if vacancy.company.website %},
+    "sameAs": "{{ vacancy.company.website }}"
+    {% endif %}
   },
+  
   "jobLocation": {
     "@type": "Place",
     "address": {
       "@type": "PostalAddress",
-      "addressLocality": "{{ vacancy.city.name|escapejs }}",
+      "addressLocality": "{{ vacancy.city.name|default:'Минск'|escapejs }}",
       "addressCountry": "BY"
     }
-  },
+  }
+  
+  {% if vacancy.salary_min or vacancy.salary_max %}
+  ,
   "baseSalary": {
     "@type": "MonetaryAmount",
     "currency": "{{ vacancy.currency|default:'RUB' }}",
     "value": {
       "@type": "QuantitativeValue",
-      "minValue": {{ vacancy.salary_min|default:"null" }},
-      "maxValue": {{ vacancy.salary_max|default:"null" }},
+      {% if vacancy.salary_min %}"minValue": {{ vacancy.salary_min }},{% endif %}
+      {% if vacancy.salary_max %}"maxValue": {{ vacancy.salary_max }},{% endif %}
       "unitText": "MONTH"
     }
   }
+  {% endif %}
 }
 </script>

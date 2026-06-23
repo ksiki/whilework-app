@@ -28,7 +28,7 @@ class JobDetailController {
     }
 
     handleContacts(btn) {
-        const { isAuth, tg, email, discord, jobId } = btn.dataset;
+        const { isAuth, tg, email, discord, form, jobId } = btn.dataset;
 
         if (isAuth !== 'true') {
             window.App.modal.open('tpl-auth-required', (clone) => {
@@ -40,7 +40,7 @@ class JobDetailController {
         this.modal.open('tpl-contacts', (clone) => {
             const container = clone.querySelector('.contacts-container');
 
-            if (!tg && !email && !discord) {
+            if (!tg && !email && !discord && !form) {
                 const noContacts = document.createElement('p');
                 noContacts.style.cssText = 'color: var(--text-secondary); text-align: center;';
                 noContacts.setAttribute('data-i18n', 'modal.no_contacts_specified');
@@ -60,11 +60,29 @@ class JobDetailController {
                 }
                 
                 if (email) {
-                    const btnEmail = document.createElement('a');
-                    btnEmail.href = `mailto:${email}`;
+                    const btnEmail = document.createElement('button');
                     btnEmail.className = 'btn btn--outline';
-                    btnEmail.style.cssText = 'text-align: center; text-decoration: none; font-family: var(--font-code);';
+                    btnEmail.style.cssText = 'text-align: center; font-family: var(--font-code); cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease; display: block; width: 100%; border: 1px solid currentColor; background: transparent;';
                     btnEmail.textContent = email;
+
+                    btnEmail.onclick = async (e) => {
+                        e.preventDefault();
+                        try {
+                            await navigator.clipboard.writeText(email);
+                            
+                            btnEmail.style.transform = 'scale(0.96)';
+                            btnEmail.style.boxShadow = '0 0 10px rgba(76, 175, 80, 0.4)';
+                            btnEmail.style.borderColor = '#4CAF50';
+
+                            setTimeout(() => {
+                                btnEmail.style.transform = 'scale(1)';
+                                btnEmail.style.boxShadow = 'none';
+                                btnEmail.style.borderColor = '';
+                            }, 200);
+                        } catch (err) {
+                            console.error('Ошибка копирования email: ', err);
+                        }
+                    };
                     container.appendChild(btnEmail);
                 }
 
@@ -84,6 +102,17 @@ class JobDetailController {
                     btnDiscord.appendChild(valueSpan);
 
                     container.appendChild(btnDiscord);
+                }
+
+                if (form) {
+                    const btnForm = document.createElement('a');
+                    btnForm.href = form;
+                    btnForm.target = '_blank';
+                    btnForm.className = 'btn btn--solid';
+                    btnForm.style.cssText = 'text-align: center; text-decoration: none; display: block;';
+                    btnForm.setAttribute('data-i18n', 'modal.fill_form');
+                    btnForm.textContent = 'Заполнить форму';
+                    container.appendChild(btnForm);
                 }
             }
         });

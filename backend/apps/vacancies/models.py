@@ -92,6 +92,7 @@ class Contact(TimeStampedMixin):
         TELEGRAM = "TG", "Telegram"
         DISCORD = "DS", "Discord"
         EMAIL = "EM", "Email"
+        FORM = "FR", "Form"
 
     id = models.UUIDField(
         primary_key=True, default=uuid6.uuid7, editable=False, verbose_name="Contact ID"
@@ -138,7 +139,6 @@ class Vacancy(TimeStampedMixin):
         HYBRID = "HBR", "Hybrid"
 
     class EnglishLevel(models.TextChoices):
-        NOT_REQUIRED = "NS", "Not specified"
         A1 = "A1", "A1 (Beginner)"
         A2 = "A2", "A2 (Elementary)"
         B1 = "B1", "B1 (Intermediate)"

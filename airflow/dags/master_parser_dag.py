@@ -44,8 +44,8 @@ DEFAULT_ARGS: Final[dict[str, Any]] = {
 @dag(
     dag_id="master_parser_orchestrator",
     default_args=DEFAULT_ARGS,
-    schedule="0 */12 * * *",
-    start_date=datetime(2026, 6, 17),
+    schedule="0 */8 * * *",
+    start_date=datetime(2026, 6, 22),
     catchup=False,
     max_active_runs=1,
 )
@@ -55,7 +55,7 @@ def master_parser_dag() -> None:
         internal_token = os.getenv("INTERNAL_API_SECRET")
         headers = {"X-Internal-Secret": internal_token}
 
-        http_hook = HttpHook(http_conn_id="internal_api", method="GET")
+        http_hook = HttpHook(http_conn_id="INTERNAL_API", method="GET")
         endpoint = "/api/internal/v1"
 
         response = http_hook.run(endpoint=f"{endpoint}/sources/", headers=headers)

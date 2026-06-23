@@ -5,6 +5,7 @@ from django.contrib.sitemaps import Sitemap
 class VacancySitemap(Sitemap):
     changefreq = "daily"
     priority = 0.8
+    protocol = "https"
 
     def items(self):
         return get_active_vacancies()
@@ -16,6 +17,7 @@ class VacancySitemap(Sitemap):
 class StaticSitemap(Sitemap):
     changefreq = "weekly"
     priority = 0.5
+    protocol = "https"
 
     def items(self):
         return [

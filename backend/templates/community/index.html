@@ -119,7 +119,7 @@
                     <p class="media-desc" data-i18n="community.email_desc">Предложения по интеграциям и сотрудничеству.</p> -->
                 </div>
                 <div class="media-card__footer mt-16">
-                    <button class="btn btn--solid btn--full" id="btn-copy-email" style="width: 100%;" data-i18n="community.copy_email">Скопировать Email</button>
+                    <button class="btn btn--solid btn--full" id="btn-copy-email" style="width: 100%; margin-top: 10px;" data-i18n="community.copy_email">Скопировать Email</button>
                 </div>
             </div>
         </section>
@@ -133,7 +133,7 @@
                     
                     <form class="ideas-form mt-24" id="community-ideas-form" data-is-auth="{{ user.is_authenticated }}" novalidate onsubmit="event.preventDefault();">
                         <div class="form-group">
-                            <label class="form-label" data-i18n="community.form_title_label">Краткий заголовок</label>
+                            <label class="form-label" style="margin-top: 10px;" data-i18n="community.form_title_label">Краткий заголовок</label>
                             <div class="input-wrapper">
                                 <input type="text" name="title" class="form-input" placeholder="Например: Темная тема, фильтр по грейдам..." data-i18n="community.form_title_ph">
                             </div>

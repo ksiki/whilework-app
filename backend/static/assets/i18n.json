@@ -97,7 +97,8 @@
       "reason_scam": "Мошенничество / Скам",
       "reason_salary": "Неверная зарплата",
       "reason_unresponsive": "Работодатель не отвечает",
-      "reason_other": "Другое"
+      "reason_other": "Другое",
+      "fill_form": "Заполнить форму"
     },
     "stats": {
       "tracked_sources": "Отслеживаемые источники",
@@ -238,11 +239,11 @@
     },
     "banner": {
       "title": "WHILE(WORK) — агрегатор вакансий с прямыми контактами",
-      "text_1": "Мы рады приветствовать вас на запуске! Мы невероятно долго и упорно трудились над платформой, чтобы избавить вас посредников в виде сайтов вакансий, ботов и ",
-      "text_2": "самое главное - LLM",
-      "text_3": ". Наша главная гордость: мы собираем вакансии ",
-      "text_4": "исключительно с прямыми контактами нанимателей",
-      "text_5": " (Telegram, Discord, Email или прямые формы), чтобы вы могли общаться без барьеров. Проект создан для людей, и лучшая награда для нас — если вы поделитесь ссылкой с друзьями!",
+      "text_1": "Мы рады приветствовать вас на запуске! Мы невероятно долго и упорно трудились над платформой, чтобы избавить вас посредников в виде сайтов вакансий и ",
+      "text_2": "самое главное - LLM фильтров",
+      "text_3": ". Мы собираем вакансии ",
+      "text_4": "исключительно с прямыми контактами",
+      "text_5": " (Telegram, Discord, Email или прямые формы). Проект создан для людей, и лучшая награда для нас — если вы поделитесь ссылкой с друзьями!",
       "share_btn": "Поделиться проектом"
     },
     "archived": {
@@ -361,7 +362,8 @@
       "reason_scam": "Fraud / The Scam",
       "reason_salary": "Incorrect salary",
       "reason_unresponsive": "The employer is not responding",
-      "reason_other": "Other"
+      "reason_other": "Other",
+      "fill_form": "Fill form"
     },
     "stats": {
       "tracked_sources": "Tracked sources",
@@ -502,11 +504,11 @@
     },
     "banner": {
       "title": "WHILE(WORK) — job aggregator with direct contacts",
-      "text_1": "We are glad to welcome you at the launch! We have worked incredibly long and hard on the platform to get rid of intermediaries in the form of job sites, bots and ",
-      "text_2": "most importantly - LLMs",
-      "text_3": ". Our main pride: we are collecting vacancies ",
-      "text_4": "exclusively with direct employer contacts",
-      "text_5": " (Telegram, Discord, Email, or direct forms) so that you can communicate without barriers. The project was created for people, and the best reward for us is if you share the link with your friends!",
+      "text_1": "We are glad to welcome you at the launch! We have worked incredibly long and hard on the platform to get rid of intermediaries in the form of job sites and ",
+      "text_2": "most importantly - LLM filters",
+      "text_3": ". We are collecting vacancies ",
+      "text_4": "exclusively with direct contacts",
+      "text_5": " (Telegram, Discord, Email, or direct forms). The project was created for people, and the best reward for us is if you share the link with your friends!",
       "share_btn": "Share project"
     },
     "archived": {

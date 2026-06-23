@@ -26,7 +26,6 @@ class WorkFormatEnum(str, Enum):
 
 
 class EnglishLevelEnum(str, Enum):
-    NOT_REQUIRED = "NS"
     A1 = "A1"
     A2 = "A2"
     B1 = "B1"
@@ -39,6 +38,7 @@ class ContactPlatformEnum(str, Enum):
     TELEGRAM = "TG"
     DISCORD = "DS"
     EMAIL = "EM"
+    FORM = "FR"
 
 
 class ContactSchema(BaseModel):
@@ -101,8 +101,7 @@ class CleanVacancySchema(BaseModel):
         None,
         description="Минимальный уровень английского языка. Сопоставь текст с кодом: "
         "'Beginner' -> A1, 'Elementary' -> A2, 'Intermediate' -> B1, "
-        "'Upper-Intermediate' -> B2, 'Advanced' -> C1, 'Proficient/Native' -> C2. "
-        "Если не указан, верни NS.",
+        "'Upper-Intermediate' -> B2, 'Advanced' -> C1, 'Proficient/Native' -> C2",
     )
 
     company_name: Optional[str] = Field(None, description="Название компании")

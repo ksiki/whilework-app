@@ -19,7 +19,11 @@
         <div class="job-detail__main" data-id="{{ vacancy.id }}">
             <article class="job-card job-card--detailed">
                 <div class="job-card__meta">
-                    <span class="job-meta">{{ vacancy.meta_string }}</span>
+                    {% if vacancy.meta_string %}
+                        <span class="job-card__meta">{{ vacancy.meta_string }}</span>
+                    {% else %}
+                        <span class="job-card__meta" data-i18n="common.no_information_available">Информация отсутствует</span>
+                    {% endif %}
                     <span class="job-date">{{ vacancy.published_at }}</span>
                 </div>
                 
@@ -28,10 +32,18 @@
                 <div class="job-salary-large">{{ vacancy.salary_string }}</div>
 
                 <div class="job-attributes">
-                    <div class="attr-item"><span class="attr-label"><span data-i18n="filters.grade">Грейд</span>:</span> <strong>{{ vacancy.get_grade_display }}</strong></div>
+                    {% if vacancy.grade %}
+                        <div class="attr-item"><span class="attr-label"><span data-i18n="filters.grade">Грейд</span>:</span> <strong>{{ vacancy.get_grade_display }}</strong></div>
+                    {% endif %}
+                    {% if vacancy.work_format %}
                     <div class="attr-item"><span class="attr-label"><span data-i18n="filters.work_format">Формат</span>:</span> <strong>{{ vacancy.get_work_format_display }}</strong></div>
+                    {% endif %}
+                    {% if vacancy.english_level %}
                     <div class="attr-item"><span class="attr-label"><span data-i18n="filters.english">Английский</span>:</span> <strong>{{ vacancy.get_english_level_display }}</strong></div>
+                    {% endif %}
+                    {% if vacancy.experience_from %}
                     <div class="attr-item"><span class="attr-label"><span data-i18n="filters.experience_from_year">Опыт от</span>:</span> <strong>{{ vacancy.experience_from }}</strong></div>
+                    {% endif %}
                     {% if vacancy.source %}
                         <div class="attr-item"><span class="attr-label"><span data-i18n="filters.source">Источник</span>:</span> <strong>{{ vacancy.source.get_platform_display }}</strong></div>
                     {% else %}
@@ -99,6 +111,7 @@
                         data-tg="{% for c in vacancy.contact.all %}{% if c.platform == 'TG' %}{{ c.details }}{% endif %}{% endfor %}"
                         data-email="{% for c in vacancy.contact.all %}{% if c.platform == 'EM' %}{{ c.details }}{% endif %}{% endfor %}"
                         data-discord="{% for c in vacancy.contact.all %}{% if c.platform == 'DS' %}{{ c.details }}{% endif %}{% endfor %}"
+                        data-form="{% for c in vacancy.contact.all %}{% if c.platform == 'FR' %}{{ c.details }}{% endif %}{% endfor %}"
                         data-i18n="detail.show_contacts">
                         Показать контакты
                     </button>
