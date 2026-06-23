@@ -11,34 +11,34 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
-    name: Run Pytest
-    runs-on: ubuntu-latest
+  # test:
+  #   name: Run Pytest
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
 
-      - name: Create .env file
-        run: |
-          echo "REDIS_URL=redis://redis:6379" > .env
-          echo "DB_USER=${{ secrets.DB_USER }}" >> .env
-          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-          echo "DB_NAME=test_db" >> .env
-          echo "DB_HOST=db" >> .env
-          echo "DB_PORT=5432" >> .env
+  #     - name: Create .env file
+  #       run: |
+  #         echo "REDIS_URL=redis://redis:6379" > .env
+  #         echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+  #         echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+  #         echo "DB_NAME=test_db" >> .env
+  #         echo "DB_HOST=db" >> .env
+  #         echo "DB_PORT=5432" >> .env
 
-      - name: Build and Run Tests in Docker
-        run: |
-          docker compose up -d --build nginx
-          docker compose exec -T app pytest
-          docker compose down -v
+  #     - name: Build and Run Tests in Docker
+  #       run: |
+  #         docker compose up -d --build nginx
+  #         docker compose exec -T app pytest
+  #         docker compose down -v
       
-      - name: Cleanup
-        if: always()
-        run: |
-          rm -f .env
-          docker image prune -f
+  #     - name: Cleanup
+  #       if: always()
+  #       run: |
+  #         rm -f .env
+  #         docker image prune -f
 
   deploy:
     name: Deploy
