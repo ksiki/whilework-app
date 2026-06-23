@@ -15,7 +15,9 @@ def convert_to_usd(amount: int | Decimal | float, iso_code: str) -> Decimal | No
             logger.error(f"Conversion failed: Rate for {iso_code} is zero.")
             return None
 
-        result = amount_dec / currency.currency_rate
+        rate_dec = Decimal(str(currency.currency_rate))
+        result = amount_dec / rate_dec
+
         return result.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
     except Currency.DoesNotExist:
         logger.error(f"Conversion failed: Currency {iso_code} does not exist.")
