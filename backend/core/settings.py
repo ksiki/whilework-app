@@ -31,12 +31,16 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "app",
     "whilework.site",
-    "www.whilework.site",
 ]
 
-# CSRF_COOKIE_SECURE = True
-# SESSION_COOKIE_SECURE = True
-# SECURE_SSL_REDIRECT = True
+CSRF_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://whilework.site",
+]
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Application definition
 
