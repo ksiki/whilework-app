@@ -55,7 +55,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
 
           script: |
-            cd my_project
+            cd whilework-app
             git pull origin main
             
             cd parser
