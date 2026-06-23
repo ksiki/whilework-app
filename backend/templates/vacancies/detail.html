@@ -9,6 +9,10 @@
     <meta property="og:type" content="article">
     <meta property="og:url" content="{{ vacancy.get_absolute_url }}">
     <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'og-preview.png' %}">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ vacancy.seo_title }} | WhileWork">
+    <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'og-preview.png' %}">
 {% endblock %}
 
 {% block extra_css %}
