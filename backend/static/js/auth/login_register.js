@@ -1,7 +1,7 @@
 /**
  * login_register.js
- * Управление авторизацией и регистрацией: переключение видов,
- * анимации терминала, работа с OTP-кодами и API-запросы.
+ * Управление авторизацией, регистрацией и восстановлением пароля:
+ * переключение видов, анимации терминала, работа с OTP-кодами и API-запросы.
  */
 
 class AuthApi {
@@ -51,7 +51,6 @@ class UIManager {
         } else {
             btn.disabled = false;
             btn.textContent = originalText;
-            // Восстанавливаем перевод кнопки, если у нее есть data-i18n
             if (window.App?.i18n?.translateDOM) window.App.i18n.translateDOM(btn.parentElement);
         }
     }
@@ -84,6 +83,19 @@ class TerminalController {
                     <div class="term-line typing-anim" id="term-status">Awaiting credentials<span class="cursor">_</span></div>
                 `;
             }
+        } else if (mode === 'forgot') {
+            if (this.title) this.title.innerHTML = 'while(password == unknown) {<br>&nbsp;&nbsp;recover();<br>}';
+            if (this.desc) {
+                this.desc.setAttribute('data-i18n', 'auth.forgot_desc');
+                this.desc.textContent = 'Восстановите доступ к своему аккаунту с помощью email и одноразового кода.';
+            }
+            if (this.body) {
+                this.body.innerHTML = `
+                    <div class="term-line"><span class="term-prompt">~/$</span> ./recover_access.sh</div>
+                    <div class="term-line text-secondary">> Initiating password recovery... <span class="term-ok">READY</span></div>
+                    <div class="term-line typing-anim" id="term-status">Awaiting email address<span class="cursor">_</span></div>
+                `;
+            }
         } else {
             if (this.title) this.title.innerHTML = 'while(unregistered) {<br>&nbsp;&nbsp;signup();<br>}';
             if (this.desc) {
@@ -107,8 +119,8 @@ class TerminalController {
 }
 
 class OtpController {
-    constructor() {
-        this.inputs = document.querySelectorAll('.otp-digit');
+    constructor(selector) {
+        this.inputs = document.querySelectorAll(selector);
         if (this.inputs.length) this.init();
     }
 
@@ -144,8 +156,11 @@ class AuthController {
         this.views = {
             register: document.getElementById('register-view'),
             login: document.getElementById('login-view'),
+            forgot: document.getElementById('forgot-view'),
             step1: document.getElementById('auth-step-1'),
-            step2: document.getElementById('auth-step-2')
+            step2: document.getElementById('auth-step-2'),
+            forgotStep1: document.getElementById('forgot-step-1'),
+            forgotStep2: document.getElementById('forgot-step-2')
         };
 
         this.elements = {
@@ -158,11 +173,18 @@ class AuthController {
             regPassConfirm: document.getElementById('reg-password-confirm'),
             passError: document.getElementById('password-error'),
             otpError: document.getElementById('otp-error'),
-            displayEmail: document.getElementById('display-email')
+            displayEmail: document.getElementById('display-email'),
+
+            forgotEmail: document.getElementById('forgot-email'),
+            forgotError: document.getElementById('forgot-error'),
+            forgotStep2Error: document.getElementById('forgot-step2-error'),
+            forgotDisplayEmail: document.getElementById('forgot-display-email'),
+            forgotNewPass: document.getElementById('forgot-new-pass')
         };
 
         this.terminal = new TerminalController();
-        this.otp = new OtpController();
+        this.otp = new OtpController('#otp-container .otp-digit');
+        this.forgotOtp = new OtpController('#forgot-otp-container .forgot-otp-digit');
 
         this.bindEvents();
     }
@@ -170,14 +192,19 @@ class AuthController {
     bindEvents() {
         document.getElementById('switch-to-login')?.addEventListener('click', (e) => this.switchView(e, 'login'));
         document.getElementById('switch-to-register')?.addEventListener('click', (e) => this.switchView(e, 'register'));
+        document.getElementById('switch-to-forgot')?.addEventListener('click', (e) => this.switchView(e, 'forgot'));
+        document.getElementById('switch-forgot-to-login')?.addEventListener('click', (e) => this.switchView(e, 'login'));
         
         document.getElementById('btn-login-submit')?.addEventListener('click', (e) => this.handleLogin(e));
         document.getElementById('btn-next-step')?.addEventListener('click', (e) => this.handleRegisterStep1(e));
         document.getElementById('btn-back-step')?.addEventListener('click', (e) => this.handleRegisterBack(e));
         document.getElementById('btn-verify')?.addEventListener('click', (e) => this.handleVerify(e));
+
+        document.getElementById('btn-forgot-next')?.addEventListener('click', (e) => this.handleForgotStep1(e));
+        document.getElementById('btn-forgot-back-step')?.addEventListener('click', (e) => this.handleForgotBack(e));
+        document.getElementById('btn-forgot-verify')?.addEventListener('click', (e) => this.handleForgotVerify(e));
     }
 
-    // Мгновенный перевод и защита от пустых полей
     translateError(el, i18nKey, defaultText) {
         if (!el) return;
         
@@ -196,20 +223,40 @@ class AuthController {
 
     switchView(e, target) {
         e.preventDefault();
-        this.views.login.style.display = ''; 
-        this.views.register.style.display = '';
+        this.views.login.style.display = 'none'; 
+        this.views.register.style.display = 'none';
+        this.views.forgot.style.display = 'none';
 
         if (target === 'login') {
             this.views.register.classList.remove('active');
+            this.views.forgot.classList.remove('active');
             this.views.login.classList.add('active');
+            this.views.login.style.display = 'block';
             this.terminal.setMode('login');
+        } else if (target === 'forgot') {
+            this.views.login.classList.remove('active');
+            this.views.register.classList.remove('active');
+            this.views.forgot.classList.add('active');
+            this.views.forgot.style.display = 'block';
+            
+            if (this.views.forgotStep1 && this.views.forgotStep2) {
+                this.views.forgotStep2.classList.remove('active');
+                this.views.forgotStep2.style.display = 'none';
+                this.views.forgotStep1.classList.add('active');
+                this.views.forgotStep1.style.display = 'block';
+            }
+            this.terminal.setMode('forgot');
         } else {
             this.views.login.classList.remove('active');
+            this.views.forgot.classList.remove('active');
             this.views.register.classList.add('active');
+            this.views.register.style.display = 'block';
             
             if (this.views.step1 && this.views.step2) {
                 this.views.step2.classList.remove('active');
+                this.views.step2.style.display = 'none';
                 this.views.step1.classList.add('active');
+                this.views.step1.style.display = 'block';
             }
             this.terminal.setMode('register');
         }
@@ -247,7 +294,7 @@ class AuthController {
         const password = this.elements.regPass.value;
         const passwordConfirm = this.elements.regPassConfirm.value;
 
-        const turnstileInput = document.querySelector('[name="cf-turnstile-response"]');
+        const turnstileInput = document.querySelector('#register-view [name="cf-turnstile-response"]');
         const turnstileToken = turnstileInput ? turnstileInput.value : '';
 
         if (!email || !password) {
@@ -285,7 +332,8 @@ class AuthController {
             if (this.elements.displayEmail) this.elements.displayEmail.textContent = email;
             
             this.views.step1.classList.remove('active');
-            this.views.step2.style.display = ''; 
+            this.views.step1.style.display = 'none';
+            this.views.step2.style.display = 'block'; 
             this.views.step2.classList.add('active');
 
             this.terminal.updateStatus(`> Creating user record... <span class="term-ok">OK</span><br>> Sending OTP to ${email}... <span class="term-ok">OK</span><br><br><span class="typing-anim">Awaiting verification<span class="cursor">_</span></span>`);
@@ -304,6 +352,8 @@ class AuthController {
     handleRegisterBack(e) {
         e.preventDefault();
         this.views.step2.classList.remove('active');
+        this.views.step2.style.display = 'none';
+        this.views.step1.style.display = 'block';
         this.views.step1.classList.add('active');
         this.terminal.updateStatus(`Awaiting credentials<span class="cursor">_</span>`);
         this.otp.clear();
@@ -334,6 +384,107 @@ class AuthController {
             
             this.otp.clear();
             UIManager.toggleLoading(btn, false, 'Завершить регистрацию');
+        }
+    }
+
+    async handleForgotStep1(e) {
+        const btn = e.currentTarget;
+        const email = this.elements.forgotEmail.value.trim();
+
+        const turnstileInput = document.querySelector('#forgot-view [name="cf-turnstile-response"]');
+        const turnstileToken = turnstileInput ? turnstileInput.value : '';
+
+        if (!email) {
+            this.translateError(this.elements.forgotError, 'fill_all_fields', 'Заполните все поля');
+            return;
+        }
+
+        const turnstileErrorEl = document.getElementById('forgot-turnstile-error');
+        if (!turnstileToken) {
+            this.translateError(turnstileErrorEl, 'solve_captcha', 'Пожалуйста, пройдите проверку на робота');
+            return;
+        }
+        if (turnstileErrorEl) turnstileErrorEl.style.display = 'none';
+
+        this.elements.forgotError.style.display = 'none';
+        UIManager.toggleLoading(btn, true);
+        this.terminal.updateStatus(`> Checking password recovery status... <span class="cursor">_</span>`);
+
+        const result = await AuthApi.post('/api/user/password/forgot/', { 
+            email, 
+            turnstile_token: turnstileToken 
+        });
+
+        if (result.success) {
+            if (this.elements.forgotDisplayEmail) this.elements.forgotDisplayEmail.textContent = email;
+            
+            this.views.forgotStep1.classList.remove('active');
+            this.views.forgotStep1.style.display = 'none';
+            this.views.forgotStep2.style.display = 'block'; 
+            this.views.forgotStep2.classList.add('active');
+
+            this.terminal.updateStatus(`> Checking system database... <span class="term-ok">PROCESSED</span><br>> Sending recovery OTP code... <span class="term-ok">OK</span><br><br><span class="typing-anim">Awaiting new password token<span class="cursor">_</span></span>`);
+        } else {
+            this.translateError(this.elements.forgotError, result.i18n, result.error);
+            this.terminal.updateStatus(`> Recovery process... <span class="text-danger">FAILED</span><br><br>Awaiting email address<span class="cursor">_</span>`);
+            
+            if (window.turnstile) {
+                window.turnstile.reset();
+            }
+
+            UIManager.toggleLoading(btn, false, 'Получить код');
+        }
+    }
+
+    handleForgotBack(e) {
+        e.preventDefault();
+        this.views.forgotStep2.classList.remove('active');
+        this.views.forgotStep2.style.display = 'none';
+        this.views.forgotStep1.style.display = 'block';
+        this.views.forgotStep1.classList.add('active');
+        this.terminal.updateStatus(`Awaiting email address<span class="cursor">_</span>`);
+        this.forgotOtp.clear();
+    }
+
+    async handleForgotVerify(e) {
+        const btn = e.currentTarget;
+        const email = this.elements.forgotEmail.value.trim();
+        const otpCode = this.forgotOtp.getCode();
+        const newPassword = this.elements.forgotNewPass.value;
+
+        if (otpCode.length < 4 || !newPassword) {
+            this.translateError(this.elements.forgotStep2Error, 'fill_all_fields', 'Заполните все поля');
+            return;
+        }
+
+        if (newPassword.length < 8) {
+            this.translateError(this.elements.forgotStep2Error, 'password_too_short', 'Пароль должен быть не менее 8 символов');
+            return;
+        }
+
+        this.elements.forgotStep2Error.style.display = 'none';
+        UIManager.toggleLoading(btn, true);
+        this.terminal.updateStatus(`> Validating OTP & applying new credentials... <span class="cursor">_</span>`);
+
+        const result = await AuthApi.post('/api/user/password/reset/', { 
+            email, 
+            code: otpCode,
+            new_password: newPassword
+        });
+
+        if (result.success) {
+            this.terminal.updateStatus(`> Validating OTP... <span class="term-ok">VALID</span><br>> Re-hashing password... <span class="term-ok">OK</span><br><br><span class="typing-anim">Password reset successful! Redirecting to login...</span>`);
+            setTimeout(() => {
+                UIManager.toggleLoading(btn, false);
+                this.switchView({ preventDefault: () => {} }, 'login');
+                if (this.elements.loginEmail) this.elements.loginEmail.value = email;
+            }, 1500);
+        } else {
+            this.terminal.updateStatus(`> Updating credentials... <span class="text-danger">INVALID TOKEN</span><br><br><span class="typing-anim">Awaiting verification<span class="cursor">_</span></span>`);
+            this.translateError(this.elements.forgotStep2Error, result.i18n, result.error);
+            
+            this.forgotOtp.clear();
+            UIManager.toggleLoading(btn, false, 'Сохранить новый пароль');
         }
     }
 }

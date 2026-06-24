@@ -121,7 +121,60 @@ document.addEventListener('DOMContentLoaded', () => {
         new NotificationManager();
 
         document.getElementById('btn-open-password')?.addEventListener('click', () => {
-            window.App.modal.open('tpl-change-password');
+            window.App.modal.open('tpl-change-password', (clone) => {
+                clone.querySelector('#btn-cancel-password-modal').onclick = () => window.App.modal.close();
+
+                const btnConfirm = clone.querySelector('#btn-confirm-change-password');
+                const oldPassInput = clone.querySelector('#change-old-password');
+                const newPassInput = clone.querySelector('#change-new-password');
+                const errorMsg = clone.querySelector('#change-password-error');
+
+                btnConfirm.addEventListener('click', async () => {
+                    const oldPassword = oldPassInput.value;
+                    const newPassword = newPassInput.value;
+
+                    if (!oldPassword || !newPassword) {
+                        errorMsg.textContent = window.App.i18n.getTranslation('messages.fill_all_fields') || 'Заполните все поля'; 
+                        errorMsg.style.display = 'block';
+                        return;
+                    }
+
+                    if (newPassword.length < 8) {
+                        errorMsg.textContent = window.App.i18n.getTranslation('messages.password_too_short') || 'Пароль должен быть не менее 8 символов';
+                        errorMsg.style.display = 'block';
+                        return;
+                    }
+
+                    errorMsg.style.display = 'none';
+                    btnConfirm.disabled = true;
+
+                    try {
+                        const response = await window.App.api.post('/api/user/password/change/', { 
+                            old_password: oldPassword,
+                            new_password: newPassword
+                        });
+
+                        if (response.ok) {
+                            window.App.modal.close();
+                            window.location.href = '/user/login/';
+                        } else {
+                            const data = await response.json();
+                            
+                            const translationKey = data.i18n ? `messages.${data.i18n}` : null;
+                            const translatedError = translationKey ? window.App.i18n.getTranslation(translationKey) : null;
+
+                            errorMsg.textContent = translatedError || data.message || 'Не удалось сменить пароль';
+                            errorMsg.style.display = 'block';
+                            btnConfirm.disabled = false;
+                        }
+                    } catch (error) {
+                        console.error('Change password API error:', error);
+                        errorMsg.textContent = window.App.i18n.getTranslation('common.server_error') || 'Внутренняя ошибка сервера';
+                        errorMsg.style.display = 'block';
+                        btnConfirm.disabled = false;
+                    }
+                });
+            });
         });
 
         document.getElementById('btn-open-delete')?.addEventListener('click', () => {

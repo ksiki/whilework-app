@@ -1,6 +1,9 @@
+# local dev
+docker-compose.local.yml
+nginx/default.local.conf
+
 # django static
 backend/staticfiles
-
 
 # airfow
 airflow/logs

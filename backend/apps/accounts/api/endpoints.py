@@ -1,7 +1,12 @@
 import logging
 
 from asgiref.sync import sync_to_async
-from django.contrib.auth import aauthenticate, alogin, get_user_model, login
+from django.contrib.auth import (
+    aauthenticate,
+    alogin,
+    get_user_model,
+    login,
+)
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
 from django.http import HttpRequest, HttpResponse
@@ -12,11 +17,14 @@ from ninja.throttling import AnonRateThrottle, AuthRateThrottle
 from apps.accounts import services
 from apps.accounts.api.schemas import (
     AddViewedVacancy,
+    ChangePasswordRequest,
     CompanyBlacklistRequest,
     DeleteUserRequest,
+    ForgotPasswordRequest,
     LoginRequest,
     ReadNotificationRequest,
     RegisterRequest,
+    ResetPasswordRequest,
     SuccessResponse,
     VerifyOTPRequest,
 )
@@ -148,6 +156,80 @@ async def delete_user(request: HttpRequest, payload: DeleteUserRequest) -> HttpR
         "success": True,
         "message": "Delete user is seccusse",
         "i18n": "delete_user_seccusse",
+    }
+
+
+@router.post(
+    "/password/change/",
+    auth=django_auth,
+    response={200: SuccessResponse, 400: dict},
+)
+async def change_password(
+    request: HttpRequest, payload: ChangePasswordRequest
+) -> HttpResponse:
+    try:
+        success = await services.PasswordService.change_password(
+            user=request.user,
+            old_password=payload.old_password,
+            new_password=payload.new_password,
+        )
+    except Exception as e:
+        logger.error(f"Change password failed: {str(e)}", exc_info=True)
+        return 400, {
+            "message": "Change password failed",
+            "i18n": "change_password_failed",
+        }
+    else:
+        if not success:
+            return 400, {
+                "message": "Old password is incorrect",
+                "i18n": "old_password_incorrect",
+            }
+
+    return 200, {
+        "success": True,
+        "message": "Password successfully changed",
+        "i18n": "password_changed_successfully",
+    }
+
+
+@router.post("/password/forgot/", response={200: SuccessResponse, 400: dict})
+async def forgot_password(
+    request: HttpRequest, payload: ForgotPasswordRequest
+) -> HttpResponse:
+    if not services.CaptchaService.verify_turnstile(payload.turnstile_token):
+        return 400, {
+            "error": "The robot was not checked. Try again",
+            "i18n": "captcha_verification_failed",
+        }
+
+    await services.PasswordService.generate_reset_otp(payload.email)
+
+    return 200, {
+        "success": True,
+        "message": "If this email is registered, a recovery code has been sent.",
+        "i18n": "recovery_code_sent",
+    }
+
+
+@router.post("/password/reset/", response={200: SuccessResponse, 400: dict})
+async def reset_password(
+    request: HttpRequest, payload: ResetPasswordRequest
+) -> HttpResponse:
+    success = await services.PasswordService.verify_reset_and_save(
+        email=payload.email, code=payload.code, new_password=payload.new_password
+    )
+
+    if not success:
+        return 400, {
+            "error": "Invalid or outdated code, or user not found.",
+            "i18n": "invalid_reset_code",
+        }
+
+    return 200, {
+        "success": True,
+        "message": "Password successfully reset.",
+        "i18n": "password_reset_successfully",
     }
 
 

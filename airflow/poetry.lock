@@ -500,23 +500,21 @@ sqlalchemy = ["sqlalchemy (>=1.4.54)"]
 
 [[package]]
 name = "apache-airflow-providers-docker"
-version = "3.14.1"
+version = "4.5.7"
 description = "Provider package apache-airflow-providers-docker for Apache Airflow"
 optional = false
-python-versions = "~=3.9"
+python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "apache_airflow_providers_docker-3.14.1-py3-none-any.whl", hash = "sha256:eeb2d084e47d020eb116dedb5c48841e2d0de5e6d998602b35cba56706ae8559"},
-    {file = "apache_airflow_providers_docker-3.14.1.tar.gz", hash = "sha256:d4d32be395eaa3496e8fdee6af901553ef9674c24f1d568fc4934a416d32c6a7"},
+    {file = "apache_airflow_providers_docker-4.5.7-py3-none-any.whl", hash = "sha256:92abc71225502370b4ed2177f0577bfbad210aca4a27a72589ea5db6894dc9a8"},
+    {file = "apache_airflow_providers_docker-4.5.7.tar.gz", hash = "sha256:214ebeac285378290e88e79691b3e7f13f092da03b6ae569a839cbf5a69b4db7"},
 ]
 
 [package.dependencies]
-apache-airflow = ">=2.8.0"
+apache-airflow = ">=2.11.0"
+apache-airflow-providers-common-compat = ">=1.10.1"
 docker = ">=7.1.0"
 python-dotenv = ">=0.21.0"
-
-[package.extras]
-common-compat = ["apache-airflow-providers-common-compat"]
 
 [[package]]
 name = "apache-airflow-providers-fab"
@@ -4459,4 +4457,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.13"
-content-hash = "8bc75af63ac1826f653fefeae6eb31d85f033b803a6e13e4283dd6916332475f"
+content-hash = "cfa06caefdc369d6a21234d6a77209e0a846085cd721d0e0f1cb509f7c74201f"

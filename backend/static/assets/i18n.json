@@ -98,7 +98,15 @@
       "reason_salary": "Неверная зарплата",
       "reason_unresponsive": "Работодатель не отвечает",
       "reason_other": "Другое",
-      "fill_form": "Заполнить форму"
+      "fill_form": "Заполнить форму",
+      "recover_password": "Восстановление пароля",
+      "recover_desc": "Введите email, мы отправим код подтверждения",
+      "get_code": "Получить код",
+      "back_to_login": "Вернуться ко входу",
+      "new_password": "Новый пароль",
+      "save_new_password": "Сохранить новый пароль",
+      "login_desc": "Войдите в систему, чтобы продолжить поиск и отслеживание вакансий.",
+      "forgot_desc": "Восстановите доступ к своему аккаунту с помощью email и одноразового кода."
     },
     "stats": {
       "tracked_sources": "Отслеживаемые источники",
@@ -126,7 +134,14 @@
       "presentation_desc": "Получи доступ к скрытым вакансиям, создай свой черный список и управляй откликами",
       "unexpected_error": "Произошла непредвиденная ошибка",
       "captcha_verification_failed": "Робот не был проверен. Пробовать снова",
-      "solve_captcha": "Пожалуйста, пройдите проверку на робота"
+      "password_too_short": "Пароль должен быть не менее 8 символов",
+      "solve_captcha": "Пожалуйста, пройдите проверку на робота",
+      "change_password_failed": "Не удалось сменить пароль. Попробуйте позже.",
+      "old_password_incorrect": "Старый пароль указан неверно",
+      "password_changed_successfully": "Пароль успешно изменен",
+      "recovery_code_sent": "Если этот email зарегистрирован, код восстановления отправлен.",
+      "invalid_reset_code": "Неверный или устаревший код, либо пользователь не найден.",
+      "password_reset_successfully": "Пароль успешно сброшен."
     },
     "auth": {
       "create_account": "Создать аккаунт",
@@ -363,7 +378,15 @@
       "reason_salary": "Incorrect salary",
       "reason_unresponsive": "The employer is not responding",
       "reason_other": "Other",
-      "fill_form": "Fill form"
+      "fill_form": "Fill form",
+      "recover_password": "Password Recovery",
+      "recover_desc": "Enter your email, and we will send a verification code",
+      "get_code": "Get Code",
+      "back_to_login": "Back to Login",
+      "new_password": "New Password",
+      "save_new_password": "Save New Password",
+      "login_desc": "Log in to the system to continue searching and tracking vacancies.",
+      "forgot_desc": "Restore access to your account using email and a one-time code."
     },
     "stats": {
       "tracked_sources": "Tracked sources",
@@ -391,7 +414,14 @@
       "presentation_desc": "Get access to hidden vacancies, create your own blacklist and manage responses",
       "unexpected_error": "An unexpected error has occurred",
       "captcha_verification_failed": "The robot was not checked. Try again.",
-      "solve_captcha": "Please pass the robot check."
+      "password_too_short": "Password must be at least 8 characters long",
+      "solve_captcha": "Please complete the captcha verification",
+      "change_password_failed": "Failed to change password. Please try again later.",
+      "old_password_incorrect": "The old password is incorrect",
+      "password_changed_successfully": "Password successfully changed",
+      "recovery_code_sent": "If this email is registered, a recovery code has been sent.",
+      "invalid_reset_code": "Invalid or outdated code, or user not found.",
+      "password_reset_successfully": "Password successfully reset."
     },
     "auth": {
       "create_account": "Create an account",

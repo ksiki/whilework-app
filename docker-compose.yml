@@ -118,8 +118,6 @@ services:
     env_file: .env
     environment:
       TZ: Europe/Moscow
-    volumes:
-      - ./backend:/app
     dns:
       - 8.8.8.8
       - 1.1.1.1

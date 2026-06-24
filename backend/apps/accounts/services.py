@@ -79,6 +79,60 @@ class CaptchaService:
             return False
 
 
+class PasswordService:
+    @staticmethod
+    async def change_password(
+        user: AbstractBaseUser, old_password: str, new_password: str
+    ) -> bool:
+        """Смена пароля из профиля с проверкой старого."""
+        is_password_valid = await sync_to_async(user.check_password)(old_password)
+        if not is_password_valid:
+            return False
+
+        user.set_password(new_password)
+        await user.asave()
+        return True
+
+    @classmethod
+    async def generate_reset_otp(cls, email: str) -> bool:
+        """Инициация восстановления пароля: генерация и отправка OTP."""
+        user = await User.objects.filter(email=email, is_active=True).afirst()
+        if not user:
+            return False
+
+        otp_code = OTPAuthService._generate_otp_code()
+        cache_key = f"otp_reset_{email}"
+        cache.set(cache_key, otp_code, timeout=OTPAuthService.OTP_EXPIRY_TIMEOUT)
+
+        try:
+            await send_otp_email_task.kiq(email, otp_code)
+            return True
+        except Exception as e:
+            logger.error(f"Error queuing reset OTP task for {email}: {e}")
+            return False
+
+    @classmethod
+    async def verify_reset_and_save(
+        cls, email: str, code: str, new_password: str
+    ) -> bool:
+        """Проверка кода и сохранение нового пароля."""
+        cache_key = f"otp_reset_{email}"
+        saved_code = cache.get(cache_key)
+
+        if not saved_code or not secrets.compare_digest(str(saved_code), str(code)):
+            return False
+
+        user = await User.objects.filter(email=email).afirst()
+        if not user:
+            return False
+
+        user.set_password(new_password)
+        await user.asave()
+
+        cache.delete(cache_key)
+        return True
+
+
 async def delete_user(user: AbstractBaseUser, password: str) -> bool:
     is_password_valid = await sync_to_async(user.check_password)(password)
 
