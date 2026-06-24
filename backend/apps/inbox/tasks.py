@@ -1,6 +1,7 @@
 # apps/inbox/tasks.py
 import hashlib
 import logging
+import re
 
 from asgiref.sync import async_to_sync
 from core.broker import broker
@@ -16,6 +17,9 @@ logger = logging.getLogger(__name__)
 
 
 def generate_content_hash(text: str) -> str:
+    text = text.lower()
+    text = re.sub(r"http[s]?://\S+", "", text)
+    text = re.sub(r"\W+", "", text)
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
@@ -81,33 +85,38 @@ def process_pending_messages_task(count: int) -> None:
                         city=clean_data.location_city,
                     )[0]
 
+                current_hash = generate_content_hash(msg.raw_text)
                 vacancy, created = Vacancy.objects.get_or_create(
-                    source=msg.source,
-                    company=company_obj,
-                    location=location_obj,
-                    title=clean_data.title,
-                    description=clean_data.description,
-                    salary_min=clean_data.salary_min,
-                    salary_max=clean_data.salary_max,
-                    currency=clean_data.currency,
-                    grade=clean_data.grade.value if clean_data.grade else None,
-                    experience_from=clean_data.experience_from,
-                    employment_type=clean_data.employment_type.value
-                    if clean_data.employment_type
-                    else None,
-                    english_level=clean_data.english_level.value
-                    if clean_data.english_level
-                    else None,
-                    work_format=clean_data.work_format.value
-                    if clean_data.work_format
-                    else None,
-                    usd_salary_min=system_services.convert_to_usd(
-                        amount=clean_data.salary_min, iso_code=clean_data.currency
-                    )
-                    if clean_data.salary_min
-                    else None,
-                    content_hash=generate_content_hash(msg.raw_text),
-                    published_at=msg.metadata.get("publish_date", timezone.now()),
+                    content_hash=current_hash,
+                    defaults={
+                        "source": msg.source,
+                        "company": company_obj,
+                        "location": location_obj,
+                        "title": clean_data.title,
+                        "description": clean_data.description,
+                        "salary_min": clean_data.salary_min,
+                        "salary_max": clean_data.salary_max,
+                        "currency": clean_data.currency,
+                        "grade": clean_data.grade.value if clean_data.grade else None,
+                        "experience_from": clean_data.experience_from,
+                        "employment_type": clean_data.employment_type.value
+                        if clean_data.employment_type
+                        else None,
+                        "english_level": clean_data.english_level.value
+                        if clean_data.english_level
+                        else None,
+                        "work_format": clean_data.work_format.value
+                        if clean_data.work_format
+                        else None,
+                        "usd_salary_min": system_services.convert_to_usd(
+                            amount=clean_data.salary_min, iso_code=clean_data.currency
+                        )
+                        if clean_data.salary_min
+                        else None,
+                        "published_at": msg.metadata.get(
+                            "publish_date", timezone.now()
+                        ),
+                    },
                 )
 
                 if created:
@@ -140,4 +149,6 @@ def process_pending_messages_task(count: int) -> None:
         except Exception as e:
             logger.error(f"Error parsing message {msg.id}: {str(e)}", exc_info=True)
             msg.status = ParserRawMessage.Status.FAILED
-            msg.save(update_fields=["status", "updated_at"])
+            msg.metadata = msg.metadata or {}
+            msg.metadata["parse_error"] = str(e)
+            msg.save(update_fields=["status", "metadata", "updated_at"])

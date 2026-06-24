@@ -196,7 +196,6 @@ class TestProcessPendingMessagesTask:
         mock_data.experience_from = 2
         mock_data.skills = ["Python", "Django", "Airflow"]
 
-        # Используем валидные короткие ключи БД во избежание DataError
         mock_data.grade = MagicMock(value="MID")
         mock_data.employment_type = MagicMock(value="FLT")
         mock_data.english_level = MagicMock(value="B1")
@@ -242,3 +241,56 @@ class TestProcessPendingMessagesTask:
 
         msg.refresh_from_db()
         assert msg.status == ParserRawMessage.Status.FAILED
+
+    @patch("apps.system.services.convert_to_usd")
+    @patch("apps.inbox.tasks.async_to_sync")
+    def test_duplicate_messages_handled_gracefully(
+        self, mock_async_to_sync, mock_convert_to_usd
+    ):
+        mock_convert_to_usd.return_value = 5000
+        source = SourceFactory()
+
+        msg1 = ParserRawMessage.objects.create(
+            source=source,
+            external_msg_id="ext_original",
+            raw_text="Python Backend Developer! Зарплата 5000",
+            status=ParserRawMessage.Status.PENDING,
+        )
+        msg2 = ParserRawMessage.objects.create(
+            source=source,
+            external_msg_id="ext_duplicate",
+            raw_text="python backend developer зарплата 5000 https://hr-link.com/?utm=tg",
+            status=ParserRawMessage.Status.PENDING,
+        )
+
+        mock_extractor = Mock()
+        mock_data = MagicMock()
+        mock_data.is_vacancy = True
+        mock_data.description = "Awesome job description"
+        mock_data.company_name = "WhileWork Inc"
+        mock_data.title = "Python Backend Developer"
+
+        mock_data.salary_min = 5000
+        mock_data.currency = "USD"
+        mock_data.location_region = None
+        mock_data.location_country = None
+        mock_data.location_city = None
+        mock_data.grade = None
+        mock_data.employment_type = None
+        mock_data.english_level = None
+        mock_data.work_format = None
+        mock_data.skills = []
+        mock_data.contacts = []
+
+        mock_extractor.return_value = mock_data
+        mock_async_to_sync.return_value = mock_extractor
+
+        process_pending_messages_task(2)
+
+        msg1.refresh_from_db()
+        msg2.refresh_from_db()
+
+        assert msg1.status == ParserRawMessage.Status.PROCESSED
+        assert msg2.status == ParserRawMessage.Status.PROCESSED
+
+        assert Vacancy.objects.count() == 1
