@@ -2,9 +2,10 @@ import json
 import logging
 import os
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import Any, Final
 
+import pendulum
 from airflow.decorators import dag, task
 from airflow.models import Variable
 from airflow.providers.docker.operators.docker import DockerOperator
@@ -42,10 +43,10 @@ DEFAULT_ARGS: Final[dict[str, Any]] = {
 
 
 @dag(
-    dag_id="master_parser_orchestrator",
+    dag_id="master_parser_orchestrator_v2",
     default_args=DEFAULT_ARGS,
-    schedule="0 */8 * * *",
-    start_date=datetime(2026, 6, 23),
+    schedule="0 3,9,15,21 * * *",
+    start_date=pendulum.datetime(2026, 6, 23, tz="Europe/Moscow"),
     catchup=False,
     max_active_runs=1,
 )
