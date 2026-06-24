@@ -86,11 +86,14 @@ def master_parser_dag() -> None:
 
             env_list.append(
                 {
-                    "PLATFORM": platform,
-                    "SOURCES_BATCH": json.dumps(sources),
-                    "AUTH_DATA": json.dumps(_get_auth_data(platform=platform)),
-                    "INTERNAL_API_TOKEN": internal_token,
-                    "INTERNAL_BACKEND_URL": f"{http_hook.base_url}{endpoint}",
+                    "environment": {
+                        "PLATFORM": platform,
+                        "SOURCES_BATCH": json.dumps(sources),
+                        "AUTH_DATA": json.dumps(_get_auth_data(platform=platform)),
+                        "INTERNAL_API_TOKEN": internal_token,
+                        "INTERNAL_BACKEND_URL": f"{http_hook.base_url}{endpoint}",
+                    },
+                    "labels": {"logical_name": "airflow-parser"},
                 }
             )
 
@@ -107,10 +110,7 @@ def master_parser_dag() -> None:
         docker_url="unix://var/run/docker.sock",
         pool="docker_parsers_pool",
         mount_tmp_dir=False,
-    ).expand(
-        environment=active_sources_envs,
-        labels=[{"logical_name": "airflow-parser"}],
-    )
+    ).expand_kwargs(active_sources_envs)
 
     active_sources_envs >> run_parsers
 
