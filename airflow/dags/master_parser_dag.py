@@ -107,8 +107,10 @@ def master_parser_dag() -> None:
         docker_url="unix://var/run/docker.sock",
         pool="docker_parsers_pool",
         mount_tmp_dir=False,
-        labels={"logical_name": "airflow-parser"},
-    ).expand(environment=active_sources_envs)
+    ).expand(
+        environment=active_sources_envs,
+        labels=[{"logical_name": "airflow-parser"}],
+    )
 
     active_sources_envs >> run_parsers
 
