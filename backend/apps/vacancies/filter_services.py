@@ -2,7 +2,7 @@ import logging
 import uuid
 from typing import Any
 
-from django.db.models import Q, QuerySet
+from django.db.models import F, Q, QuerySet
 
 from .exceptions import UnknownModeError, UnknownSortingError
 from .models import Vacancy
@@ -145,7 +145,11 @@ def apply_sorting(
 ) -> QuerySet["Vacancy"]:
     match sort_by:
         case "date":
-            return queryset.order_by("-published_at", "-usd_salary_min")
+            return queryset.order_by(
+                "-published_at", F("usd_salary_min").desc(nulls_last=True)
+            )
         case "salary":
-            return queryset.order_by("-usd_salary_min", "-published_at")
+            return queryset.order_by(
+                F("usd_salary_min").desc(nulls_last=True), "-published_at"
+            )
     raise UnknownSortingError(f"Unknown sorting '{sort_by}'")
