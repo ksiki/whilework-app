@@ -242,10 +242,10 @@ class FilterManager {
             experience_from: expInput?.value || '',
             salary_min: salaryMinInput?.value ? parseInt(salaryMinInput.value, 10) : null,
             sources: { mode: this.getRadio('source_mode', 'choose'), items: this.getValues('sources') },
-            work_type: { logic: this.getRadio('work_type_logic', 'and'), mode: this.getRadio('work_type_mode', 'choose'), items: this.getValues('work_type') },
-            work_format: { logic: this.getRadio('work_format_logic', 'and'), mode: this.getRadio('work_format_mode', 'choose'), items: this.getValues('work_format') },
+            work_type: { logic: this.getRadio('work_type_logic', 'or'), mode: this.getRadio('work_type_mode', 'choose'), items: this.getValues('work_type') },
+            work_format: { logic: this.getRadio('work_format_logic', 'or'), mode: this.getRadio('work_format_mode', 'choose'), items: this.getValues('work_format') },
             grade: { logic: this.getRadio('grade_logic', 'and'), mode: this.getRadio('grade_mode', 'choose'), items: this.getValues('grade') },
-            skills: { logic: this.getRadio('skills_logic', 'and'), mode: this.getRadio('skills_mode', 'choose'), items: Array.from(this.skillsFilter.selectedItems.keys()) },
+            skills: { logic: this.getRadio('skills_logic', 'or'), mode: this.getRadio('skills_mode', 'choose'), items: Array.from(this.skillsFilter.selectedItems.keys()) },
             geo: { category: this.getRadio('geo_category', 'regions'), mode: this.getRadio('geo_mode', 'choose'), items: Array.from(this.geoFilter.selectedItems.keys()) }
         };
     }

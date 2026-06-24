@@ -282,7 +282,7 @@ class Vacancy(TimeStampedMixin):
             return f"{value:_}".replace("_", " ")
 
         if self.salary_min and self.salary_max:
-            result = f"{format_salary(self.salary_min)}–{format_salary(self.salary_max)} {currency_str}"
+            result = f"{format_salary(self.salary_min)} – {format_salary(self.salary_max)} {currency_str}"
         elif self.salary_min:
             result = f"{format_salary(self.salary_min)} {currency_str}"
         else:

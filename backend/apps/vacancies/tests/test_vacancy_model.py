@@ -7,7 +7,7 @@ from tests.factories import CompanyFactory, LocationFactory, VacancyFactory
     [
         (None, 10_000, "10 000 USD"),
         (5_000, None, "5 000 USD"),
-        (5_000, 10_000, "5 000–10 000 USD"),
+        (5_000, 10_000, "5 000 – 10 000 USD"),
         (None, None, ""),
     ],
 )
