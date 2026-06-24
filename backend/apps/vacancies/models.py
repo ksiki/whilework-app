@@ -272,18 +272,23 @@ class Vacancy(TimeStampedMixin):
         super().save(*args, **kwargs)
 
     @property
-    def salary_string(self) -> str | None:
+    def salary_string(self) -> str:
         if not self.salary_min and not self.salary_max:
             return ""
 
         currency_str = self.currency if self.currency else ""
 
+        def format_salary(value: int) -> str:
+            return f"{value:_}".replace("_", " ")
+
         if self.salary_min and self.salary_max:
-            return f"{self.salary_min}–{self.salary_max} {currency_str}"
+            result = f"{format_salary(self.salary_min)}–{format_salary(self.salary_max)} {currency_str}"
         elif self.salary_min:
-            return f"{self.salary_min} {currency_str}"
+            result = f"{format_salary(self.salary_min)} {currency_str}"
         else:
-            return f"{self.salary_max} {currency_str}"
+            result = f"{format_salary(self.salary_max)} {currency_str}"
+
+        return result.strip()
 
     @property
     def meta_string(self) -> str | None:

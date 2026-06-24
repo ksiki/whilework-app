@@ -51,6 +51,7 @@ class SourceAdmin(ParserAdminMixin, admin.ModelAdmin):
                     "platform",
                     "name",
                     "identifier",
+                    "link",
                 )
             },
         ),
