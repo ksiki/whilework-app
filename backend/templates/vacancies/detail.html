@@ -50,6 +50,9 @@
                     {% if vacancy.work_format %}
                     <div class="attr-item"><span class="attr-label"><span data-i18n="filters.work_format">Формат</span>:</span> <strong>{{ vacancy.get_work_format_display }}</strong></div>
                     {% endif %}
+                    {% if vacancy.employment_type %}
+                    <div class="attr-item"><span class="attr-label"><span data-i18n="filters.employment_type">Тип работы</span>:</span> <strong>{{ vacancy.get_employment_type_display }}</strong></div>
+                    {% endif %}
                     {% if vacancy.english_level %}
                     <div class="attr-item"><span class="attr-label"><span data-i18n="filters.english">Английский</span>:</span> <strong>{{ vacancy.get_english_level_display }}</strong></div>
                     {% endif %}

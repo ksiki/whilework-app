@@ -27,6 +27,9 @@
                     {% if vacancy.work_format %}
                         <span class="spec"><span data-i18n="filters.work_format">Формат</span>: <b>{{ vacancy.get_work_format_display }}</b></span>
                     {% endif %}
+                    {% if vacancy.employment_type %}
+                        <span class="spec"><span data-i18n="filters.employment_type">Тип работы</span>: <b>{{ vacancy.get_employment_type_display }}</b></span>
+                    {% endif %}
                     {% if vacancy.english_level %}
                         <span class="spec"><span data-i18n="filters.english">Английский</span>: <b>{{ vacancy.get_english_level_display }}</b></span>
                     {% endif %}
