@@ -93,7 +93,7 @@ def master_parser_dag() -> None:
                         "INTERNAL_API_TOKEN": internal_token,
                         "INTERNAL_BACKEND_URL": f"{http_hook.base_url}{endpoint}",
                     },
-                    "labels": {"logical_name": "airflow-parser"},
+                    "container_name": "airflow-parser-{{ ti.map_index }}-{{ run_id }}",
                 }
             )
 
