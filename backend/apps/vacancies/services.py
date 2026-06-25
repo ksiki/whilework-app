@@ -245,7 +245,7 @@ def get_og_context(vacancy: Vacancy) -> dict[str, Any]:
 
     features_string = " • ".join(features) if features else "Свежая вакансия"
 
-    skills_qs = vacancy.skills.all()[:4]
+    skills_qs = vacancy.skills.all()[:6]
     if skills_qs.exists():
         skills_string = f"Стек: {', '.join(s.name for s in skills_qs)}"
     else:

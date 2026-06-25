@@ -42,19 +42,19 @@
         {{ line_2 }}
     </text>
 
-    <text x="80" y="490" font-family="'JetBrains Mono', monospace" font-weight="700" font-size="48" fill="#111827">
+    <text x="80" y="480" font-family="'JetBrains Mono', monospace" font-weight="700" font-size="48" fill="#111827">
         {{ salary }}
     </text>
 
-    <rect x="80" y="530" width="1040" height="60" rx="12" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1" />
+    <rect x="80" y="515" width="1040" height="90" rx="12" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1" />
     
-    <circle cx="110" cy="560" r="6" fill="#10B981" />
+    <circle cx="110" cy="545" r="6" fill="#10B981" />
 
-    <text x="135" y="566" font-family="'Inter', sans-serif" font-weight="400" font-size="20" fill="#6B7280">
+    <text x="135" y="551" font-family="'Inter', sans-serif" font-weight="400" font-size="20" fill="#6B7280">
         {{ features_string }}
     </text>
 
-    <text x="1080" y="566" font-family="'JetBrains Mono', monospace" font-weight="700" font-size="20" fill="url(#accent)" text-anchor="end">
+    <text x="135" y="585" font-family="'JetBrains Mono', monospace" font-weight="700" font-size="20" fill="url(#accent)">
         {{ skills_string }}
     </text>
 </svg>
