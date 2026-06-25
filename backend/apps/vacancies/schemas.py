@@ -57,7 +57,7 @@ class CleanVacancySchema(BaseModel):
     title: str = Field(
         None, description="Название вакансии (чистое, без зарплаты, грейда и условий)"
     )
-    description: str = Field(
+    description: str | None = Field(
         None,
         description="Подробное описание вакансии в HTML (разрешены теги p, h2, h3, ul, li, strong, br)",
     )

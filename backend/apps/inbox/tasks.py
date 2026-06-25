@@ -8,7 +8,7 @@ from pathlib import Path
 from asgiref.sync import async_to_sync
 from core.broker import broker
 from django.conf import settings
-from django.db import transaction
+from django.db import IntegrityError, transaction
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 
@@ -107,9 +107,12 @@ def _save_vacancy_to_db(
     with transaction.atomic():
         company_obj = None
         if clean_data.company_name:
-            company_obj, _ = Company.objects.get_or_create(
-                name=clean_data.company_name.strip()
-            )
+            company_name = clean_data.company_name.strip()
+            try:
+                with transaction.atomic():
+                    company_obj, _ = Company.objects.get_or_create(name=company_name)
+            except IntegrityError:
+                company_obj = Company.objects.get(name=company_name)
 
         location_obj = None
         if any(
@@ -185,7 +188,11 @@ def _save_vacancy_to_db(
             for skill_name in clean_data.skills:
                 clean_skill = normalize_skill_name(skill_name)
                 if clean_skill:
-                    skill_obj, _ = Skill.objects.get_or_create(name=clean_skill)
+                    try:
+                        with transaction.atomic():
+                            skill_obj, _ = Skill.objects.get_or_create(name=clean_skill)
+                    except IntegrityError:
+                        skill_obj = Skill.objects.get(name=clean_skill)
                     skill_objects.append(skill_obj)
             vacancy.skills.set(skill_objects)
 

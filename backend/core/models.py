@@ -1,3 +1,5 @@
+import itertools
+
 from django.db import models
 from slugify import slugify
 from unidecode import unidecode
@@ -28,5 +30,25 @@ class SluggedMixin(models.Model):
 
     def save(self, *args, **kwargs) -> None:
         if self.name and not self.slug:
-            self.slug = slugify(unidecode(self.name))
+            safe_name = (
+                self.name.replace("+", "-plus-")
+                .replace("#", "-sharp-")
+                .replace(".", "-dot-")
+            )
+
+            original_slug = slugify(unidecode(safe_name))
+
+            if not original_slug:
+                original_slug = "item"
+
+            unique_slug = original_slug
+            ModelClass = self.__class__
+
+            for x in itertools.count(1):
+                if not ModelClass.objects.filter(slug=unique_slug).exists():
+                    break
+                unique_slug = f"{original_slug}-{x}"
+
+            self.slug = unique_slug
+
         super().save(*args, **kwargs)
