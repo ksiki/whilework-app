@@ -43,9 +43,9 @@ DEFAULT_ARGS: Final[dict[str, Any]] = {
 
 
 @dag(
-    dag_id="master_parser_orchestrator_v2",
+    dag_id="master_parser_orchestrator_every_4_hours",
     default_args=DEFAULT_ARGS,
-    schedule="0 3,9,15,21 * * *",
+    schedule="0 /4 * * *",
     start_date=pendulum.datetime(2026, 6, 23, tz="Europe/Moscow"),
     catchup=False,
     max_active_runs=1,
