@@ -33,9 +33,12 @@ class SearchFilter {
 
         this.input.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase().trim();
-            const available = this.getItems().filter(item => 
-                this.getName(item).toLowerCase().includes(query) && !this.selectedItems.has(this.getValue(item))
-            );
+            const available = this.getItems().filter(item => {
+                const name = this.getName(item);
+                if (!name) return false; 
+                
+                return name.toLowerCase().includes(query) && !this.selectedItems.has(this.getValue(item));
+            });
             this.renderDropdown(available);
         });
 

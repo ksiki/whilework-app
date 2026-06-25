@@ -161,15 +161,22 @@ def make_context_for_vacancies_list() -> dict[str, Any]:
     skills = list(Skill.objects.values("slug", "name"))
 
     regions = list(
-        Location.objects.exclude(region="").values_list("region", flat=True).distinct()
+        Location.objects.exclude(region="")
+        .filter(region__isnull=False)
+        .values_list("region", flat=True)
+        .distinct()
     )
     countries = list(
         Location.objects.exclude(country="")
+        .filter(country__isnull=False)
         .values_list("country", flat=True)
         .distinct()
     )
     cities = list(
-        Location.objects.exclude(city="").values_list("city", flat=True).distinct()
+        Location.objects.exclude(city="")
+        .filter(city__isnull=False)
+        .values_list("city", flat=True)
+        .distinct()
     )
 
     all_vacancies = get_active_vacancies()
