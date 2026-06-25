@@ -1,4 +1,5 @@
 import logging
+import textwrap
 import uuid
 from datetime import timedelta
 from types import MappingProxyType
@@ -215,3 +216,46 @@ async def update_contacts_views(vacancy_id: uuid.UUID, increment: int = 1) -> bo
     except Exception as e:
         logger.warning(e)
         return False
+
+
+def get_og_context(vacancy: Vacancy) -> dict[str, Any]:
+    wrapped_title = textwrap.wrap(vacancy.title, width=32)
+    line_1 = wrapped_title[0] if len(wrapped_title) > 0 else ""
+    line_2 = wrapped_title[1] if len(wrapped_title) > 1 else ""
+    if len(wrapped_title) > 2:
+        line_2 = line_2[:-3] + "..."
+
+    meta = vacancy.meta_string
+    if not meta:
+        meta = "Прямой работодатель"
+
+    salary = vacancy.salary_string
+    if not salary:
+        salary = "Уровень дохода не указан"
+
+    features = []
+    if vacancy.work_format:
+        features.append(f"Формат: {vacancy.get_work_format_display()}")
+    if vacancy.employment_type:
+        features.append(f"Тип: {vacancy.get_employment_type_display()}")
+    if vacancy.experience_from is not None:
+        features.append(f"Опыт: от {vacancy.experience_from} лет")
+    if vacancy.english_level:
+        features.append(f"English: {vacancy.get_english_level_display().split(' ')[0]}")
+
+    features_string = " • ".join(features) if features else "Свежая вакансия"
+
+    skills_qs = vacancy.skills.all()[:4]
+    if skills_qs.exists():
+        skills_string = f"Стек: {', '.join(s.name for s in skills_qs)}"
+    else:
+        skills_string = ""
+
+    return {
+        "line_1": line_1,
+        "line_2": line_2,
+        "meta": meta,
+        "salary": salary,
+        "features_string": features_string,
+        "skills_string": skills_string,
+    }

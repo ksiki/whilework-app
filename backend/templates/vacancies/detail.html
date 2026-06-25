@@ -8,11 +8,11 @@
     <meta property="og:description" content="Новая вакансия на WhileWork. Перейдите по ссылке, чтобы узнать подробности и откликнуться.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="{{ vacancy.get_absolute_url }}">
-    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'og-preview.png' %}">
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}/media/og/vacancy_{{ vacancy.id }}.png">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ vacancy.seo_title }} | WhileWork">
-    <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'og-preview.png' %}">
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}/media/og/vacancy_{{ vacancy.id }}.png">
 {% endblock %}
 
 {% block extra_css %}

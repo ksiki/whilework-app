@@ -15,6 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+from apps.vacancies.views import generate_vacancy_og_image
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path
@@ -38,6 +39,9 @@ urlpatterns = [
     ),
     path("", web_app.urls),
     path("api/internal/v1/", internal_api.urls),
+    path(
+        "media/og/vacancy_<uuid:id>.png", generate_vacancy_og_image, name="generate_og"
+    ),
 ]
 
 handler404 = "apps.system.endpoints.global_404_handler"

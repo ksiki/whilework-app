@@ -29,6 +29,7 @@ DEBUG = os.getenv("DEBUG", "False").lower() in ("true", "1", "t", "yes")
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
+    "0.0.0.0",
     "app",
     "whilework.site",
 ]
@@ -39,6 +40,7 @@ SESSION_COOKIE_SECURE = not DEBUG
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
+    "http://0.0.0.0:8000",
     "https://whilework.site",
 ]
 

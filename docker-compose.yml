@@ -99,14 +99,6 @@ services:
       - 1.1.1.1
     networks:
       - backend_network
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 512M
-        reservations:
-          cpus: '0.10'
-          memory: 128M
 
   taskiq_worker:
     build:
