@@ -164,18 +164,21 @@ def make_context_for_vacancies_list() -> dict[str, Any]:
     regions = list(
         Location.objects.exclude(region="")
         .filter(region__isnull=False)
+        .order_by()
         .values_list("region", flat=True)
         .distinct()
     )
     countries = list(
         Location.objects.exclude(country="")
         .filter(country__isnull=False)
+        .order_by()
         .values_list("country", flat=True)
         .distinct()
     )
     cities = list(
         Location.objects.exclude(city="")
         .filter(city__isnull=False)
+        .order_by()
         .values_list("city", flat=True)
         .distinct()
     )
