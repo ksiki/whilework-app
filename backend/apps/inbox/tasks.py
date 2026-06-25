@@ -1,10 +1,13 @@
 # apps/inbox/tasks.py
 import hashlib
+import json
 import logging
 import re
+from pathlib import Path
 
 from asgiref.sync import async_to_sync
 from core.broker import broker
+from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
 
@@ -15,12 +18,61 @@ from apps.vacancies.models import Company, Contact, Location, Skill, Vacancy
 
 logger = logging.getLogger(__name__)
 
+_SKILL_ALIASES_CACHE: dict | None = None
+
+
+def get_skill_aliases() -> dict:
+    global _SKILL_ALIASES_CACHE
+
+    if _SKILL_ALIASES_CACHE is not None:
+        return _SKILL_ALIASES_CACHE
+
+    file_path = Path(settings.BASE_DIR) / "data" / "skill_aliases.json"
+
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            _SKILL_ALIASES_CACHE = json.load(f)
+            logger.info("JSON uploaded successfully")
+    except FileNotFoundError:
+        logger.warning(
+            f"The {file_path} file was not found. Normalization works without a dictionary."
+        )
+        _SKILL_ALIASES_CACHE = {}
+    except json.JSONDecodeError as e:
+        logger.error(f"JSON validation error in {file_path}: {e}")
+        _SKILL_ALIASES_CACHE = {}
+
+    return _SKILL_ALIASES_CACHE
+
+
+def normalize_skill_name(skill: str) -> str | None:
+    skill = skill.lower().strip()
+    skill = re.sub(r"\s+", " ", skill)
+    skill = re.sub(r"[^a-zа-я0-9\.\/\-\#\+ ]", "", skill)
+
+    test_key = skill.replace("-", " ")
+    aliases_dict = get_skill_aliases()
+
+    try:
+        return aliases_dict[test_key]
+    except Exception:
+        return skill if len(skill) > 1 else None
+
 
 def generate_content_hash(text: str) -> str:
     text = text.lower()
-    text = re.sub(r"http[s]?://\S+", "", text)
-    text = re.sub(r"\W+", "", text)
-    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+    text = re.sub(r"[\[\]\(\)]", " ", text)
+    text = re.sub(r"(https?://\S+|t\.me/\S+)", "", text)
+
+    homoglyphs = {"a": "а", "c": "с", "e": "е", "o": "о", "p": "р", "x": "х", "y": "у"}
+    for eng, rus in homoglyphs.items():
+        text = text.replace(eng, rus)
+
+    words = re.findall(r"[a-zа-яё0-9]+", text)
+
+    normalized_text = "".join(sorted(words))
+
+    return hashlib.sha256(normalized_text.encode("utf-8")).hexdigest()
 
 
 @broker.task
@@ -123,7 +175,7 @@ def process_pending_messages_task(count: int) -> None:
                     if clean_data.skills:
                         skill_objects = []
                         for skill_name in clean_data.skills:
-                            clean_skill = skill_name.strip().lower()
+                            clean_skill = normalize_skill_name(skill_name)
                             if clean_skill:
                                 skill_obj = Skill.objects.get_or_create(
                                     name=clean_skill
