@@ -25,7 +25,7 @@ def get_active_vacancies() -> QuerySet["Vacancy"]:
     vacancy_ids = cache.get(cache_key)
 
     if vacancy_ids is None:
-        period = timezone.now() - timedelta(days=30)
+        period = timezone.localdate() - timedelta(days=30)
         vacancy_ids = list(
             Vacancy.objects.filter(
                 published_at__gt=period,
@@ -185,8 +185,10 @@ def make_context_for_vacancies_list() -> dict[str, Any]:
 
     all_vacancies = get_active_vacancies()
     vacancies_per_month = all_vacancies.count()
-    today = timezone.now().date()
+    today = timezone.localdate()
     vacancies_today = all_vacancies.filter(published_at__date=today).count()
+    yesterday = today - timedelta(days=1)
+    vacancies_yesterday = all_vacancies.filter(published_at__date=yesterday).count()
 
     return {
         "work_formats": Vacancy.WorkFormat.choices,
@@ -199,6 +201,7 @@ def make_context_for_vacancies_list() -> dict[str, Any]:
             "cities": cities,
         },
         "vacancies_per_month": vacancies_per_month,
+        "vacancies_yesterday": vacancies_yesterday,
         "vacancies_today": vacancies_today,
     }
 

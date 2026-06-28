@@ -58,7 +58,7 @@
       "search_title": "Название",
       "search_skills": "Навыки",
       "search_companies": "Компании",
-      "salary_not_specified": "зп не указан",
+      "salary_not_specified": "ЗП не указана",
       "by_published_date": "Дата публикации",
       "by_salary": "Деньги",
       "english": "Английский",
@@ -113,6 +113,7 @@
       "sources": "Источники",
       "vacancies_per_month": "Вакансий за 30 дней",
       "today": "Сегодня",
+      "yesterday": "Вчера",
       "now_online": "Сейчас онлайн"
     },
     "messages": {
@@ -131,7 +132,7 @@
       "enter_code": "Введите 4-значный код полностью",
       "hint_algorithm": "Рекомендуем использовать алгоритм",
       "hint_selection": "Жесткая выборка может скрыть отличные офферы, в которых работодатель забыл указать нужные теги.",
-      "presentation_desc": "Получи доступ к скрытым вакансиям, создай свой черный список и управляй откликами",
+      "presentation_desc": "Зарегистрируйтесь, чтобы продолжить работу",
       "unexpected_error": "Произошла непредвиденная ошибка",
       "captcha_verification_failed": "Робот не был проверен. Пробовать снова",
       "password_too_short": "Пароль должен быть не менее 8 символов",
@@ -258,7 +259,7 @@
       "text_2": "самое главное - LLM фильтров",
       "text_3": ". Мы собираем вакансии ",
       "text_4": "исключительно с прямыми контактами",
-      "text_5": " (Telegram, Discord, Email или прямые формы). Проект создан для людей, и лучшая награда для нас — если вы поделитесь ссылкой с друзьями!",
+      "text_5": " (Telegram, Discord, Email или прямые формы). Проект создан для людей, и лучшая награда для нас - если вы поделитесь ссылкой с друзьями!",
       "share_btn": "Поделиться проектом"
     },
     "archived": {
@@ -393,6 +394,7 @@
       "sources": "Sources",
       "vacancies_per_month": "Vacancies per 30 days",
       "today": "Today",
+      "yesterday": "Yesterday",
       "now_online": "Now online"
     },
     "messages": {
@@ -411,7 +413,7 @@
       "enter_code": "Enter the 4-digit code in full",
       "hint_algorithm": "We recommend using the algorithm",
       "hint_selection": "A hard selection can hide excellent offers in which the employer forgot to specify the necessary tags.",
-      "presentation_desc": "Get access to hidden vacancies, create your own blacklist and manage responses",
+      "presentation_desc": "Register to continue working",
       "unexpected_error": "An unexpected error has occurred",
       "captcha_verification_failed": "The robot was not checked. Try again.",
       "password_too_short": "Password must be at least 8 characters long",
