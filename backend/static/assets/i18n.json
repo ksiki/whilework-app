@@ -111,7 +111,7 @@
     "stats": {
       "tracked_sources": "Отслеживаемые источники",
       "sources": "Источники",
-      "vacancies_per_month": "Вакансий за 30 дней",
+      "vacancies_per_month": "За 30 дней",
       "today": "Сегодня",
       "yesterday": "Вчера",
       "now_online": "Сейчас онлайн"
@@ -392,7 +392,7 @@
     "stats": {
       "tracked_sources": "Tracked sources",
       "sources": "Sources",
-      "vacancies_per_month": "Vacancies per 30 days",
+      "vacancies_per_month": "Per 30 days",
       "today": "Today",
       "yesterday": "Yesterday",
       "now_online": "Now online"

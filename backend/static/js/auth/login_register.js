@@ -72,7 +72,7 @@ class TerminalController {
         if (mode === 'login') {
             if (this.title) this.title.innerHTML = 'while(unauthorized) {<br>&nbsp;&nbsp;login();<br>}';
             if (this.desc) {
-                this.desc.setAttribute('data-i18n', 'auth.login_desc');
+                this.desc.setAttribute('data-i18n', 'modal.login_desc');
                 this.desc.textContent = 'Войдите в систему, чтобы продолжить поиск и отслеживание вакансий.';
             }
             if (this.body) {
@@ -86,7 +86,7 @@ class TerminalController {
         } else if (mode === 'forgot') {
             if (this.title) this.title.innerHTML = 'while(password == unknown) {<br>&nbsp;&nbsp;recover();<br>}';
             if (this.desc) {
-                this.desc.setAttribute('data-i18n', 'auth.forgot_desc');
+                this.desc.setAttribute('data-i18n', 'modal.forgot_desc');
                 this.desc.textContent = 'Восстановите доступ к своему аккаунту с помощью email и одноразового кода.';
             }
             if (this.body) {
@@ -99,7 +99,7 @@ class TerminalController {
         } else {
             if (this.title) this.title.innerHTML = 'while(unregistered) {<br>&nbsp;&nbsp;signup();<br>}';
             if (this.desc) {
-                this.desc.setAttribute('data-i18n', 'auth.register_desc');
+                this.desc.setAttribute('data-i18n', 'messages.presentation_desc');
                 this.desc.textContent = 'Получи доступ к скрытым вакансиям, создай свой черный список и управляй откликами.';
             }
             if (this.body) {
