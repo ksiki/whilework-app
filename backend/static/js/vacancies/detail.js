@@ -28,7 +28,7 @@ class JobDetailController {
     }
 
     handleContacts(btn) {
-        const { isAuth, tg, email, discord, form, jobId } = btn.dataset;
+        const { isAuth, tg, number, email, discord, form, jobId } = btn.dataset;
 
         if (isAuth !== 'true') {
             window.App.modal.open('tpl-auth-required', (clone) => {
@@ -57,6 +57,33 @@ class JobDetailController {
                     btnTg.setAttribute('data-i18n', 'modal.write_in_telegram');
                     btnTg.textContent = 'Написать в Telegram';
                     container.appendChild(btnTg);
+                }
+
+                if (number) {
+                    const btnNumber = document.createElement('button');
+                    btnNumber.className = 'btn btn--outline';
+                    btnNumber.style.cssText = 'text-align: center; font-family: var(--font-code); cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease; display: block; width: 100%; border: 1px solid currentColor; background: transparent;';
+                    btnNumber.textContent = number;
+
+                    btnNumber.onclick = async (e) => {
+                        e.preventDefault();
+                        try {
+                            await navigator.clipboard.writeText(number);
+                            
+                            btnNumber.style.transform = 'scale(0.96)';
+                            btnNumber.style.boxShadow = '0 0 10px rgba(76, 175, 80, 0.4)';
+                            btnNumber.style.borderColor = '#4CAF50';
+
+                            setTimeout(() => {
+                                btnNumber.style.transform = 'scale(1)';
+                                btnNumber.style.boxShadow = 'none';
+                                btnNumber.style.borderColor = '';
+                            }, 200);
+                        } catch (err) {
+                            console.error('Ошибка копирования номера: ', err);
+                        }
+                    };
+                    container.appendChild(btnNumber);
                 }
                 
                 if (email) {

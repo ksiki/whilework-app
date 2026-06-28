@@ -124,6 +124,7 @@
                         data-job-id="{{ vacancy.id }}"
                         data-is-auth="true" 
                         data-tg="{% for c in vacancy.contact.all %}{% if c.platform == 'TG' %}{{ c.details }}{% endif %}{% endfor %}"
+                        data-number="{% for c in vacancy.contact.all %}{% if c.platform == 'NM' %}{{ c.details }}{% endif %}{% endfor %}"
                         data-email="{% for c in vacancy.contact.all %}{% if c.platform == 'EM' %}{{ c.details }}{% endif %}{% endfor %}"
                         data-discord="{% for c in vacancy.contact.all %}{% if c.platform == 'DS' %}{{ c.details }}{% endif %}{% endfor %}"
                         data-form="{% for c in vacancy.contact.all %}{% if c.platform == 'FR' %}{{ c.details }}{% endif %}{% endfor %}"
