@@ -39,11 +39,14 @@ class ContactPlatformEnum(str, Enum):
     DISCORD = "DS"
     EMAIL = "EM"
     FORM = "FR"
+    NUMBER = "NM"
 
 
 class ContactSchema(BaseModel):
     platform: ContactPlatformEnum = Field(description="Тип контакта")
-    details: str = Field(description="Сам контакт (ссылка, юзернейм или почта)")
+    details: str = Field(
+        description="Сам контакт (ссылка, юзернейм, номер телефона или почта)"
+    )
 
 
 class CleanVacancySchema(BaseModel):

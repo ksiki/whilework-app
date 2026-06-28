@@ -93,6 +93,7 @@ class Contact(TimeStampedMixin):
         DISCORD = "DS", "Discord"
         EMAIL = "EM", "Email"
         FORM = "FR", "Form"
+        NUMBER = "NM", "Number"
 
     id = models.UUIDField(
         primary_key=True, default=uuid6.uuid7, editable=False, verbose_name="Contact ID"

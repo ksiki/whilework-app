@@ -16,7 +16,11 @@ from apps.inbox.models import ParserRawMessage
 from apps.system import services as system_services
 from apps.vacancies.llm_service import extract_vacancy_data
 from apps.vacancies.models import Company, Contact, Location, Skill, Vacancy
-from apps.vacancies.schemas import CleanVacancySchema
+from apps.vacancies.schemas import (
+    CleanVacancySchema,
+    ContactPlatformEnum,
+    ContactSchema,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -59,6 +63,80 @@ def normalize_skill_name(skill: str) -> str | None:
         return aliases_dict[test_key]
     except Exception:
         return skill if len(skill) > 1 else None
+
+
+def normalize_telegram(details: str) -> str:
+    """Приводит ссылки t.me к формату @username, игнорируя приватные инвайты."""
+    text = details.strip()
+
+    match = re.search(r"(?:t\.me|telegram\.me)/([a-zA-Z0-9_]+)", text, re.IGNORECASE)
+    if match:
+        username = match.group(1)
+        if username.lower() != "joinchat":
+            return f"@{username}"
+        return text
+
+    if "t.me/+" in text:
+        return text
+
+    if text.startswith("@"):
+        return text
+
+    if re.match(r"^[a-zA-Z0-9_]{5,}$", text):
+        return f"@{text}"
+
+    return text
+
+
+def is_valid_form(details: str) -> bool:
+    text = details.lower().strip()
+    valid_domains = [
+        "docs.google.com/forms",
+        "forms.gle",
+        "forms.yandex.ru",
+        "forms.yandex.com",
+    ]
+    return any(domain in text for domain in valid_domains)
+
+
+def process_and_filter_contacts(
+    raw_contacts: list[ContactSchema],
+) -> list[ContactSchema]:
+    valid_contacts = []
+    seen = set()
+
+    for contact in raw_contacts:
+        platform = contact.platform
+        details = contact.details.strip()
+
+        if not details:
+            continue
+
+        is_valid = False
+
+        if platform == ContactPlatformEnum.TELEGRAM:
+            details = normalize_telegram(details)
+            is_valid = True
+
+        elif platform == ContactPlatformEnum.FORM:
+            if is_valid_form(details):
+                is_valid = True
+
+        elif platform == ContactPlatformEnum.EMAIL:
+            if "@" in details and "." in details.split("@")[-1]:
+                details = details.replace("mailto:", "").strip()
+                is_valid = True
+
+        elif platform in (ContactPlatformEnum.DISCORD, ContactPlatformEnum.NUMBER):
+            is_valid = True
+
+        if is_valid:
+            identifier = f"{platform}_{details.lower()}"
+            if identifier not in seen:
+                seen.add(identifier)
+                valid_contacts.append(ContactSchema(platform=platform, details=details))
+
+    return valid_contacts
 
 
 def generate_semantic_hash(
@@ -232,6 +310,19 @@ def _process_single_message(msg: ParserRawMessage) -> None:
             msg.metadata["reject_reason"] = "LLM не смогла извлечь описание вакансии"
             msg.save(update_fields=["status", "metadata", "updated_at"])
             return
+
+        valid_contacts = process_and_filter_contacts(clean_data.contacts)
+        if not valid_contacts:
+            logger.info(
+                f"Skipped message {msg.id}. Reason: No valid contacts after filtering."
+            )
+            msg.status = ParserRawMessage.Status.REJECTED
+            msg.metadata["reject_reason"] = (
+                "Все извлеченные контакты оказались невалидными (или их не было)"
+            )
+            msg.save(update_fields=["status", "metadata", "updated_at"])
+            return
+        clean_data.contacts = valid_contacts
 
         publish_date = _get_publish_date(msg)
 
