@@ -178,3 +178,39 @@
 .job-card.viewed:hover .job-card__salary {
   opacity: 1; /* Возвращаем 100% контраст при наведении */
 }
+
+.job-card__contacts-icons {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* Небольшой отступ между иконками */
+  margin-left: auto; /* Прижимает иконки правее, если слева есть // read */
+}
+
+/* Стили самих SVG */
+.job-card__contacts-icons svg {
+  width: 16px;
+  height: 16px;
+  color: var(--text-secondary);
+  opacity: 0.5;
+  transition: opacity 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+/* Оживляем иконки при наведении на карточку вакансии */
+.job-card:hover .job-card__contacts-icons svg {
+  opacity: 0.9;
+  color: var(--primary-accent); /* Можно убрать эту строку, если не хотите, чтобы они красились в акцентный цвет */
+}
+
+/* При наведении на конкретную иконку */
+.job-card__contacts-icons svg:hover {
+  opacity: 1 !important;
+  transform: scale(1.1);
+}
+
+/* Приглушаем иконки, если карточка прочитана (чтобы соответствовало вашей логике .viewed) */
+.job-card.viewed .job-card__contacts-icons svg {
+  opacity: 0.3;
+}
+.job-card.viewed:hover .job-card__contacts-icons svg {
+  opacity: 0.9;
+}

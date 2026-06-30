@@ -15,7 +15,7 @@
 .search-section {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
 }
 
 .search-bar {
@@ -57,7 +57,54 @@
 }
 .checkbox-group {
   display: flex;
+  align-items: center;
   gap: 20px;
+}
+
+/* Стили для текста "Где искать" */
+.search-in-label {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-right: -8px; /* Небольшая корректировка отступа до первого чекбокса */
+}
+
+/* Стили для группы сортировки и счетчика */
+.sort-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: nowrap;
+}
+
+/* Стили для счетчика вакансий */
+.vacancy-counter {
+  font-size: 14px;
+  color: var(--text-secondary);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.vacancy-counter__number {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* Адаптив: обновление существующего медиа-запроса */
+@media (max-width: 768px) {
+  .search-filters {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  /* Делаем блок сортировки на всю ширину на мобильных */
+  .sort-group {
+    width: 100%;
+    justify-content: space-between;
+  }
 }
 
 .custom-checkbox {

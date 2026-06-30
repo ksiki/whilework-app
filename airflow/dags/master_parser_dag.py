@@ -26,6 +26,11 @@ def _get_auth_data(platform: str) -> dict[str, Any]:
             "TG_API_HASH": tg_config.get("api_hash", ""),
             "PROXY_URL": tg_config.get("proxy_url", ""),
         }
+    elif platform == "reddit":
+        return {
+            "CLIENT_ID": "",
+            "CLIENT_SECRET": "",
+        }
     elif platform == "discord":
         return {
             "DISCORD_TOKEN": Variable.get("DISCORD_BOT_TOKEN", default_var=""),
@@ -45,7 +50,7 @@ DEFAULT_ARGS: Final[dict[str, Any]] = {
 @dag(
     dag_id="master_parser_orchestrator_every_4_hours",
     default_args=DEFAULT_ARGS,
-    schedule="45 1,5,9,13,17,21 * * *",
+    schedule="0 */1 * * *",
     start_date=pendulum.datetime(2026, 6, 23, tz="Europe/Moscow"),
     catchup=False,
     max_active_runs=1,

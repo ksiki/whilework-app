@@ -34,6 +34,7 @@
             
             <div class="search-filters">
                 <div class="checkbox-group">
+                    <span class="search-in-label" data-i18n="filters.where_to_search">Где искать:</span>
                     <label class="custom-checkbox">
                         <input type="checkbox" name="search_in" value="title" checked>
                         <span class="checkmark"></span>
@@ -51,17 +52,24 @@
                     </label>
                 </div>
                 
-                <div class="custom-sort" id="custom-sort-dropdown">
-                    <div class="custom-sort__header" id="custom-sort-header">
-                        <span id="custom-sort-value" data-value="date" data-i18n="filters.by_published_date"></span>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
+                <div class="sort-group">
+                    <div class="vacancy-counter">
+                        <span data-i18n="filters.found">Найдено:</span> 
+                        <span id="vacancy-count-number" class="vacancy-counter__number">{{ count_filtered_vacancies }}</span>
                     </div>
-                    <ul class="custom-sort__list" id="custom-sort-list">
-                        <li class="custom-sort__item active" data-value="date" data-i18n="filters.by_published_date">Дата публикации</li>
-                        <li class="custom-sort__item" data-value="salary" data-i18n="filters.by_salary">По зарплате</li>
-                    </ul>
+
+                    <div class="custom-sort" id="custom-sort-dropdown">
+                        <div class="custom-sort__header" id="custom-sort-header">
+                            <span id="custom-sort-value" data-value="date" data-i18n="filters.by_published_date"></span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                        <ul class="custom-sort__list" id="custom-sort-list">
+                            <li class="custom-sort__item active" data-value="date" data-i18n="filters.by_published_date">Дата публикации</li>
+                            <li class="custom-sort__item" data-value="salary" data-i18n="filters.by_salary">По зарплате</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>

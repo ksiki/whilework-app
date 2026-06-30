@@ -351,7 +351,7 @@ class VacancyList {
                 filters: JSON.stringify(this.filterManager.getState())
             };
 
-            const response = await window.App.api.get('/', params, false, {
+            const response = await window.App.api.get('/cards/', params, false, {
                 'X-Requested-With': 'XMLHttpRequest'
             });
 
@@ -371,6 +371,14 @@ class VacancyList {
                 this.container.insertAdjacentHTML('beforeend', html);
             } else {
                 this.container.innerHTML = html;
+            }
+
+            const countElement = this.container.querySelector('.ajax-new-count');
+            const countDisplay = document.getElementById('vacancy-count-number');
+            
+            if (countElement && countDisplay) {
+                countDisplay.textContent = countElement.dataset.count;
+                countElement.remove(); 
             }
 
             if (html.trim() === '') {

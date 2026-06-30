@@ -62,7 +62,9 @@
       "by_published_date": "Дата публикации",
       "by_salary": "Деньги",
       "english": "Английский",
-      "source": "Источник"
+      "source": "Источник",
+      "found": "Найдено:",
+      "where_to_search": "Где искать:"
     },
     "detail": {
       "job_description": "Описание вакансии (отформатировано LLM)",
@@ -343,7 +345,9 @@
       "by_published_date": "Published date",
       "by_salary": "Salary",
       "english": "English",
-      "source": "Source"
+      "source": "Source",
+      "found": "Found:",
+      "where_to_search": "Where to search:"
     },
     "detail": {
       "job_description": "Job description (formatted by LLM)",
