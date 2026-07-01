@@ -43,83 +43,47 @@ class ContactPlatformEnum(str, Enum):
 
 
 class ContactSchema(BaseModel):
-    platform: ContactPlatformEnum = Field(description="Тип контакта")
-    details: str = Field(
-        description="Сам контакт (ссылка, юзернейм, номер телефона или почта)"
-    )
+    platform: ContactPlatformEnum
+    details: str
 
 
 class CleanVacancySchema(BaseModel):
-    reasoning: str = Field(
-        description="Краткий анализ текста: почему это вакансия, резюме, реклама или спам? Подумай шаг за шагом."
-    )
-    is_vacancy: bool = Field(
-        description="True, если текст является предложением о работе от работодателя. False в любом другом случае."
-    )
+    reasoning: str = Field(description="Краткий анализ текста (шаг за шагом)")
+    is_vacancy: bool
 
-    title: str = Field(
-        None, description="Название вакансии (чистое, без зарплаты, грейда и условий)"
-    )
-    description: str | None = Field(
+    title: Optional[str] = None
+    description: Optional[str] = Field(
         None,
-        description="Подробное описание вакансии в HTML (разрешены теги p, h2, h3, ul, li, strong, br)",
+        description="Оберни в HTML, используя СТРОГО только теги: <p>, <h2>, <h3>, <ul>, <li>, <strong>, <br>",
     )
 
-    salary_min: Optional[int] = Field(
-        None, description="Минимальная зарплата (только число)"
-    )
-    salary_max: Optional[int] = Field(
-        None, description="Максимальная зарплата (только число)"
-    )
-    currency: Optional[str] = Field(
-        None, description="Код валюты из 3 букв (RUB, USD, EUR)"
-    )
+    salary_min: Optional[int] = None
+    salary_max: Optional[int] = None
+    currency: Optional[str] = Field(None, description="Код ISO (RUB, USD, EUR)")
 
     grade: Optional[GradeEnum] = Field(
         None,
-        description="Грейд специалиста. Обязательно ищи маркеры в названии вакансии или тексте! "
-        "'Intern' -> INT, 'Junior' -> JUN, 'Middle' -> MID, 'Senior' -> SEN, 'Lead' -> LED, 'Director/Head' -> DIR.",
+        description="Intern->INT, Junior->JUN, Middle->MID, Senior->SEN, Lead->LED, Director/Head->DIR",
     )
+    experience_from: Optional[int] = Field(None, description="Опыт в годах (число)")
 
-    experience_from: Optional[int] = Field(
-        None,
-        description="Минимальный требуемый опыт работы в годах (ТОЛЬКО ЧИСЛО). "
-        "Пример: '3+ года опыта' -> 3. 'Опыт от 1 до 3 лет' -> 1. 'Без опыта' -> 0.",
-    )
-
-    work_format: Optional[WorkFormatEnum] = Field(
-        None,
-        description="Формат работы. Ищи слова в тексте: "
-        "'Удалённый формат', 'Удаленка', 'Remote' -> RMT. "
-        "'Офис', 'in-office' -> OFF. "
-        "'Гибрид', 'hybrid' -> HBR.",
-    )
-
-    employment_type: Optional[EmploymentTypeEnum] = Field(
-        None,
-        description="Тип занятости. 'Full-time', 'полная занятость' -> FT. 'Part-time', 'частичная' -> PT. 'Проектная' -> PRJ.",
-    )
-
+    work_format: Optional[WorkFormatEnum] = None
+    employment_type: Optional[EmploymentTypeEnum] = None
     english_level: Optional[EnglishLevelEnum] = Field(
         None,
-        description="Минимальный уровень английского языка. Сопоставь текст с кодом: "
-        "'Beginner' -> A1, 'Elementary' -> A2, 'Intermediate' -> B1, "
-        "'Upper-Intermediate' -> B2, 'Advanced' -> C1, 'Proficient/Native' -> C2",
+        description="Beginner->A1, Elementary->A2, Intermediate->B1, Upper-Intermediate->B2, Advanced->C1",
     )
 
-    company_name: Optional[str] = Field(None, description="Название компании")
-
-    location_region: Optional[str] = Field(None)
-    location_country: Optional[str] = Field(None)
-    location_city: Optional[str] = Field(None)
-
-    relocation_country: Optional[str] = Field(None)
+    company_name: Optional[str] = None
+    location_region: Optional[str] = None
+    location_country: Optional[str] = None
+    location_city: Optional[str] = None
+    relocation_country: Optional[str] = Field(
+        None, description="ОБЯЗАТЕЛЬНО ТОЛЬКО ЧТО-ТО ОДНО: страна, город или регион"
+    )
 
     skills: List[str] = Field(
         default_factory=list,
-        description="Список ключевых hard-skills (технологии, языки, инструменты). "
-        "СТРОГО ИГНОРИРУЙ soft-skills (внимательность к деталям, коммуникабельность, проактивность, стрессоустойчивость и т.д.).",
+        description="Hard-skills на английском. Игнорировать soft-skills.",
     )
-    contacts: List[ContactSchema] = Field(
-        default_factory=list, description="Найденные контакты"
-    )
+    contacts: List[ContactSchema] = Field(default_factory=list)
