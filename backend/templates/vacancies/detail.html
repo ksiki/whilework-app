@@ -59,6 +59,9 @@
                     {% if vacancy.experience_from %}
                     <div class="attr-item"><span class="attr-label"><span data-i18n="filters.experience_from_year">Опыт от</span>:</span> <strong>{{ vacancy.experience_from }}</strong></div>
                     {% endif %}
+                    {% if vacancy.relocation %}
+                    <div class="attr-item"><span class="attr-label"><span data-i18n="filters.relocation">Релокация</span>:</span> <strong>{{ vacancy.relocation.country }}</strong></div>
+                    {% endif %}
                     {% if vacancy.source %}
                         <div class="attr-item"><span class="attr-label"><span data-i18n="filters.source">Источник</span>:</span> <strong>{{ vacancy.source.get_platform_display }}</strong></div>
                     {% else %}
@@ -126,6 +129,7 @@
                         data-tg="{% for c in vacancy.contact.all %}{% if c.platform == 'TG' %}{{ c.details }}{% endif %}{% endfor %}"
                         data-number="{% for c in vacancy.contact.all %}{% if c.platform == 'NM' %}{{ c.details }}{% endif %}{% endfor %}"
                         data-email="{% for c in vacancy.contact.all %}{% if c.platform == 'EM' %}{{ c.details }}{% endif %}{% endfor %}"
+                        data-reddit="{% for c in vacancy.contact.all %}{% if c.platform == 'RD' %}{{ c.details }}{% endif %}{% endfor %}"
                         data-discord="{% for c in vacancy.contact.all %}{% if c.platform == 'DS' %}{{ c.details }}{% endif %}{% endfor %}"
                         data-form="{% for c in vacancy.contact.all %}{% if c.platform == 'FR' %}{{ c.details }}{% endif %}{% endfor %}"
                         data-i18n="detail.show_contacts">

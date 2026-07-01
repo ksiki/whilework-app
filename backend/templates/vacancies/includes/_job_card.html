@@ -5,11 +5,19 @@
 {% for vacancy in vacancies %}
     <article class="job-card {% if vacancy.id in viewed_vacancies %} viewed {% endif %}">
         <div class="job-card__header">
-            {% if vacancy.meta_string %}
-                <span class="job-card__meta">{{ vacancy.meta_string }}</span>
-            {% else %}
-                <span class="job-card__meta" data-i18n="common.no_information_available">Информация отсутствует</span>
-            {% endif %}
+            <div class="job-card__header-left">
+                {% if vacancy.relocation %}
+                    <span class="relocation-icon" title="Возможна релокация">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22h20"/><path d="M6.36 17.4 4 17l-2-4 1.1-.55a2 2 0 0 1 1.8 0l.17.1a2 2 0 0 0 2.1-.11L9 11l4.5-4.5a3.5 3.5 0 1 1 4.95 4.95L14 16l-3.35 2.17a2 2 0 0 1-2.13.06L6.36 17.4Z"/></svg>
+                    </span>
+                {% endif %}
+
+                {% if vacancy.meta_string %}
+                    <span class="job-card__meta">{{ vacancy.meta_string }}</span>
+                {% else %}
+                    <span class="job-card__meta" data-i18n="common.no_information_available">Информация отсутствует</span>
+                {% endif %}
+            </div>
             
             <div class="job-card__header-right">
                 {% if vacancy.id in viewed_vacancies %}
@@ -70,6 +78,9 @@
                     {% endif %}
                     {% if vacancy.experience_from %}
                         <span class="spec"><span data-i18n="filters.experience_from_year">Опыт от</span>: <b>{{ vacancy.experience_from }}</b></span>
+                    {% endif %}
+                    {% if vacancy.relocation %}
+                        <span class="spec"><span data-i18n="filters.relocation">Релокация</span>: <b>{{ vacancy.relocation.country }}</b></span>
                     {% endif %}
                 </div>
             </div>

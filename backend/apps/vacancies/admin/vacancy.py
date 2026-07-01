@@ -99,7 +99,7 @@ class VacancyAdmin(ShortIdAdminMixin, admin.ModelAdmin):
         ),
         (
             "Location and Contacts",
-            {"fields": ("location", "contact")},
+            {"fields": ("location", "relocation", "contact")},
         ),
         (
             "Metrics",

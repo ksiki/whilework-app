@@ -121,6 +121,7 @@
 {% block extra_js %}
     {{ skills|json_script:"skills-data" }}
     {{ geo|json_script:"geo-data" }}
+    {{ relocation_countries|json_script:"relocation-data" }}
     <script src="{% static 'js/vacancies/list.js' %}"></script>
     <script src="{% static 'js/vacancies/includes/banner.js' %}"></script>
 {% endblock %}

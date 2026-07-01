@@ -20,6 +20,41 @@
   font-size: 13px;
   color: var(--text-secondary);
 }
+
+/* Левая часть шапки для выравнивания иконки и названия компании */
+.job-card__header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.relocation-icon {
+  display: flex;
+  align-items: center;
+}
+
+.relocation-icon svg {
+  width: 16px;
+  height: 16px;
+  color: var(--primary-accent); 
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.job-card:hover .relocation-icon svg {
+  transform: translate(2px, -2px);
+}
+
+.job-card.viewed .relocation-icon svg {
+  opacity: 0.5;
+  color: var(--text-secondary);
+}
+
+.job-card.viewed:hover .relocation-icon svg {
+  opacity: 1;
+  color: var(--primary-accent); 
+}
+
 .job-card__main {
   display: flex;
   justify-content: space-between;

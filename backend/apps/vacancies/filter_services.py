@@ -80,6 +80,21 @@ def apply_geo_filters(
     return _apply_q_object(queryset=queryset, q_obj=Q(**{db_field: items}), mode=mode)
 
 
+def apply_relocation_filters(
+    queryset: QuerySet["Vacancy"], relocation_data: dict[str, Any]
+) -> QuerySet["Vacancy"]:
+    is_any = relocation_data.get("any", False)
+    if is_any:
+        q_obj = Q(relocation__isnull=False)
+        return _apply_q_object(queryset=queryset, q_obj=q_obj)
+
+    items = relocation_data.get("items", [])
+    if items:
+        q_obj = Q(relocation__country__in=items)
+        return _apply_q_object(queryset=queryset, q_obj=q_obj)
+    return queryset
+
+
 def apply_source_filters(
     queryset: QuerySet["Vacancy"], sources_data: dict[str, Any]
 ) -> QuerySet["Vacancy"]:

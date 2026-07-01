@@ -1,18 +1,24 @@
 <aside class="sidebar-filters">
     <div class="sidebar-stats">
-        <div class="stat-item">
-            <span class="stat-value">{{ vacancies_per_month }}</span>
-            <span class="stat-label" data-i18n="stats.vacancies_per_month">Вакансий за месяц</span>
+        <div class="sidebar-stats__grid">
+            <div class="stat-item">
+                <span class="stat-value">{{ vacancies_per_month }}</span>
+                <span class="stat-label" data-i18n="stats.vacancies_per_month">Вакансий за месяц</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-value">+ {{ vacancies_yesterday }}</span>
+                <span class="stat-label" data-i18n="stats.yesterday">Вчера</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-value">+ {{ vacancies_today }}</span>
+                <span class="stat-label" data-i18n="stats.today">Сегодня</span>
+            </div>
         </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-            <span class="stat-value">+ {{ vacancies_yesterday }}</span>
-            <span class="stat-label" data-i18n="stats.yesterday">Вчера</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-            <span class="stat-value">+ {{ vacancies_today }}</span>
-            <span class="stat-label" data-i18n="stats.today">Сегодня</span>
+        
+        <div class="sidebar-stats__note" data-i18n="stats.hourly_update">
+            Новые вакансии каждый час
         </div>
     </div>
 
@@ -73,7 +79,7 @@
         <div class="search-dropdown-wrapper">
             <div class="search-input-box">
                 <svg class="skills-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                <input type="text" id="skills-search-input" placeholder="pyt..." autocomplete="off">
+                <input type="text" id="skills-search-input" autocomplete="off">
             </div>
             <ul class="dropdown-list" id="skills-dropdown-list"></ul>
         </div>
@@ -102,7 +108,7 @@
     <div class="filter-group">
         <h3 class="filter-group__title" data-i18n="filters.experience_from_year">Опыт работы от (лет)</h3>
         <div class="search-input-box">
-            <input type="text" inputmode="numeric" pattern="[0-9]*" id="experience-from-input" placeholder="..." autocomplete="off">
+            <input type="text" inputmode="numeric" pattern="[0-9]*" id="experience-from-input" autocomplete="off">
         </div>
     </div>
 
@@ -122,11 +128,37 @@
         <div class="search-dropdown-wrapper">
             <div class="search-input-box">
                 <svg class="geo-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                <input type="text" id="geo-search-input" placeholder="min..." autocomplete="off">
+                <input type="text" id="geo-search-input" autocomplete="off">
             </div>
             <ul class="dropdown-list" id="geo-dropdown-list"></ul>
         </div>
         <div class="filter-group__pills" id="geo-selected-pills"></div>
+    </div>
+
+    <hr class="filter-divider">
+
+    <div class="filter-group">
+        <h3 class="filter-group__title" data-i18n="filters.relocation">Релокация</h3>
+        
+        <div class="filter-group__row">
+            <span class="filter-group__label" data-i18n="filters.relocation_any">Любая релокация</span>
+            <label class="classic-toggle">
+                <input type="checkbox" id="relocation-any-toggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="search-dropdown-wrapper" id="relocation-search-wrapper">
+            <div class="search-input-box">
+                <svg class="geo-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                <input type="text" id="relocation-search-input" autocomplete="off">
+            </div>
+            <ul class="dropdown-list" id="relocation-dropdown-list"></ul>
+        </div>
+        <div class="filter-group__pills" id="relocation-selected-pills"></div>
     </div>
 
     <hr class="filter-divider">
@@ -155,7 +187,7 @@
                 <line x1="12" y1="1" x2="12" y2="23"></line>
                 <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
             </svg>
-            <input type="number" id="salary-min-input" placeholder="2000" min="0" step="100" autocomplete="off">
+            <input type="number" id="salary-min-input" min="0" step="100" autocomplete="off">
         </div>
     </div>
 </aside>

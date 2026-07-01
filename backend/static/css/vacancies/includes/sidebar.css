@@ -10,8 +10,8 @@
   padding: 16px;
   margin-bottom: 28px;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: 12px;
   box-shadow: 0 4px 12px rgba(124, 58, 237, 0.05);
 }
 .stat-item {
@@ -22,6 +22,22 @@
   align-items: flex-start;
   text-align: left;
 }
+.sidebar-stats__grid {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+}
+.sidebar-stats__note {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-align: center;
+  border-top: 1px dashed rgba(124, 58, 237, 0.15);
+  padding-top: 10px;
+  margin-top: 2px;
+}
+
 .stat-item.center,
 .stat-item:last-child {
   align-items: flex-start;
@@ -214,7 +230,8 @@
 
 #geo-search-input,
 #skills-search-input,
-#experience-from-input {
+#experience-from-input,
+#relocation-search-input {
   width: 100%;
   background-color: var(--surface-color);
   border: 1px solid var(--border-color);
@@ -228,14 +245,109 @@
 }
 
 #geo-search-input,
-#skills-search-input {
+#skills-search-input,
+#relocation-search-input {
   padding-left: 36px;
 }
 
 #geo-search-input:focus,
 #skills-search-input:focus,
-#experience-from-input:focus {
+#experience-from-input:focus,
+#relocation-search-input:focus {
   border-color: var(--primary-accent);
+}
+
+.search-dropdown-wrapper.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
+  filter: grayscale(100%);
+  transition: all 0.2s ease;
+}
+.search-dropdown-wrapper.disabled input {
+  background-color: var(--bg-color);
+}
+
+/* Строка с текстом и переключателем */
+.filter-group__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.filter-group__label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Контейнер классического тумблера */
+.classic-toggle {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Прячем дефолтный чекбокс */
+.classic-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Фон тумблера (трек) */
+.classic-toggle .slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--border-color);
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 20px;
+}
+
+/* Передвигающийся кружок (бегунок) */
+.classic-toggle .slider::before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #fff;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.classic-toggle input:checked + .slider {
+  background-color: var(--primary-accent);
+}
+
+.classic-toggle input:checked + .slider::before {
+  transform: translateX(16px);
+}
+
+.search-dropdown-wrapper.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+  cursor: not-allowed;
+  filter: grayscale(100%);
+  transition: all 0.2s ease;
+}
+#relocation-search-input:disabled {
+  background-color: var(--bg-color);
+  border-color: var(--border-color);
+  color: var(--text-secondary);
+  cursor: not-allowed;
+}
+.search-dropdown-wrapper.disabled input {
+  background-color: var(--surface-color);
 }
 
 input[type="number"]::-webkit-outer-spin-button,

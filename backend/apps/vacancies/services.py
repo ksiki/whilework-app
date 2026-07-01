@@ -15,7 +15,7 @@ from django.utils import timezone
 from apps.vacancies.api.schemas import ComplaintRequest
 
 from . import filter_services
-from .models import Complaint, Location, Skill, Vacancy
+from .models import Complaint, Location, Relocation, Skill, Vacancy
 
 logger = logging.getLogger(__name__)
 
@@ -83,6 +83,9 @@ def apply_filters(
 
     geo_data = params.get("geo", {})
     queryset = filter_services.apply_geo_filters(queryset, geo_data)
+
+    relocation_data = params.get("relocation", {})
+    queryset = filter_services.apply_relocation_filters(queryset, relocation_data)
 
     sources_data = params.get("sources", {})
     queryset = filter_services.apply_source_filters(queryset, sources_data)
@@ -182,6 +185,12 @@ def make_context_for_vacancies_list() -> dict[str, Any]:
         .values_list("city", flat=True)
         .distinct()
     )
+    relocation_countries = list(
+        Relocation.objects.exclude(country__isnull=True)
+        .exclude(country__exact="")
+        .order_by("country")
+        .values_list("country", flat=True)
+    )
 
     all_vacancies = get_active_vacancies()
     vacancies_per_month = all_vacancies.count()
@@ -200,6 +209,7 @@ def make_context_for_vacancies_list() -> dict[str, Any]:
             "countries": countries,
             "cities": cities,
         },
+        "relocation_countries": relocation_countries,
         "vacancies_per_month": vacancies_per_month,
         "vacancies_yesterday": vacancies_yesterday,
         "vacancies_today": vacancies_today,

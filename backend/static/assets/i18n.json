@@ -64,7 +64,9 @@
       "english": "Английский",
       "source": "Источник",
       "found": "Найдено:",
-      "where_to_search": "Где искать:"
+      "where_to_search": "Где искать:",
+      "relocation": "Релокация",
+      "relocation_any": "Любая релокация"
     },
     "detail": {
       "job_description": "Описание вакансии (отформатировано LLM)",
@@ -116,7 +118,8 @@
       "vacancies_per_month": "За 30 дней",
       "today": "Сегодня",
       "yesterday": "Вчера",
-      "now_online": "Сейчас онлайн"
+      "now_online": "Сейчас онлайн",
+      "hourly_update": "Новые вакансии каждый час"
     },
     "messages": {
       "error_send_code": "Не удалось отправить код на почту. Попробуйте еще раз позже",
@@ -347,7 +350,9 @@
       "english": "English",
       "source": "Source",
       "found": "Found:",
-      "where_to_search": "Where to search:"
+      "where_to_search": "Where to search:",
+      "relocation": "Relocation",
+      "relocation_any": "Relocation any"
     },
     "detail": {
       "job_description": "Job description (formatted by LLM)",
@@ -399,7 +404,8 @@
       "vacancies_per_month": "Per 30 days",
       "today": "Today",
       "yesterday": "Yesterday",
-      "now_online": "Now online"
+      "now_online": "Now online",
+      "hourly_update": "New jobs every hour"
     },
     "messages": {
       "error_send_code": "Couldn't send the code to the mail. Try again later",

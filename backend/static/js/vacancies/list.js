@@ -156,8 +156,8 @@ class CustomSort {
 }
 
 class FilterManager {
-    constructor(skillsDb, geoDb, onFilterChange) {
-        this.db = { skills: skillsDb, geo: geoDb };
+    constructor(skillsDb, geoDb, relocationDb, onFilterChange) {
+        this.db = { skills: skillsDb, geo: geoDb, relocation: relocationDb };
         this.onFilterChange = onFilterChange;
         this.currentGeoCategory = 'regions';
         
@@ -186,6 +186,16 @@ class FilterManager {
             onChange: () => this.saveAndTrigger()
         });
 
+        this.relocationFilter = new SearchFilter({
+            inputId: 'relocation-search-input',
+            dropdownId: 'relocation-dropdown-list',
+            pillsId: 'relocation-selected-pills',
+            getItems: () => this.db.relocation || [], 
+            getValue: item => item, 
+            getName: item => item,
+            onChange: () => this.saveAndTrigger()
+        });
+
         this.sortControl = new CustomSort(() => this.saveAndTrigger());
     }
 
@@ -201,6 +211,24 @@ class FilterManager {
         });
 
         const boundSave = () => this.saveAndTrigger();
+        const searchBtn = document.querySelector('.search-btn');
+        if (searchBtn) {
+            searchBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                boundSave();
+            });
+        }
+        const mainSearch = document.getElementById('main-search-input');
+        if (mainSearch) {
+            mainSearch.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    boundSave();
+                }
+            });
+            mainSearch.addEventListener('input', boundSave);
+        }
+
         document.querySelector('.sidebar-filters')?.addEventListener('change', boundSave);
         document.querySelector('.search-filters')?.addEventListener('change', boundSave);
         document.getElementById('main-search-input')?.addEventListener('input', boundSave);
@@ -220,6 +248,27 @@ class FilterManager {
                 boundSave();
             });
         }
+
+        const relocationAnyToggle = document.getElementById('relocation-any-toggle');
+        const relocationWrapper = document.getElementById('relocation-search-wrapper');
+        const relocationInput = document.getElementById('relocation-search-input');
+
+        if (relocationAnyToggle && relocationWrapper && relocationInput) {
+            relocationAnyToggle.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    relocationWrapper.classList.add('disabled');
+                    relocationInput.disabled = true;
+                    relocationInput.blur(); 
+                    
+                    this.relocationFilter.clear();
+                } else {
+                    relocationWrapper.classList.remove('disabled');
+                    relocationInput.disabled = false;
+                }
+                
+                this.saveAndTrigger(); 
+            });
+        }
     }
 
     getValues(name) {
@@ -235,6 +284,7 @@ class FilterManager {
         const sortVal = document.getElementById('custom-sort-value');
         const expInput = document.getElementById('experience-from-input');
         const salaryMinInput = document.getElementById('salary-min-input');
+        const relocationAnyToggle = document.getElementById('relocation-any-toggle');
 
         return {
             search: {
@@ -249,7 +299,11 @@ class FilterManager {
             work_format: { logic: this.getRadio('work_format_logic', 'or'), mode: this.getRadio('work_format_mode', 'choose'), items: this.getValues('work_format') },
             grade: { logic: this.getRadio('grade_logic', 'and'), mode: this.getRadio('grade_mode', 'choose'), items: this.getValues('grade') },
             skills: { logic: this.getRadio('skills_logic', 'or'), mode: this.getRadio('skills_mode', 'choose'), items: Array.from(this.skillsFilter.selectedItems.keys()) },
-            geo: { category: this.getRadio('geo_category', 'regions'), mode: this.getRadio('geo_mode', 'choose'), items: Array.from(this.geoFilter.selectedItems.keys()) }
+            geo: { category: this.getRadio('geo_category', 'regions'), mode: this.getRadio('geo_mode', 'choose'), items: Array.from(this.geoFilter.selectedItems.keys()) },
+            relocation: {
+                any: relocationAnyToggle ? relocationAnyToggle.checked : false,
+                items: this.relocationFilter ? Array.from(this.relocationFilter.selectedItems.keys()) : []
+            }
         };
     }
 
@@ -309,6 +363,26 @@ class FilterManager {
                 setRadio('geo_mode', state.geo.mode);
                 this.currentGeoCategory = state.geo.category;
                 state.geo.items.forEach(item => this.geoFilter.addPill(item, item, false));
+            }
+
+            if (state.relocation) {
+                const relAnyToggle = document.getElementById('relocation-any-toggle');
+                const relWrapper = document.getElementById('relocation-search-wrapper');
+                const relInput = document.getElementById('relocation-search-input');
+                
+                if (relAnyToggle) {
+                    relAnyToggle.checked = state.relocation.any;
+                    if (state.relocation.any && relWrapper && relInput) {
+                        relWrapper.classList.add('disabled');
+                        relInput.disabled = true;
+                    }
+                }
+                
+                if (state.relocation.items && this.relocationFilter) {
+                    state.relocation.items.forEach(item => {
+                        this.relocationFilter.addPill(item, item, false);
+                    });
+                }
             }
             
             return true;
@@ -423,15 +497,17 @@ class VacancyList {
 document.addEventListener('DOMContentLoaded', () => {
     const skillsEl = document.getElementById('skills-data');
     const geoEl = document.getElementById('geo-data');
+    const relocationEl = document.getElementById('relocation-data');
     
     if (!skillsEl || !geoEl) return;
 
     const skillsDb = JSON.parse(skillsEl.textContent);
     const geoDb = JSON.parse(geoEl.textContent);
+    const relocationDb = relocationEl ? JSON.parse(relocationEl.textContent) : [];
 
     let vacancyList;
     
-    const filterManager = new FilterManager(skillsDb, geoDb, () => {
+    const filterManager = new FilterManager(skillsDb, geoDb, relocationDb, () => {
         if (vacancyList) vacancyList.triggerReload();
     });
 

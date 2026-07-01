@@ -28,7 +28,7 @@ class JobDetailController {
     }
 
     handleContacts(btn) {
-        const { isAuth, tg, number, email, discord, form, jobId } = btn.dataset;
+        const { isAuth, tg, number, email, discord, form, reddit, jobId } = btn.dataset;
 
         if (isAuth !== 'true') {
             window.App.modal.open('tpl-auth-required', (clone) => {
@@ -40,13 +40,13 @@ class JobDetailController {
         this.modal.open('tpl-contacts', (clone) => {
             const container = clone.querySelector('.contacts-container');
 
-            if (!tg && !email && !discord && !form) {
+            if (!tg && !number && !email && !discord && !form && !reddit) {
                 const noContacts = document.createElement('p');
                 noContacts.style.cssText = 'color: var(--text-secondary); text-align: center;';
                 noContacts.setAttribute('data-i18n', 'modal.no_contacts_specified');
                 noContacts.textContent = 'Контакты не указаны';
                 container.appendChild(noContacts);
-            } else {
+            }else {
                 if (tg) {
                     const cleanTg = tg.replace('@', '');
                     const btnTg = document.createElement('a');
@@ -57,6 +57,18 @@ class JobDetailController {
                     btnTg.setAttribute('data-i18n', 'modal.write_in_telegram');
                     btnTg.textContent = 'Написать в Telegram';
                     container.appendChild(btnTg);
+                }
+
+                if (reddit) {
+                    const cleanReddit = reddit.replace(/^(u\/|u\\)/i, '');
+                    const btnReddit = document.createElement('a');
+                    btnReddit.href = `https://www.reddit.com/message/compose/?to=${cleanReddit}`;
+                    btnReddit.target = '_blank';
+                    btnReddit.className = 'btn btn--solid';
+                    btnReddit.style.cssText = 'text-align: center; text-decoration: none;';
+                    btnReddit.setAttribute('data-i18n', 'modal.write_on_reddit');
+                    btnReddit.textContent = 'Написать в Reddit';
+                    container.appendChild(btnReddit);
                 }
 
                 if (number) {
