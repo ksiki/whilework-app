@@ -25,7 +25,7 @@ class ParserRawMessageAdmin(ShortIdAdminMixin, admin.ModelAdmin):
     )
 
     list_display_links = ("short_id", "external_msg_id")
-    list_filter = ("status", "created_at")
+    list_filter = ("source", "status", "created_at")
 
     search_fields = ("external_msg_id", "raw_text", "id")
 

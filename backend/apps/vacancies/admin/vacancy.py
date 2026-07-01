@@ -26,6 +26,7 @@ class VacancyAdmin(ShortIdAdminMixin, admin.ModelAdmin):
     list_editable = ("status",)
 
     list_filter = (
+        "source",
         "status",
         "grade",
         "experience_from",

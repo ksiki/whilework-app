@@ -2,6 +2,7 @@ from .company import CompanyAdmin
 from .complaint import ComplaintAdmin
 from .contact import ContactAdmin
 from .location import LocationAdmin
+from .relocation import RelocationAdmin
 from .skill import SkillAdmin
 from .vacancy import VacancyAdmin
 
@@ -12,4 +13,5 @@ __all__ = [
     "SkillAdmin",
     "VacancyAdmin",
     "ComplaintAdmin",
+    "RelocationAdmin",
 ]
