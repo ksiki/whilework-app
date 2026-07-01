@@ -113,6 +113,8 @@ class CleanVacancySchema(BaseModel):
     location_country: Optional[str] = Field(None)
     location_city: Optional[str] = Field(None)
 
+    relocation_country: Optional[str] = Field(None)
+
     skills: List[str] = Field(
         default_factory=list,
         description="Список ключевых hard-skills (технологии, языки, инструменты). "

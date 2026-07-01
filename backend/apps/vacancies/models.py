@@ -60,6 +60,20 @@ class Location(TimeStampedMixin):
         return ", ".join(valid_parts) if valid_parts else "Unknown Location"
 
 
+class Relocation(TimeStampedMixin):
+    id = models.AutoField(primary_key=True, editable=False)
+    country = models.CharField(max_length=100, null=True, blank=True, unique=True)
+
+    class Meta:
+        db_table = "vacancies_relocation"
+        verbose_name = "Relocation"
+        verbose_name_plural = "Relocations"
+        ordering = ["id"]
+
+    def __str__(self):
+        return f"Relocate to {self.country}"
+
+
 class Skill(TimeStampedMixin, SluggedMixin):
     """
     It is provided separately for the filtering vacancies by skills and dedublication of records
@@ -94,6 +108,7 @@ class Contact(TimeStampedMixin):
         EMAIL = "EM", "Email"
         FORM = "FR", "Form"
         NUMBER = "NM", "Number"
+        REDDIT = "RD", "Reddit"
 
     id = models.UUIDField(
         primary_key=True, default=uuid6.uuid7, editable=False, verbose_name="Contact ID"
@@ -174,6 +189,13 @@ class Vacancy(TimeStampedMixin):
     )
     location = models.ForeignKey(
         "Location",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="vacancies",
+    )
+    relocation = models.ForeignKey(
+        "Relocation",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
