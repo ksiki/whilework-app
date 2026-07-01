@@ -54,6 +54,12 @@ class Location(TimeStampedMixin):
         verbose_name_plural = "Locations"
         ordering = ["id"]
 
+        constraints = [
+            models.UniqueConstraint(
+                fields=["region", "country", "city"], name="unique_location"
+            )
+        ]
+
     def __str__(self):
         parts = [self.country, self.region, self.city]
         valid_parts = [part for part in parts if part]
