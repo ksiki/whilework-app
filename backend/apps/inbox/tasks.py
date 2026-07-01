@@ -93,11 +93,32 @@ def _save_vacancy_to_db(
                 clean_data.location_city,
             ]
         ):
-            location_obj, _ = Location.objects.get_or_create(
-                region=clean_data.location_region,
-                country=clean_data.location_country,
-                city=clean_data.location_city,
+            loc_region = (
+                clean_data.location_region.strip()
+                if clean_data.location_region
+                else None
             )
+            loc_country = (
+                clean_data.location_country.strip()
+                if clean_data.location_country
+                else None
+            )
+            loc_city = (
+                clean_data.location_city.strip() if clean_data.location_city else None
+            )
+            try:
+                with transaction.atomic():
+                    location_obj, _ = Location.objects.get_or_create(
+                        region=loc_region,
+                        country=loc_country,
+                        city=loc_city,
+                    )
+            except IntegrityError:
+                location_obj = Location.objects.get(
+                    region=loc_region,
+                    country=loc_country,
+                    city=loc_city,
+                )
 
         current_hash = generate_semantic_hash(
             company=clean_data.company_name,
@@ -171,10 +192,17 @@ def _save_vacancy_to_db(
         if clean_data.contacts:
             contact_objects = []
             for contact_data in clean_data.contacts:
-                contact_obj, _ = Contact.objects.get_or_create(
-                    platform=contact_data.platform,
-                    details=contact_data.details.strip(),
-                )
+                try:
+                    with transaction.atomic():
+                        contact_obj, _ = Contact.objects.get_or_create(
+                            platform=contact_data.platform,
+                            details=contact_data.details.strip(),
+                        )
+                except IntegrityError:
+                    contact_obj = Contact.objects.get(
+                        platform=contact_data.platform,
+                        details=contact_data.details.strip(),
+                    )
                 contact_objects.append(contact_obj)
             vacancy.contact.set(contact_objects)
 
