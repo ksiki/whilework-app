@@ -121,7 +121,7 @@ class Contact(TimeStampedMixin):
     )
     platform = models.CharField(max_length=2, choices=Platform.choices)
     details = models.CharField(
-        max_length=100,
+        max_length=255,
         verbose_name="Contact link",
         help_text="For example: @example, example@example.example",
     )

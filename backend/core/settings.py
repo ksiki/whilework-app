@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     "apps.accounts",
     "apps.community",
     "apps.navbar",
+    "apps.analytics",
 ]
 SITE_ID = 1
 
