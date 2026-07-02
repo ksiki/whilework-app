@@ -31,6 +31,8 @@
       "возьмусь за работу"
     ],
     "cv_resume": [
+      "#резюме",
+      "#цв",
       "мое резюме",
       "моё резюме",
       "мое cv",
@@ -94,6 +96,8 @@
       "open for hire"
     ],
     "cv_resume": [
+      "#resume",
+      "#cv",
       "my cv",
       "my resume",
       "here is my cv",
