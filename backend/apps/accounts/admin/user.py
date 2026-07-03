@@ -26,8 +26,6 @@ class UserAdmin(ShortIdAdminMixin, admin.ModelAdmin):
 
     autocomplete_fields = ("company_blacklist", "viewed_vacancies")
 
-    autocomplete_fields = ("company_blacklist",)
-
     filter_horizontal = ("groups", "user_permissions")
 
     readonly_fields = (
