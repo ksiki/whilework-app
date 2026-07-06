@@ -23,13 +23,39 @@ def generate_analytics_cache_key(filters: dict | None, user_id: int | None) -> s
     return "analytics_" + hashlib.md5(hash_payload.encode()).hexdigest()
 
 
+def is_effectively_empty(filters: dict) -> bool:
+    """
+    Проверяет, содержит ли словарь фильтров только дефолтные значения.
+    """
+    if not filters:
+        return True
+
+    if filters.get("search", {}).get("query"):
+        return False
+
+    if filters.get("experience_from") or filters.get("salary_min"):
+        return False
+
+    list_keys = ["sources", "work_type", "work_format", "grade", "skills", "geo"]
+    for key in list_keys:
+        if filters.get(key, {}).get("items"):
+            return False
+
+    relocation = filters.get("relocation", {})
+    if relocation.get("any") or relocation.get("items"):
+        return False
+
+    return True
+
+
 @router.get(
     "/calculate/",
     response={200: AnalyticsResponse, 404: dict, 500: dict},
 )
 async def calculate(request: HttpRequest, query: AnalyticsQuerySchema = Query(...)):
     try:
-        if not query.filters:
+        filters_dict = query.filters if query.filters else {}
+        if is_effectively_empty(filters_dict):
             last_analytics = await services.aget_last_analytics()
 
             if not last_analytics:
@@ -61,7 +87,7 @@ async def calculate(request: HttpRequest, query: AnalyticsQuerySchema = Query(..
         )
 
         result = await services.acalculate_analytics(queryset=vacancies)
-        await cache.aset(cache_key, result, timeout=600)
+        await cache.aset(cache_key, result, timeout=1800)
 
         return 200, result
     except Exception as e:
