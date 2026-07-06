@@ -4,9 +4,10 @@ from asgiref.sync import sync_to_async
 from django.http import HttpRequest
 from ninja import Router
 
+from apps.inbox.services import atomic_saved_messages_and_update_sources
+from apps.inbox.tasks import process_pending_messages_task
+
 from .schemas import BatchRequestSchema, ErrorResponseSchema, SuccessResponseSchema
-from .services import atomic_saved_messages_and_update_sources
-from .tasks import process_pending_messages_task
 
 logger = logging.getLogger(__name__)
 

@@ -1,0 +1,197 @@
+/* ==========================================================================
+   Стили сайдбара аналитики для проекта WhileWork
+   ========================================================================== */
+
+.analytics-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+
+    max-width: 100%;
+    min-width: 0;
+}
+
+.analytics-sidebar__header {
+    margin-bottom: 4px;
+}
+
+.analytics-sidebar__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.analytics-sidebar__subtitle {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+/* --- Базовая карточка аналитики --- */
+.analytics-card {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-card);
+    padding: 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.analytics-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="dark"] .analytics-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.analytics-card__chart-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+}
+
+/* --- Контейнеры графиков ApexCharts --- */
+.analytics-chart {
+    min-height: 180px;
+    width: 100%;
+}
+
+/* --- Состояние загрузки и скелетоны --- */
+.analytics-card .analytics-skeleton {
+    display: none;
+}
+
+.analytics-card .analytics-card__content {
+    display: block;
+}
+
+/* Переключение состояния через класс .is-loading */
+.analytics-card.is-loading .analytics-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.analytics-card.is-loading .analytics-card__content {
+    display: none;
+}
+
+/* Элегантная анимация пульсации для скелетона */
+@keyframes analyticsPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+.analytics-skeleton {
+    animation: analyticsPulse 1.5s infinite ease-in-out;
+}
+
+.analytics-skeleton__text {
+    background-color: var(--surface-color);
+    border-radius: 4px;
+    height: 14px;
+}
+
+/* Специфичные размеры для элементов скелетона */
+.analytics-skeleton__text.style-label { width: 60%; }
+.analytics-skeleton__text.style-value { width: 35%; height: 32px; margin-top: 4px; }
+.analytics-skeleton__text.style-title { width: 45%; margin-bottom: 8px; }
+
+.analytics-skeleton__chart {
+    background-color: var(--surface-color);
+    border-radius: var(--radius-btn);
+    width: 100%;
+}
+
+.bar-chart-skeleton { height: 140px; }
+.doughnut-chart-skeleton { height: 150px; border-radius: 50%; width: 150px; margin: 0 auto; }
+.funnel-chart-skeleton { height: 140px; }
+.pie-chart-skeleton { height: 150px; border-radius: 50%; width: 150px; margin: 0 auto; }
+.line-chart-skeleton { height: 140px; }
+
+/* ==========================================================================
+   Кастомизация UI элементов ApexCharts под Modern SaaS стиль
+   ========================================================================== */
+.apexcharts-tooltip {
+    background: var(--bg-color) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--radius-btn) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+    font-family: var(--font-ui) !important;
+    color: var(--text-primary) !important;
+}
+
+.apexcharts-tooltip-title {
+    background: var(--surface-color) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    font-weight: 600 !important;
+    font-family: var(--font-ui) !important;
+}
+
+.apexcharts-xaxistooltip, 
+.apexcharts-yaxistooltip {
+    background: var(--bg-color) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    border-radius: var(--radius-checkbox) !important;
+    font-family: var(--font-ui) !important;
+}
+
+.apexcharts-legend-text {
+    color: var(--text-primary) !important;
+    font-family: var(--font-ui) !important;
+    font-size: 12px !important;
+}
+
+/* Убираем старые стили для счетчика и добавляем лоск графикам */
+.apexcharts-canvas {
+    /* Делаем графики чуть четче на retina-экранах */
+    filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.02));
+}
+
+[data-theme="dark"] .apexcharts-canvas {
+    filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.15));
+}
+
+/* Стилизация тултипов под Modern SaaS */
+.apexcharts-tooltip {
+    border: none !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+    border-radius: var(--radius-btn) !important;
+    padding: 4px !important;
+}
+
+.apexcharts-tooltip-title {
+    background: transparent !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    padding: 8px 12px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+}
+
+.apexcharts-tooltip-text {
+    font-size: 13px !important;
+}
+
+@media (max-width: 768px) {
+    .analytics-card {
+        /* Уменьшаем отступы, чтобы графикам не было тесно */
+        padding: 16px 8px;
+    }
+    
+    .analytics-sidebar__title {
+        padding: 0 8px; /* Чтобы заголовок не прилипал к краю экрана */
+    }
+    
+    .analytics-sidebar__subtitle {
+        padding: 0 8px;
+    }
+}

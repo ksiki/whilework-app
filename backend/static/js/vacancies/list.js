@@ -466,6 +466,9 @@ class VacancyList {
                 window.App.i18n.translateDOM(this.container);
             }
 
+            if (window.AnalyticsSidebar && !isAppend) { 
+                window.AnalyticsSidebar.fetchData(this.filterManager.getState());
+            }
         } catch (e) {
             console.error('Fetch error:', e);
         } finally {
@@ -480,7 +483,7 @@ class VacancyList {
         this.debounceTimer = setTimeout(() => {
             this.hasMore = true;
             this.fetch(1, false);
-        }, 300);
+        }, 600);
     }
 
     initObserver() {
@@ -517,6 +520,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (hasSavedFilters) {
         vacancyList.triggerReload();
+    } else {
+        setTimeout(() => {
+            if (window.AnalyticsSidebar) {
+                window.AnalyticsSidebar.fetchData(filterManager.getState());
+            }
+        }, 50);
     }
 
     document.body.addEventListener('mousedown', (e) => {

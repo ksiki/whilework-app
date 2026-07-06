@@ -20,8 +20,9 @@ from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path
 
-from .api.internal import internal_api
-from .api.web import web_app
+from .api.external_api import api as external_api
+from .api.internal_api import api as internal_api
+from .api.web import api as web_api
 from .sitemaps import StaticSitemap, VacancySitemap
 
 sitemaps = {
@@ -37,7 +38,8 @@ urlpatterns = [
         {"sitemaps": sitemaps},
         name="django.contrib.sitemaps.views.sitemap",
     ),
-    path("", web_app.urls),
+    path("", web_api.urls),
+    path("api/", external_api.urls),
     path("api/internal/v1/", internal_api.urls),
     path(
         "media/og/vacancy_<uuid:id>.png", generate_vacancy_og_image, name="generate_og"

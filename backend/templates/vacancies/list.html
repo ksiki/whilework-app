@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="{% static 'css/vacancies/includes/banner.css' %}">
     <link rel="stylesheet" href="{% static 'css/vacancies/includes/sidebar.css' %}">
     <link rel="stylesheet" href="{% static 'css/vacancies/includes/job_card.css' %}">
+    <link rel="stylesheet" href="{% static 'css/vacancies/includes/analytics_sidebar.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -99,6 +100,8 @@
         </style>
     </section>
 
+    {% include 'vacancies/includes/_analytics_sidebar.html' %}
+
     <template id="pill-tag-template">
         <div class="pill-tag">
             <span class="pill-tag__text"></span>
@@ -124,6 +127,8 @@
     {{ relocation_countries|json_script:"relocation-data" }}
     <script src="{% static 'js/vacancies/list.js' %}"></script>
     <script src="{% static 'js/vacancies/includes/banner.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="{% static 'js/vacancies/includes/analytics_sidebar.js' %}"></script>
 {% endblock %}
 
 {% block schema_markup %}

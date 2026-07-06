@@ -282,6 +282,15 @@
       "back_home": "Вернуться на главную",
       "report_bug": "Сообщить о баге",
       "toast_success": "Лог ошибки успешно отправлен команде разработки!"
+    },
+    "analytics": {
+      "title": "Аналитика выборки",
+      "subtitle": "Данные обновляются при изменении фильтров",
+      "top_skills": "Топ скилов",
+      "work_formats": "Форматы работы",
+      "experience_funnel": "Требуемый опыт",
+      "grades_distribution": "Грейды",
+      "vacancies_per_day": "Динамика вакансий"
     }
   },
   "en": {
@@ -568,6 +577,15 @@
       "back_home": "Back to home page",
       "report_bug": "Report a bug",
       "toast_success": "The error log has been successfully sent to the development team!"
+    },
+    "analytics": {
+      "title": "Sample analysis",
+      "subtitle": "Data is updated when filters change",
+      "top_skills": "Top skills",
+      "work_formats": "Work formats",
+      "experience_funnel": "Required experience",
+      "grades_distribution": "Grades",
+      "vacancies_per_day": "Vacancy dynamics"
     }
   }
 }
