@@ -7,12 +7,11 @@ dynamic_per_day AS (
     SELECT pub_date, count(*) AS count 
     FROM per_month
     GROUP BY pub_date 
-    ORDER BY pub_date DESC
+    ORDER BY pub_date ASC
 ),
 by_grade AS (
     SELECT 
-        CASE 
-            WHEN grade IS NULL THEN 'Uncnown'
+        CASE
             WHEN grade = 'INT' THEN 'Intern'
             WHEN grade = 'JUN' THEN 'Junior'
             WHEN grade = 'MID' THEN 'Middle'
@@ -22,23 +21,25 @@ by_grade AS (
         END AS formatted_grade,
         count(*) AS count
     FROM per_month 
+    WHERE grade IS NOT NULL
     GROUP BY formatted_grade
 ),
 by_experience AS (
     SELECT COALESCE(experience_from::text, 'Uncnown') AS exp_level, count(*) AS count
     FROM per_month 
+    WHERE experience_from IS NOT NULL
     GROUP BY exp_level
 ),
 by_work_format AS (
     SELECT 
         CASE 
-            WHEN work_format IS NULL THEN 'Uncnown'
             WHEN work_format = 'RMT' THEN 'Remote'
             WHEN work_format = 'OFF' THEN 'Office'
             WHEN work_format = 'HBR' THEN 'Hybrid'
         END AS formatted_format,
         count(*) AS count
     FROM per_month
+    WHERE work_format IS NOT NULL
     GROUP BY formatted_format 
 ),
 by_skill AS (

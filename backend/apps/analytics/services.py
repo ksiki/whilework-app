@@ -18,7 +18,7 @@ async def acalculate_analytics(queryset: QuerySet[Vacancy]) -> dict[str, Any]:
         queryset.annotate(day=TruncDate("published_at"))
         .values("day")
         .annotate(count=Count("id"))
-        .order_by("-day")
+        .order_by("day")
     )
 
     vacancies_per_day = [
@@ -26,31 +26,43 @@ async def acalculate_analytics(queryset: QuerySet[Vacancy]) -> dict[str, Any]:
         async for item in per_day_qs
     ]
 
-    grades_qs = queryset.values("grade").annotate(count=Count("id"))
+    grades_qs = (
+        queryset.filter(grade__isnull=False).values("grade").annotate(count=Count("id"))
+    )
     grades_distribution = defaultdict(int)
     grade_mapping = dict(Vacancy.Grade.choices)
 
     async for item in grades_qs:
         grade_code = item["grade"]
-        label = grade_mapping.get(grade_code, "Unknown") if grade_code else "Unknown"
-        grades_distribution[label] += item["count"]
+        label = grade_mapping.get(grade_code)
+        if label:
+            grades_distribution[label] += item["count"]
 
-    exp_qs = queryset.values("experience_from").annotate(count=Count("id"))
+    exp_qs = (
+        queryset.filter(experience_from__isnull=False)
+        .values("experience_from")
+        .annotate(count=Count("id"))
+    )
     experience_funnel = defaultdict(int)
 
     async for item in exp_qs:
         exp_val = item["experience_from"]
-        label = str(exp_val) if exp_val is not None else "Unknown"
+        label = str(exp_val)
         experience_funnel[label] += item["count"]
 
-    format_qs = queryset.values("work_format").annotate(count=Count("id"))
+    format_qs = (
+        queryset.filter(work_format__isnull=False)
+        .values("work_format")
+        .annotate(count=Count("id"))
+    )
     work_formats = defaultdict(int)
     format_mapping = dict(Vacancy.WorkFormat.choices)
 
     async for item in format_qs:
         format_code = item["work_format"]
-        label = format_mapping.get(format_code, "Unknown") if format_code else "Unknown"
-        work_formats[label] += item["count"]
+        label = format_mapping.get(format_code)
+        if label:
+            work_formats[label] += item["count"]
 
     skills_qs = (
         queryset.filter(skills__isnull=False)
