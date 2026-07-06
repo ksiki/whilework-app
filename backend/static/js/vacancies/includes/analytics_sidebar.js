@@ -116,7 +116,7 @@ class AnalyticsManager {
                 strokeDashArray: 3,
                 xaxis: { lines: { show: false } },
                 yaxis: { lines: { show: false } },
-                padding: { top: -15, right: 15, bottom: -10, left: 0 } 
+                padding: { top: -15, right: 15, bottom: -10, left: 10 }
             },
             xaxis: { 
                 categories: data.map(i => i.skill), 
@@ -126,11 +126,9 @@ class AnalyticsManager {
             },
             yaxis: { 
                 labels: { 
-                    maxWidth: 80,
-                    style: { colors: this.textColor, fontWeight: 500 },
-                    formatter: function(val) {
-                        return val.length > 10 ? val.substring(0, 10) + '...' : val;
-                    }
+                    minWidth: 90, 
+                    maxWidth: 90,
+                    style: { colors: this.textColor, fontWeight: 500 }
                 } 
             }
         };
