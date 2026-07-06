@@ -124,7 +124,7 @@ class AnalyticsManager {
                 axisBorder: { show: false },
                 axisTicks: { show: false }
             },
-            yaxis: { labels: { style: { colors: this.textColor, fontWeight: 500 } } }
+            yaxis: { labels: { maxWidth: 80, style: { colors: this.textColor, fontWeight: 500 } } }
         };
         this.mountOrUpdateChart('chart-top-skills', options);
     }

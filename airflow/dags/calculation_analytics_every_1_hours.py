@@ -28,7 +28,7 @@ DEFAULT_ARGS: Final[dict[str, Any]] = {
 @dag(
     dag_id="calculation_analytics_every_1_hours",
     default_args=DEFAULT_ARGS,
-    schedule="0 3 * * *",
+    schedule="30 */1 * * *",
     start_date=pendulum.datetime(2026, 7, 6, tz="Europe/Moscow"),
     catchup=False,
     max_active_runs=1,
