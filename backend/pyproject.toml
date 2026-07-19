@@ -26,7 +26,8 @@ dependencies = [
     "taskiq-redis (>=1.2.2,<2.0.0)",
     "requests (>=2.34.2,<3.0.0)",
     "uvicorn (>=0.49.0,<0.50.0)",
-    "cairosvg (>=2.9.0,<3.0.0)"
+    "cairosvg (>=2.9.0,<3.0.0)",
+    "docker (>=7.2.0,<8.0.0)",
 ]
 
 [tool.poetry]

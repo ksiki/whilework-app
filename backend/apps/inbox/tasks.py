@@ -1,9 +1,16 @@
 import hashlib
+import json
 import logging
+import urllib.error
+import urllib.request
+from collections import defaultdict
 from datetime import datetime, timedelta
+from typing import Any
 
+import docker
 from asgiref.sync import async_to_sync
 from core.broker import broker
+from django.conf import settings
 from django.db import IntegrityError, transaction
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
@@ -11,14 +18,33 @@ from django.utils.dateparse import parse_datetime
 from apps.system import services as system_services
 from apps.vacancies.llm_service import extract_vacancy_data
 from apps.vacancies.models import Company, Contact, Location, Relocation, Skill, Vacancy
-from apps.vacancies.schemas import (
-    CleanVacancySchema,
-)
+from apps.vacancies.schemas import CleanVacancySchema
 
 from . import tools
 from .models import ParserRawMessage
 
 logger = logging.getLogger(__name__)
+
+
+def _get_auth_data(platform: str) -> dict[str, Any]:
+    """Извлекает данные авторизации для конкретной платформы из настроек Django."""
+    if platform == "telegram":
+        return {
+            "TG_SESSION": getattr(settings, "TG_SESSION", ""),
+            "TG_API_ID": getattr(settings, "TG_API_ID", ""),
+            "TG_API_HASH": getattr(settings, "TG_API_HASH", ""),
+            "PROXY_URL": getattr(settings, "PROXY_URL", ""),
+        }
+    elif platform == "reddit":
+        return {
+            "CLIENT_ID": getattr(settings, "REDDIT_CLIENT_ID", ""),
+            "CLIENT_SECRET": getattr(settings, "REDDIT_CLIENT_SECRET", ""),
+        }
+    elif platform == "discord":
+        return {
+            "DISCORD_TOKEN": getattr(settings, "DISCORD_BOT_TOKEN", ""),
+        }
+    return {}
 
 
 def generate_semantic_hash(
@@ -287,3 +313,76 @@ def process_pending_messages_task(count: int) -> None:
 
     for msg in messages:
         _process_single_message(msg)
+
+
+@broker.task(schedule=[{"cron": "0 * * * *"}])
+def master_parser_orchestrator_task() -> None:
+    """Оркестратор парсеров. Заменяет DAG master_parser_orchestrator_every_1_hours."""
+    internal_token = getattr(settings, "INTERNAL_API_SECRET", "")
+    base_url = getattr(settings, "INTERNAL_BACKEND_URL", "http://app:8000")
+    endpoint = f"{base_url}/api/internal/v1/sources/"
+
+    headers = {"X-Internal-Secret": internal_token}
+
+    try:
+        req = urllib.request.Request(endpoint, headers=headers)
+        with urllib.request.urlopen(req, timeout=10) as response:
+            records = json.loads(response.read().decode("utf-8"))
+    except Exception as e:
+        logger.error("Failed to fetch active sources: %s", str(e), exc_info=True)
+        return
+
+    if not records:
+        logger.warning("Sources list is empty")
+        return
+
+    grouped_sources = defaultdict(list)
+    for row in records:
+        platform = str(row.get("platform")).lower()
+        grouped_sources[platform].append(
+            {
+                "SOURCE_ID": str(row.get("id")),
+                "IDENTIFIER": str(row.get("identifier")),
+                "LAST_PARSED_ID": str(row.get("last_parsed_id") or ""),
+                "TOPICS": row.get("topics", []),
+            }
+        )
+
+    try:
+        client = docker.from_env()
+    except Exception as e:
+        logger.error("Docker client initialization failed: %s", str(e), exc_info=True)
+        return
+
+    for platform, sources in grouped_sources.items():
+        if not sources:
+            continue
+
+        env_vars = {
+            "PLATFORM": platform,
+            "SOURCES_BATCH": json.dumps(sources),
+            "AUTH_DATA": json.dumps(_get_auth_data(platform)),
+            "INTERNAL_API_TOKEN": internal_token,
+            "INTERNAL_BACKEND_URL": f"{base_url}/api/internal/v1",
+        }
+
+        try:
+            container_name = (
+                f"taskiq-parser-{platform}-{int(timezone.now().timestamp())}"
+            )
+            client.containers.run(
+                image="whilework-app-parser:latest",
+                environment=env_vars,
+                network="whilework-app_backend_network",
+                detach=True,
+                remove=True,
+                name=container_name,
+            )
+            logger.info("Started parser container %s for %s", container_name, platform)
+        except Exception as e:
+            logger.error(
+                "Failed to start parser container for %s: %s",
+                platform,
+                str(e),
+                exc_info=True,
+            )

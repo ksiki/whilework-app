@@ -243,3 +243,13 @@ EMAIL_PORT = os.getenv("EMAIL_PORT", 587)
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = True
+
+
+# --- Переменные для парсеров (ранее в Airflow Variables) ---
+TG_SESSION = os.getenv("TG_SESSION", "")
+TG_API_ID = os.getenv("TG_API_ID", "")
+TG_API_HASH = os.getenv("TG_API_HASH", "")
+PROXY_URL = os.getenv("PROXY_URL", "")
+
+INTERNAL_API_SECRET = os.getenv("INTERNAL_API_SECRET", "")
+INTERNAL_BACKEND_URL = os.getenv("INTERNAL_BACKEND_URL", "http://app:8000")
